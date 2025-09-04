@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:17:24 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/04 13:03:00 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/04 17:25:05 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ void	create_pipe()
 	temp = pc()->fd.current;
 	pc()->fd.current = pc()->fd.previous;
 	pc()->fd.previous = temp;
-	pc()->fd.previous[0] = STDIN_FILENO;
-	pc()->fd.current[1] = STDOUT_FILENO;
 	if (pipe(pc()->fd.current) == -1)
 		total_exit();
 }
@@ -42,7 +40,10 @@ void	dup_fds(t_command *cmd)
 	t_redirect *out;
 	
 	if (cmd->infile)
+	{
 		pc()->fd.previous[0] = open(cmd->infile, O_RDONLY);
+		dup2(pc()->fd.previous[0], STDIN_FILENO);
+	}
 	if  (cmd->outfiles)
 	{
 		out = cmd->outfiles;
@@ -54,9 +55,8 @@ void	dup_fds(t_command *cmd)
 				pc()->fd.current[1] = open(out->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 			out = out->next;
 		}
+		dup2(pc()->fd.current[1], STDOUT_FILENO);
 	}
-	dup2(pc()->fd.previous[0], STDIN_FILENO);
-	dup2(pc()->fd.current[1], STDOUT_FILENO);
 	close_fds();
 }
 
@@ -70,6 +70,10 @@ void	pipex_process(t_command *cmd, char **env)
 	else if (pc()->pid == 0)
 	{
 		dup_fds(cmd);
+		// printf("%s\n", pc()->path);
+		// int i = 0;
+		// while(pc()->args[i])
+		// 	printf("%s\n", pc()->args[i++]);
 		execve(pc()->path, pc()->args, env);
 		process_exit(cmd);
 	}
