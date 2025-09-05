@@ -6,37 +6,37 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 10:53:46 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/04 12:52:20 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/05 18:29:33 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-char **arg_join_front(char **args, char *to_join)
-{
-	char **new_args;
-	int args_memb;
-	int i;
+// char **arg_join_front(char **args, char *to_join)
+// {
+// 	char **new_args;
+// 	int args_memb;
+// 	int i;
 
-	args_memb = 0;
-	while(args && args[args_memb] != NULL)
-		args_memb++;
-	new_args = ft_calloc(args_memb + 2, sizeof(char *));
-	if (!new_args)
-		total_exit();
-	new_args[0] = ft_strdup(to_join);
-	if (!new_args[0])
-		total_exit();
-	i = 0;
-	while (++i <= args_memb)
-	{
-		new_args[i] = args[i];
-		if(!new_args[i])
-			total_exit();
-	}
-	new_args[i] = NULL;
-	return (new_args);
-}
+// 	args_memb = 0;
+// 	while(args && args[args_memb] != NULL)
+// 		args_memb++;
+// 	new_args = ft_calloc(args_memb + 2, sizeof(char *));
+// 	if (!new_args)
+// 		total_exit();
+// 	new_args[0] = ft_strdup(to_join);
+// 	if (!new_args[0])
+// 		total_exit();
+// 	i = 0;
+// 	while (++i <= args_memb)
+// 	{
+// 		new_args[i] = args[i];
+// 		if(!new_args[i])
+// 			total_exit();
+// 	}
+// 	new_args[i] = NULL;
+// 	return (new_args);
+// }
 
 char	*path_validate(char *path, char *cmd)
 {
@@ -45,11 +45,11 @@ char	*path_validate(char *path, char *cmd)
 
 	dirname = ft_strjoin(path, "/");
 	if (!dirname)
-		total_exit();
+		total_exit("malloc() error!");
 	pathname = ft_strjoin(dirname, cmd);
 	free(dirname);
 	if (!pathname)
-		total_exit();
+		total_exit("malloc() error!");
 	if (!access(pathname, X_OK))
 		return (pathname);
 	free(pathname);
@@ -65,16 +65,17 @@ char	*cmd_path(char *cmd)
 	pathname = NULL;
 	path = NULL;
 	if (ft_strchr(cmd, '/') || getenv("PATH") == NULL)
-		return(cmd);
+		return (cmd);
 	path = ft_split(getenv("PATH"), ':');
 	if(!path)
-		total_exit();
+		total_exit("malloc() error!");
 	i = 0;
 	while (!pathname && path[i])
 		pathname = path_validate(path[i++], cmd);
 	free_array(path);
 	if (!pathname)
 		return(cmd);
+	free(cmd);
 	return (pathname);
 }
 
@@ -86,4 +87,43 @@ int	exit_status_return()
 		return (128 + WTERMSIG(pc()->exit_status));
 	else
 		return (1);
+}
+
+int	hd_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	if (!s1 || !s2)
+		return (-1);
+	i = 0;
+	while (s1[i] == s2[i] && s1[i] && s2[i] && i < n)
+		i++;
+	if (s1[i] == '\n' && i == n)
+		return (0);
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
+
+void create_here_doc(char *delimiter) //adicionar expancao e sinal ctrl
+{
+	size_t limit;
+	char *line;
+	
+	if (pipe(pc()->fd.previous) < 0)
+		total_exit("pipe() error!");
+	limit = ft_strlen(delimiter);
+	ft_printf("> ");
+	line = get_next_line(STDIN_FILENO);
+	if (!line)
+		total_exit("mallo() error!");
+	while (hd_strncmp(line, delimiter, limit))
+	{
+		ft_putstr_fd(line, pc()->fd.previous[1]);
+		free(line);
+		ft_printf("> ");
+		line = get_next_line(STDIN_FILENO);
+		if (!line)
+			total_exit("mallo() error!");
+	}
+	free(line);
+	ft_close(&pc()->fd.previous[1]);
 }

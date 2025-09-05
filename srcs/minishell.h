@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/03 15:20:03 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/05 14:25:40 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,9 @@ typedef struct s_redirect
 
 typedef struct s_command
 {
-	int					is_pipe_in;
-	int					heredoc_fd;
-	int					is_pipe_out;
 	char				*cmd;
 	char				**args;
-	char				*infile;
-	char				*heredoc_delimeter;
+	t_redirect			*infiles;
 	t_redirect			*outfiles;
 	struct s_command	*next;
 }						t_command;

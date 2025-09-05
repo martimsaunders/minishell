@@ -6,21 +6,21 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:17:24 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/04 17:25:05 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/05 19:09:04 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 
-void	create_pipe()
+void	switch_pipe() //need check
 {
 	int	*temp;
 	
 	temp = pc()->fd.current;
 	pc()->fd.current = pc()->fd.previous;
 	pc()->fd.previous = temp;
-	if (pipe(pc()->fd.current) == -1)
-		total_exit();
+	if (pipe(pc()->fd.current) < 0)
+		total_exit("pipe() error!");
 }
 
 void	process_exit(t_command *cmd)
@@ -29,44 +29,67 @@ void	process_exit(t_command *cmd)
 	close(1);
 	ft_putstr_fd(cmd->cmd, 2);
 	ft_putendl_fd(": command not found", 2);
+	close_fds();
 	if (pc()->path)
 		free(pc()->path);
-	free_array(pc()->args);
+	if(cmd)
+		free_command_list(&cmd);
 	exit(127);
+}
+
+void open_infile(t_redirect *infiles)
+{
+	t_redirect *file;
+
+	file = infiles;
+	while(file)
+	{
+		ft_close(&pc()->fd.previous[0]);
+		if (file->type == 1)
+			pc()->fd.previous[0] = open(file->filename, O_RDONLY);
+		else if (file->type == 2)
+			create_here_doc(file->filename);
+		if (pc()->fd.previous[0] < 0)
+			total_exit(file->filename);
+		file = file->next;	
+	}
 }
 
 void	dup_fds(t_command *cmd)
 {
-	t_redirect *out;
+	t_redirect *file;
 	
-	if (cmd->infile)
+	if (cmd->infiles)
 	{
-		pc()->fd.previous[0] = open(cmd->infile, O_RDONLY);
-		dup2(pc()->fd.previous[0], STDIN_FILENO);
+		open_infile(cmd->infiles);
 	}
 	if  (cmd->outfiles)
 	{
-		out = cmd->outfiles;
-		while (out)
+		file = cmd->outfiles;
+		while (file)
 		{
-			if (out->type == 1)
-				pc()->fd.current[1] = open(out->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			else
-				pc()->fd.current[1] = open(out->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			out = out->next;
+			ft_close(&pc()->fd.current[1]);
+			if (file->type == 1)
+				pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			else if (file->type == 2)
+				pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			if (pc()->fd.current[1] < 0)
+				total_exit(file->filename);
+			file = file->next;
 		}
-		dup2(pc()->fd.current[1], STDOUT_FILENO);
 	}
+	dup2(pc()->fd.previous[0], STDIN_FILENO);
+	dup2(pc()->fd.current[1], STDOUT_FILENO);
 	close_fds();
 }
 
 void	pipex_process(t_command *cmd, char **env)
 {
-	create_pipe();
+	switch_pipe();
 	pc()->pid = fork();
 	pc()->processes++;
 	if (pc()->pid == -1)
-		total_exit();
+		total_exit("fork() error!");
 	else if (pc()->pid == 0)
 	{
 		dup_fds(cmd);
@@ -74,7 +97,7 @@ void	pipex_process(t_command *cmd, char **env)
 		// int i = 0;
 		// while(pc()->args[i])
 		// 	printf("%s\n", pc()->args[i++]);
-		execve(pc()->path, pc()->args, env);
+		execve(pc()->path, cmd->args, env);
 		process_exit(cmd);
 	}
 	ft_close(&pc()->fd.previous[0]);

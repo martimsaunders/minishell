@@ -1,37 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_close.c                                       :+:      :+:    :+:   */
+/*   fds_handle.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/17 15:24:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/04 13:01:16 by mateferr         ###   ########.fr       */
+/*   Created: 2025/09/05 11:37:27 by mateferr          #+#    #+#             */
+/*   Updated: 2025/09/05 19:06:38 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "execution.h" //verificar
+#include "execution.h"
 
-void	total_exit()
+void init_fds()
 {
-	//free & close all
-	exit(1);
-}
-
-void	free_array(char **array)
-{
-	int	i;
-
-	if (!array)
-		return ;
-	i = 0;
-	while (array[i])
-	{
-		free(array[i]);
-		i++;
-	}
-	free(array);
-	array = NULL;
+    pc()->fd.pipe1[0] = -1;
+    pc()->fd.pipe1[1] = -1;
+    pc()->fd.pipe2[0] = -1;
+    pc()->fd.pipe2[1] = -1;
+    pc()->fd.current = pc()->fd.pipe2;
+	pc()->fd.previous = pc()->fd.pipe1;
 }
 
 void	ft_close(int *fd)
