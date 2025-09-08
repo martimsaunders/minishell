@@ -31,10 +31,12 @@ typedef struct s_process
 	int		exit_status;
 	char	*path;
 	t_command *cmd;
+	int list_size;
 }			t_process;
 
-//init
+//utils
 t_process *pc();
+int	cmd_lstsize(t_command *lst);
 
 //free exit
 void	total_exit(char *msg);

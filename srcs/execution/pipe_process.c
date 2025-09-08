@@ -12,7 +12,7 @@
 
 #include "execution.h"
 
-void	switch_pipe() //need check
+void	switch_pipe()
 {
 	int	*temp;
 	
@@ -30,10 +30,8 @@ void	process_exit(t_command *cmd)
 	ft_putstr_fd(cmd->cmd, 2);
 	ft_putendl_fd(": command not found", 2);
 	close_fds();
-	if (pc()->path)
-		free(pc()->path);
-	if(cmd)
-		free_command_list(&cmd);
+	free(pc()->path);
+	free_command_list(&pc()->cmd);
 	exit(127);
 }
 
@@ -53,33 +51,38 @@ void open_infile(t_redirect *infiles)
 			total_exit(file->filename);
 		file = file->next;	
 	}
+	dup2(pc()->fd.previous[0], STDIN_FILENO);
+}
+
+void open_outfile(t_redirect *outfiles)
+{
+	t_redirect *file;
+
+	file = outfiles;
+	while (file)
+	{
+		ft_close(&pc()->fd.current[1]);
+		if (file->type == 1)
+			pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (file->type == 2)
+			pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (pc()->fd.current[1] < 0)
+			total_exit(file->filename);
+		file = file->next;
+	}
+	dup2(pc()->fd.current[1], STDOUT_FILENO);
 }
 
 void	dup_fds(t_command *cmd)
 {
-	t_redirect *file;
-	
 	if (cmd->infiles)
-	{
 		open_infile(cmd->infiles);
-	}
+	else if (pc()->processes != 1)
+		dup2(pc()->fd.previous[0], STDIN_FILENO);
 	if  (cmd->outfiles)
-	{
-		file = cmd->outfiles;
-		while (file)
-		{
-			ft_close(&pc()->fd.current[1]);
-			if (file->type == 1)
-				pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			else if (file->type == 2)
-				pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			if (pc()->fd.current[1] < 0)
-				total_exit(file->filename);
-			file = file->next;
-		}
-	}
-	dup2(pc()->fd.previous[0], STDIN_FILENO);
-	dup2(pc()->fd.current[1], STDOUT_FILENO);
+		open_outfile(cmd->outfiles);
+	else if (pc()->processes != pc()->list_size)
+		dup2(pc()->fd.current[1], STDOUT_FILENO);
 	close_fds();
 }
 
@@ -87,16 +90,16 @@ void	pipex_process(t_command *cmd, char **env)
 {
 	switch_pipe();
 	pc()->pid = fork();
-	pc()->processes++;
 	if (pc()->pid == -1)
+	{
+		while (pc()->processes--)
+			wait(NULL);
 		total_exit("fork() error!");
-	else if (pc()->pid == 0)
+	}
+	pc()->processes++;
+	if (pc()->pid == 0)
 	{
 		dup_fds(cmd);
-		// printf("%s\n", pc()->path);
-		// int i = 0;
-		// while(pc()->args[i])
-		// 	printf("%s\n", pc()->args[i++]);
 		execve(pc()->path, cmd->args, env);
 		process_exit(cmd);
 	}

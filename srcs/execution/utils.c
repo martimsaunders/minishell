@@ -18,3 +18,15 @@ t_process *pc()
     return(&pc);
 }
 
+int	cmd_lstsize(t_command *lst)
+{
+	int	count;
+
+	count = 0;
+	while (lst)
+	{
+		count++;
+		lst = lst->next;
+	}
+	return (count);
+}

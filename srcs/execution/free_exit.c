@@ -28,6 +28,8 @@ void free_redirect_list(t_redirect **list)
 	t_redirect *rdt;
 	t_redirect *node;
 	
+	if (!list)
+		return ;
 	rdt = *list;
 	while(rdt)
 	{
@@ -44,10 +46,14 @@ void free_command_list(t_command **list)
 	t_command *cmd;
  	t_command *node;
 	
+	if (!list)
+		return ;
 	cmd = *list;
 	while(cmd)
 	{
 		node = cmd;
+		if (cmd->cmd)
+			free(cmd->cmd);
 		if (cmd->args)
 			free_array(cmd->args);
 		if (cmd->infiles)

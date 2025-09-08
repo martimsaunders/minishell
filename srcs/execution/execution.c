@@ -17,13 +17,17 @@ int	execution_process(t_command *cmd, char **env)
 	t_command *node;
 	
 	pc()->cmd = cmd;
-	node = pc()->cmd;
+	pc()->list_size = cmd_lstsize(cmd);
+	node = cmd;
 	init_fds();
 	while (node)
 	{
 		pc()->path = cmd_path(node->cmd);
-		pipex_process(pc()->cmd, env);
+		if (!pc()->path)
+			total_exit("malloc() error!!");
+		pipex_process(node, env);
 		free(pc()->path);
+		pc()->path = NULL;
 		node = node->next;
 	}
 	waitpid(pc()->pid, &pc()->exit_status, 0);
@@ -31,25 +35,35 @@ int	execution_process(t_command *cmd, char **env)
 	while (pc()->processes--)
 		wait(NULL);
 	close_fds();
-	if(cmd)
-		free_command_list(&cmd);
+	free_command_list(&cmd);
 	return (exit_status_return());
 }
 
 //test
 
-char **create_arg(char *cmd)
+char **create_arg1(char *cmd)
 {
-	int n_arg = 0;
+	int n_arg = 1;
 	char **arg = ft_calloc(n_arg + 2, sizeof(char *));
 	int i = 0;
 	arg[i++] = ft_strdup(cmd);
-	// arg[i++] = ft_strdup("y");
+	arg[i++] = ft_strdup("x");
 	arg[i] = NULL;
 	return arg;
 }
 
-t_redirect *create_infiles()
+char **create_arg2(char *cmd)
+{
+	int n_arg = 1;
+	char **arg = ft_calloc(n_arg + 2, sizeof(char *));
+	int i = 0;
+	arg[i++] = ft_strdup(cmd);
+	arg[i++] = ft_strdup("y");
+	arg[i] = NULL;
+	return arg;
+}
+
+t_redirect *create_files()
 {
 	t_redirect *node1 = ft_calloc(1, sizeof(t_redirect));
 	// t_redirect *node2 = ft_calloc(1, sizeof(t_redirect));
@@ -66,13 +80,13 @@ t_redirect *create_infiles()
 	return node1;
 }
 
-t_redirect *create_infiles2()
+t_redirect *create_files2()
 {
 	t_redirect *node1 = ft_calloc(1, sizeof(t_redirect));
 	// t_redirect *node2 = ft_calloc(1, sizeof(t_redirect));
 	// t_redirect *node3 = ft_calloc(1, sizeof(t_redirect));
 	node1->type = 2;
-	node1->filename = ft_strdup("out_1");
+	node1->filename = ft_strdup("x");
 	node1->next = NULL;
 	// node2->type = 1;
 	// node2->filename = ft_strdup("out_2");
@@ -88,14 +102,14 @@ t_command *fill_list()
 	t_command *node = ft_calloc(1, sizeof(t_command));
 	t_command *node2 = ft_calloc(1, sizeof(t_command));
 	node->cmd = ft_strdup("cat");
-	node->args = create_arg(node->cmd);
-	node->infiles = create_infiles();
+	node->args = create_arg1(node->cmd);
+	node->infiles = NULL;
 	node->outfiles = NULL;
 	node->next = node2;
 	node2->cmd = ft_strdup("cat");
-	node2->args = create_arg(node->cmd);
+	node2->args = create_arg2(node2->cmd);
 	node2->infiles = NULL;
-	node2->outfiles = create_infiles2();
+	node2->outfiles = NULL;
 	node2->next = NULL;
 	return(node);
 }
@@ -112,6 +126,7 @@ TESTS:
 1 cmd n args 0 rdt => ok valid e invalid commad com 0 ou n args
 1 cmd n args n rdtin => ok valid e invalid < e <<
 1 cmd n args n rdtin/out => ok valid e invalid > e >>
-2 cmd 1 in 1 out => erro valgrind; nao escreve em out 
+2 cmd n in n out => ok ok
+2 cmd 0 in 0 out => ok ok
 NOTES:
 */

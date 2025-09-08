@@ -65,7 +65,7 @@ char	*cmd_path(char *cmd)
 	pathname = NULL;
 	path = NULL;
 	if (ft_strchr(cmd, '/') || getenv("PATH") == NULL)
-		return (cmd);
+		return (ft_strdup(cmd));
 	path = ft_split(getenv("PATH"), ':');
 	if(!path)
 		total_exit("malloc() error!");
@@ -74,8 +74,7 @@ char	*cmd_path(char *cmd)
 		pathname = path_validate(path[i++], cmd);
 	free_array(path);
 	if (!pathname)
-		return(cmd);
-	free(cmd);
+		return(ft_strdup(cmd));
 	return (pathname);
 }
 
