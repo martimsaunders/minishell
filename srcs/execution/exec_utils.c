@@ -12,32 +12,6 @@
 
 #include "execution.h"
 
-// char **arg_join_front(char **args, char *to_join)
-// {
-// 	char **new_args;
-// 	int args_memb;
-// 	int i;
-
-// 	args_memb = 0;
-// 	while(args && args[args_memb] != NULL)
-// 		args_memb++;
-// 	new_args = ft_calloc(args_memb + 2, sizeof(char *));
-// 	if (!new_args)
-// 		total_exit();
-// 	new_args[0] = ft_strdup(to_join);
-// 	if (!new_args[0])
-// 		total_exit();
-// 	i = 0;
-// 	while (++i <= args_memb)
-// 	{
-// 		new_args[i] = args[i];
-// 		if(!new_args[i])
-// 			total_exit();
-// 	}
-// 	new_args[i] = NULL;
-// 	return (new_args);
-// }
-
 char	*path_validate(char *path, char *cmd)
 {
 	char	*dirname;

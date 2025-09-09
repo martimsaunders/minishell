@@ -12,22 +12,20 @@
 
 #include "execution.h"
 
+//single_command_process()
+//pipe_command_process()
+
 int	execution_process(t_command *cmd, char **env)
 {
 	t_command *node;
 	
 	pc()->cmd = cmd;
 	pc()->list_size = cmd_lstsize(cmd);
-	node = cmd;
 	init_fds();
+	node = cmd;
 	while (node)
 	{
-		pc()->path = cmd_path(node->cmd);
-		if (!pc()->path)
-			total_exit("malloc() error!!");
-		pipex_process(node, env);
-		free(pc()->path);
-		pc()->path = NULL;
+		command_execution(node, env);
 		node = node->next;
 	}
 	waitpid(pc()->pid, &pc()->exit_status, 0);
@@ -129,4 +127,5 @@ TESTS:
 2 cmd n in n out => ok ok
 2 cmd 0 in 0 out => ok ok
 NOTES:
+testar built ins e separar sigle command de pipe commands
 */

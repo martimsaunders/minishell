@@ -23,54 +23,23 @@ void	switch_pipe()
 		total_exit("pipe() error!");
 }
 
-void	process_exit(t_command *cmd)
+void	process_exit(t_command *cmd, int error)
 {
 	close(0);
 	close(1);
-	ft_putstr_fd(cmd->cmd, 2);
-	ft_putendl_fd(": command not found", 2);
+	if (error)
+	{
+		ft_putstr_fd(cmd->cmd, 2);
+		ft_putendl_fd(": command not found", 2);
+	}
 	close_fds();
-	free(pc()->path);
+	if (pc()->path)
+		free(pc()->path);
+	pc()->path = NULL;
 	free_command_list(&pc()->cmd);
-	exit(127);
-}
-
-void open_infile(t_redirect *infiles)
-{
-	t_redirect *file;
-
-	file = infiles;
-	while(file)
-	{
-		ft_close(&pc()->fd.previous[0]);
-		if (file->type == 1)
-			pc()->fd.previous[0] = open(file->filename, O_RDONLY);
-		else if (file->type == 2)
-			create_here_doc(file->filename);
-		if (pc()->fd.previous[0] < 0)
-			total_exit(file->filename);
-		file = file->next;	
-	}
-	dup2(pc()->fd.previous[0], STDIN_FILENO);
-}
-
-void open_outfile(t_redirect *outfiles)
-{
-	t_redirect *file;
-
-	file = outfiles;
-	while (file)
-	{
-		ft_close(&pc()->fd.current[1]);
-		if (file->type == 1)
-			pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else if (file->type == 2)
-			pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (pc()->fd.current[1] < 0)
-			total_exit(file->filename);
-		file = file->next;
-	}
-	dup2(pc()->fd.current[1], STDOUT_FILENO);
+	if (error)
+		exit(127);
+	exit(0);
 }
 
 void	dup_fds(t_command *cmd)
@@ -86,7 +55,31 @@ void	dup_fds(t_command *cmd)
 	close_fds();
 }
 
-void	pipex_process(t_command *cmd, char **env)
+void is_built_in(t_command *cmd, char **env)
+{
+	size_t size;
+
+	size = ft_strlen(cmd->cmd);
+	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
+		ft_echo(cmd);
+	else if (ft_strncmp(cmd->cmd, "cd", size) == 0)
+		ft_cd(cmd);
+	else if (ft_strncmp(cmd->cmd, "pwd", size) == 0)
+		ft_pwd(env);
+	else if (ft_strncmp(cmd->cmd, "export", size) == 0)
+		ft_export(cmd);
+	else if (ft_strncmp(cmd->cmd, "unset", size) == 0)
+		ft_unset(cmd);
+	else if (ft_strncmp(cmd->cmd, "env", size) == 0)
+		ft_env(env, cmd);
+	else if (ft_strncmp(cmd->cmd, "exit", size) == 0)
+		ft_exit();
+	else
+		return ;
+	process_exit(cmd, 0);
+}
+
+void	command_execution(t_command *cmd, char **env)
 {
 	switch_pipe();
 	pc()->pid = fork();
@@ -100,8 +93,12 @@ void	pipex_process(t_command *cmd, char **env)
 	if (pc()->pid == 0)
 	{
 		dup_fds(cmd);
+		is_built_in(cmd, env);
+		pc()->path = cmd_path(cmd->cmd);
+		if (!pc()->path)
+			total_exit("malloc() error!!");
 		execve(pc()->path, cmd->args, env);
-		process_exit(cmd);
+		process_exit(cmd, 1);
 	}
 	ft_close(&pc()->fd.previous[0]);
 	ft_close(&pc()->fd.current[1]);

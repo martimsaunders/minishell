@@ -36,3 +36,41 @@ void	close_fds()
 	ft_close(&pc()->fd.current[0]);
 	ft_close(&pc()->fd.current[1]);
 }
+
+void open_infile(t_redirect *infiles)
+{
+	t_redirect *file;
+
+	file = infiles;
+	while(file)
+	{
+		ft_close(&pc()->fd.previous[0]);
+		if (file->type == 1)
+			pc()->fd.previous[0] = open(file->filename, O_RDONLY);
+		else if (file->type == 2)
+			create_here_doc(file->filename);
+		if (pc()->fd.previous[0] < 0)
+			total_exit(file->filename);
+		file = file->next;	
+	}
+	dup2(pc()->fd.previous[0], STDIN_FILENO);
+}
+
+void open_outfile(t_redirect *outfiles)
+{
+	t_redirect *file;
+
+	file = outfiles;
+	while (file)
+	{
+		ft_close(&pc()->fd.current[1]);
+		if (file->type == 1)
+			pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		else if (file->type == 2)
+			pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (pc()->fd.current[1] < 0)
+			total_exit(file->filename);
+		file = file->next;
+	}
+	dup2(pc()->fd.current[1], STDOUT_FILENO);
+}
