@@ -20,7 +20,7 @@ void ft_echo(t_command *cmd)
         ft_putchar_fd('\n', STDOUT_FILENO);
 }
 
-void ft_env(char **env, t_command *cmd)
+void ft_env(t_command *cmd)
 {
     int i;
 
@@ -30,19 +30,19 @@ void ft_env(char **env, t_command *cmd)
         ft_putstr_fd("No arguments suported", 2);
         return ;
     }
-    while(env[i])
-        printf("%s\n", env[i++]);
+    while(pc()->ms_env[i])
+        printf("%s\n", pc()->ms_env[i++]);
 }
 
-void ft_pwd(char **env)
+void ft_pwd()
 {
     int i;
     char *path_name;
 
     i = 0;  
-    if (strncmp(env[i], "PWD=", 4) == 0)
+    if (strncmp(pc()->ms_env[i], "PWD=", 4) == 0)
     {
-        path_name = env[i];
+        path_name = pc()->ms_env[i];
         path_name += 4;
         printf("%s\n", path_name);
     }

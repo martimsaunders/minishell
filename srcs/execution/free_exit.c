@@ -17,6 +17,8 @@ void	total_exit(char *msg)
 	perror(msg);
 	if(pc()->path)
 		free(pc()->path);
+	if(pc()->ms_env)
+		free(pc()->ms_env);
 	close_fds();
 	if(pc()->cmd)
 		free_command_list(&pc()->cmd);

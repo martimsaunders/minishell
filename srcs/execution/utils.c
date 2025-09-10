@@ -30,3 +30,25 @@ int	cmd_lstsize(t_command *lst)
 	}
 	return (count);
 }
+
+char **create_env(char **env)
+{
+	char **ms_env;
+	int i;
+
+	i = 0;
+	while(env[i])
+		i++;
+	ms_env = ft_calloc(i + 1, sizeof(char *));
+	if (!ms_env)
+		total_exit("malloc error!!");
+	i = -1;
+	while(env[++i])
+	{
+		ms_env[i] = ft_strdup(env[i]);
+		if (!ms_env[i])
+			total_exit("malloc error!!");
+	}
+	ms_env[i] = NULL;
+	return (ms_env);
+}

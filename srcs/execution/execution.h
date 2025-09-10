@@ -14,6 +14,7 @@
 #define EXECUTION_H
 
 #include "../minishell.h"
+#include <errno.h>
 
 typedef struct s_fds
 {
@@ -32,11 +33,13 @@ typedef struct s_process
 	char	*path;
 	t_command *cmd;
 	int list_size;
+	char **ms_env;
 }			t_process;
 
 //utils
 t_process *pc();
 int	cmd_lstsize(t_command *lst);
+char **create_env(char **env);
 
 //free exit
 void	total_exit(char *msg);
@@ -52,11 +55,11 @@ void open_infile(t_redirect *infiles);
 void open_outfile(t_redirect *outfiles);
 
 //execution process
-void	command_execution(t_command *cmd, char **env);
+void	command_execution(t_command *cmd);
 void	dup_fds(t_command *cmd);
-void	process_exit(t_command *cmd, int error);
+void	process_exit(t_command *cmd);
 void	switch_pipe();
-void is_built_in(t_command *cmd, char **env);
+void is_built_in(t_command *cmd);
 
 //exec utils
 char	*path_validate(char *path, char *cmd);
@@ -67,7 +70,11 @@ void create_here_doc(char *delimiter);
 
 //built ins
 void ft_echo(t_command *cmd);
-void ft_env(char **env, t_command *cmd);
-void ft_pwd(char **env);
+void ft_env(t_command *cmd);
+void ft_pwd();
+void ft_exit();
+int ft_cd(t_command *cmd);
+int ft_export(t_command *cmd);
+int ft_unset(t_command *cmd);
 
 #endif

@@ -19,13 +19,15 @@ int	execution_process(t_command *cmd, char **env)
 {
 	t_command *node;
 	
+	if (!pc()->ms_env)
+		pc()->ms_env = create_env(env);
 	pc()->cmd = cmd;
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
 	node = cmd;
 	while (node)
 	{
-		command_execution(node, env);
+		command_execution(node);
 		node = node->next;
 	}
 	waitpid(pc()->pid, &pc()->exit_status, 0);
@@ -128,4 +130,7 @@ TESTS:
 2 cmd 0 in 0 out => ok ok
 NOTES:
 testar built ins e separar sigle command de pipe commands
+recriar $?
+implementar parsing no heredoc. 
+verificar comportamentos com signals dentro da criação do hd
 */

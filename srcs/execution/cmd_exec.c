@@ -23,23 +23,18 @@ void	switch_pipe()
 		total_exit("pipe() error!");
 }
 
-void	process_exit(t_command *cmd, int error)
+void	process_exit(t_command *cmd)
 {
 	close(0);
 	close(1);
-	if (error)
-	{
-		ft_putstr_fd(cmd->cmd, 2);
-		ft_putendl_fd(": command not found", 2);
-	}
 	close_fds();
 	if (pc()->path)
 		free(pc()->path);
 	pc()->path = NULL;
+	if (pc()->ms_env)
+		free(pc()->ms_env);
 	free_command_list(&pc()->cmd);
-	if (error)
-		exit(127);
-	exit(0);
+	exit(pc()->exit_status);
 }
 
 void	dup_fds(t_command *cmd)
@@ -55,7 +50,7 @@ void	dup_fds(t_command *cmd)
 	close_fds();
 }
 
-void is_built_in(t_command *cmd, char **env)
+int is_built_in(t_command *cmd)
 {
 	size_t size;
 
@@ -63,23 +58,23 @@ void is_built_in(t_command *cmd, char **env)
 	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
 		ft_echo(cmd);
 	else if (ft_strncmp(cmd->cmd, "cd", size) == 0)
-		ft_cd(cmd);
+		pc()->exit_status = ft_cd(cmd);
 	else if (ft_strncmp(cmd->cmd, "pwd", size) == 0)
-		ft_pwd(env);
+		ft_pwd();
 	else if (ft_strncmp(cmd->cmd, "export", size) == 0)
-		ft_export(cmd);
+		pc()->exit_status = ft_export(cmd);
 	else if (ft_strncmp(cmd->cmd, "unset", size) == 0)
-		ft_unset(cmd);
+		pc()->exit_status = ft_unset(cmd);
 	else if (ft_strncmp(cmd->cmd, "env", size) == 0)
-		ft_env(env, cmd);
+		ft_env(cmd);
 	else if (ft_strncmp(cmd->cmd, "exit", size) == 0)
 		ft_exit();
 	else
-		return ;
-	process_exit(cmd, 0);
+		return (0);
+	return (1);
 }
 
-void	command_execution(t_command *cmd, char **env)
+void	command_execution(t_command *cmd)
 {
 	switch_pipe();
 	pc()->pid = fork();
@@ -93,12 +88,15 @@ void	command_execution(t_command *cmd, char **env)
 	if (pc()->pid == 0)
 	{
 		dup_fds(cmd);
-		is_built_in(cmd, env);
+		if (is_built_in(cmd))
+			process_exit(cmd);
 		pc()->path = cmd_path(cmd->cmd);
 		if (!pc()->path)
 			total_exit("malloc() error!!");
-		execve(pc()->path, cmd->args, env);
-		process_exit(cmd, 1);
+		execve(pc()->path, cmd->args, pc()->ms_env);
+		perror(cmd->cmd);
+		pc()->exit_status = 127;
+		process_exit(cmd);
 	}
 	ft_close(&pc()->fd.previous[0]);
 	ft_close(&pc()->fd.current[1]);
