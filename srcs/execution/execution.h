@@ -51,15 +51,15 @@ void free_redirect_list(t_redirect **list);
 void init_fds();
 void	ft_close(int *fd);
 void	close_fds();
-void open_infile(t_redirect *infiles);
-void open_outfile(t_redirect *outfiles);
+int open_infile(t_redirect *infiles);
+int open_outfile(t_redirect *outfiles);
 
-//execution process
-void	command_execution(t_command *cmd);
-void	dup_fds(t_command *cmd);
+//pipe process
+void	child_process(t_command *cmd);
 void	process_exit(t_command *cmd);
 void	switch_pipe();
-void is_built_in(t_command *cmd);
+int is_built_in(t_command *cmd);
+int pipe_command_process(t_command *cmd);
 
 //exec utils
 char	*path_validate(char *path, char *cmd);
@@ -67,6 +67,10 @@ char	*cmd_path(char *cmd);
 int	exit_status_return();
 int	hd_strncmp(const char *s1, const char *s2, size_t n);
 void create_here_doc(char *delimiter);
+
+//single process
+int single_command_process(t_command *cmd);
+void single_command_fds_handle(t_command *cmd);
 
 //built ins
 void ft_echo(t_command *cmd);

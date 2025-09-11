@@ -37,7 +37,7 @@ void	close_fds()
 	ft_close(&pc()->fd.current[1]);
 }
 
-void open_infile(t_redirect *infiles)
+int open_infile(t_redirect *infiles)
 {
 	t_redirect *file;
 
@@ -50,13 +50,14 @@ void open_infile(t_redirect *infiles)
 		else if (file->type == 2)
 			create_here_doc(file->filename);
 		if (pc()->fd.previous[0] < 0)
-			total_exit(file->filename);
+			return (0);
 		file = file->next;	
 	}
 	dup2(pc()->fd.previous[0], STDIN_FILENO);
+	return (1);
 }
 
-void open_outfile(t_redirect *outfiles)
+int open_outfile(t_redirect *outfiles)
 {
 	t_redirect *file;
 
@@ -69,8 +70,9 @@ void open_outfile(t_redirect *outfiles)
 		else if (file->type == 2)
 			pc()->fd.current[1] = open(file->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (pc()->fd.current[1] < 0)
-			total_exit(file->filename);
+			return (0);
 		file = file->next;
 	}
 	dup2(pc()->fd.current[1], STDOUT_FILENO);
+	return (1);
 }

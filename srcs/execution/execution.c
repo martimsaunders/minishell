@@ -12,31 +12,21 @@
 
 #include "execution.h"
 
-//single_command_process()
-//pipe_command_process()
-
 int	execution_process(t_command *cmd, char **env)
 {
-	t_command *node;
 	
 	if (!pc()->ms_env)
 		pc()->ms_env = create_env(env);
 	pc()->cmd = cmd;
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
-	node = cmd;
-	while (node)
-	{
-		command_execution(node);
-		node = node->next;
-	}
-	waitpid(pc()->pid, &pc()->exit_status, 0);
-	pc()->processes--;
-	while (pc()->processes--)
-		wait(NULL);
+	if (pc()->list_size > 1)
+		pc()->exit_status = pipe_command_process(cmd);
+	else if (pc()->list_size == 1)
+		pc()->exit_status = single_command_process(cmd);
 	close_fds();
 	free_command_list(&cmd);
-	return (exit_status_return());
+	return (pc()->exit_status);
 }
 
 //test
@@ -129,8 +119,9 @@ TESTS:
 2 cmd n in n out => ok ok
 2 cmd 0 in 0 out => ok ok
 NOTES:
-testar built ins e separar sigle command de pipe commands
-recriar $?
+implementar sinais Ctrl /,D e C
+testar built ins
+testar exit status para built ins single command
 implementar parsing no heredoc. 
 verificar comportamentos com signals dentro da criação do hd
 */
