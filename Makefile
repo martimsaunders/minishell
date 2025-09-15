@@ -3,37 +3,50 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+         #
+#    By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/21 16:34:39 by mprazere          #+#    #+#              #
-#    Updated: 2025/09/03 10:44:34 by mprazere         ###   ########.fr        #
+#    Updated: 2025/09/15 16:34:03 by mateferr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
+
 LIBFT_DIR = ./libraries/libft
 LIBFT = $(LIBFT_DIR)/libft.a
-PHILO_A = libminishell.a
+# MINISHELL_A = libminishell.a
 
-SRCS = srcs/minishell.c 
+SRCS =  srcs/minishell.c \
+\
+srcs/parsing/ms_parsing.c srcs/parsing/ms_parsing_token_utils.c \
+srcs/parsing/ms_parsing_utils.c srcs/parsing/ms_ttk_create_command.c \
+srcs/parsing/ms_frees.c srcs/parsing/ms_ttk_tokens.c \
+srcs/parsing/ms_ttk_utils.c srcs/parsing/ms_parsing_protok_utils.c \
+srcs/parsing/ms_exit_malloc.c srcs/parsing/ms_utils.c \
+\
+srcs/execution/built_ins.c srcs/execution/built_ins2.c \
+srcs/execution/exec_utils.c srcs/execution/execution.c \
+srcs/execution/fds_handle.c srcs/execution/free_exit.c \
+srcs/execution/here_doc.c srcs/execution/pipe_process.c \
+srcs/execution/single_process.c srcs/execution/utils.c
 
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
-AR = ar rcs
+# AR = ar rcs
 
-all: $(LIBFT) $(minishell_A) $(NAME)
+all: $(LIBFT) $(NAME)
 
 $(LIBFT):
 	@$(MAKE) -C $(LIBFT_DIR)
 
-$(MINISHELL_A): $(OBJS)
-	@$(AR) $(MINISHELL_A) $(OBJS)
-	@echo 'Biblioteca libminishell.a criada!'
+# $(MINISHELL_A): $(OBJS)
+#	@$(AR) $(MINISHELL_A) $(OBJS)
+#	@echo 'Biblioteca libminishell.a criada!'
 
-$(NAME): $(OBJS) $(MAIN)
-	@$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) $(MINISHELL_A) -o $(NAME) -lreadline
+$(NAME): $(OBJS)
+	@$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -lreadline -o $(NAME)
 	@echo 'minishell compilado!'
 
 clean:
