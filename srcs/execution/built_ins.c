@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:03:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 16:04:09 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/15 18:37:58 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,12 @@ void ft_echo(t_command *cmd)
     }
     while (cmd->args[i] != NULL)
     {
-        ft_putstr_fd(cmd->args[i++], STDOUT_FILENO);
+        printf("%s", cmd->args[i++]);
+        if (cmd->args[i])
+            printf(" ");
     }
     if (new_line)
-        ft_putchar_fd('\n', STDOUT_FILENO);
+        printf("\n");
 }
 
 void ft_env(t_command *cmd)

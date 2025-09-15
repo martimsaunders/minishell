@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:12:54 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 16:20:27 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/15 19:26:46 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,10 @@ int	execution_process(t_command *cmd, char **env)
 
 /*
 TESTS:
-1 cmd n args 0 rdt => ok valid e invalid commad com 0 ou n args
-1 cmd n args n rdtin => ok valid e invalid < e <<
-1 cmd n args n rdtin/out => ok valid e invalid > e >>
-2 cmd n in n out => ok ok
-2 cmd 0 in 0 out => ok ok
+single and multiple exec commands with and without redirects OK 
 NOTES:
 implementar sinais Ctrl /,D e C
-testar built ins
+alterar ms_env para linked list
 testar exit status para built ins single command
 implementar parsing no heredoc.
 verificar comportamentos com signals dentro da criação do hd

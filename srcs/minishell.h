@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/15 16:31:21 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/15 18:55:43 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "../libraries/libft/libft.h"
 # include <curses.h>
 # include <dirent.h>
+# include <errno.h>
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -29,7 +30,6 @@
 # include <term.h>
 # include <termios.h>
 # include <unistd.h>
-#include <errno.h>
 
 # define WORD_TOKEN 0
 # define PIPE_TOKEN 1
@@ -82,26 +82,26 @@ typedef struct s_parse_error
 	char				*message;
 }						t_parse_error;
 
-//execution structs
+// execution structs
 typedef struct s_fds
 {
-	int		pipe1[2];
-	int		pipe2[2];
-    int		*current;
-	int		*previous;
-} t_fds;
+	int					pipe1[2];
+	int					pipe2[2];
+	int					*current;
+	int					*previous;
+}						t_fds;
 
 typedef struct s_process
 {
-	t_fds fd;
-	pid_t	pid;
-	int		processes;
-	int		exit_status;
-	char	*path;
-	t_command *cmd;
-	int list_size;
-	char **ms_env;
-}			t_process;
+	t_fds				fd;
+	pid_t				pid;
+	int					processes;
+	int					exit_status;
+	char				*path;
+	t_command			*cmd;
+	int					list_size;
+	char				**ms_env;
+}						t_process;
 
 int						mv(int set_value);
 int						is_quote(char c);
@@ -138,52 +138,54 @@ t_command				*ttc_pipe_token(t_command *current_cmd,
 t_command				*handle_world_token(t_command *current_cmd,
 							t_token *current_token);
 
-//execution functions
-int	execution_process(t_command *cmd, char **env);
+// execution functions
+int						execution_process(t_command *cmd, char **env);
 
-//utils
-t_process *pc();
-int	cmd_lstsize(t_command *lst);
-char **create_env(char **env);
+// utils
+t_process				*pc(void);
+int						cmd_lstsize(t_command *lst);
+char					**create_env(char **env);
 
-//free exit
-void	total_exit(char *msg);
-void	free_array(char **array);
-void free_command_list(t_command **list);
-void free_redirect_list(t_redirect **list);
+// free exit
+void					total_exit(char *msg);
+void					free_array(char **array);
+void					free_command_list(t_command **list);
+void					free_redirect_list(t_redirect **list);
 
-//fds
-void init_fds();
-void	ft_close(int *fd);
-void	close_fds();
-int open_infile(t_redirect *infiles);
-int open_outfile(t_redirect *outfiles);
+// fds
+void					init_fds(void);
+void					ft_close(int *fd);
+void					close_fds(void);
+int						open_infile(t_redirect *infiles);
+int						open_outfile(t_redirect *outfiles);
 
-//pipe process
-void	child_process(t_command *cmd);
-void	process_exit(void);
-void	switch_pipe();
-int is_built_in(t_command *cmd);
-int pipe_command_process(t_command *cmd);
+// pipe process
+void					child_process(t_command *cmd);
+void					process_exit(void);
+int						switch_pipe(void);
+int						pipe_command_process(t_command *cmd);
+int						clear_forks(void);
 
-//exec utils
-char	*path_validate(char *path, char *cmd);
-char	*cmd_path(char *cmd);
-int	exit_status_return();
-int	hd_strncmp(const char *s1, const char *s2, size_t n);
-void create_here_doc(char *delimiter);
+// exec utils
+char					*path_validate(char *path, char *cmd);
+char					*cmd_path(char *cmd);
+int						exit_status_return(void);
+int						hd_strncmp(const char *s1, const char *s2, size_t n);
+void					create_here_doc(char *delimiter);
 
-//single process
-int single_command_process(t_command *cmd);
-void single_command_fds_handle(t_command *cmd);
+// single process
+int						single_command_process(t_command *cmd);
+void					single_command_fds_handle(t_command *cmd);
+void					single_cmd_child(t_command *cmd);
+int						is_built_in(t_command *cmd);
 
-//built ins
-void ft_echo(t_command *cmd);
-void ft_env(t_command *cmd);
-void ft_pwd();
-void ft_exit();
-int ft_cd(t_command *cmd);
-int ft_export(t_command *cmd);
-int ft_unset(t_command *cmd);
-							
+// built ins
+void					ft_echo(t_command *cmd);
+void					ft_env(t_command *cmd);
+void					ft_pwd(void);
+void					ft_exit(void);
+int						ft_cd(t_command *cmd);
+int						ft_export(t_command *cmd);
+int						ft_unset(t_command *cmd);
+
 #endif

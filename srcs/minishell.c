@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/15 16:06:35 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/15 19:09:05 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,7 @@ int	main(int argc, char **argv, char **env)
 		{
 			cmd = process_input(&state);
 			cleanup(&state);
+			(void) env;
 			if (cmd)
 				execution_process(cmd, env);
 		}
