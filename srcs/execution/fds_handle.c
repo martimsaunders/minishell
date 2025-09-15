@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 11:37:27 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 16:20:30 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/15 19:01:25 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	open_infile(t_redirect *infiles)
 	file = infiles;
 	while (file)
 	{
-		ft_close(&pc()->fd.previous[0]);
+		// ft_close(&pc()->fd.previous[0]);
 		if (file->type == 1)
 			pc()->fd.previous[0] = open(file->filename, O_RDONLY);
 		else if (file->type == 2)
@@ -64,7 +64,7 @@ int	open_outfile(t_redirect *outfiles)
 	file = outfiles;
 	while (file)
 	{
-		ft_close(&pc()->fd.current[1]);
+		// ft_close(&pc()->fd.current[1]);
 		if (file->type == 1)
 			pc()->fd.current[1] = open(file->filename,
 					O_WRONLY | O_CREAT | O_TRUNC, 0644);

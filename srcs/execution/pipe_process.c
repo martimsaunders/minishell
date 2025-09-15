@@ -6,13 +6,13 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:17:24 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 16:32:26 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/15 19:24:19 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	switch_pipe(void)
+int	switch_pipe(void)
 {
 	int	*temp;
 
@@ -20,7 +20,11 @@ void	switch_pipe(void)
 	pc()->fd.current = pc()->fd.previous;
 	pc()->fd.previous = temp;
 	if (pipe(pc()->fd.current) < 0)
-		total_exit("pipe() error!");
+	{
+		perror("pipe() error!");
+		return (0);
+	}
+	return (1);
 }
 
 void	process_exit(void)
@@ -43,16 +47,16 @@ void	child_process(t_command *cmd)
 	{
 		if (!open_infile(cmd->infiles))
 			total_exit("infile");
-		else if (pc()->processes != 1)
-			dup2(pc()->fd.previous[0], STDIN_FILENO);
 	}
+	else if (cmd->is_pipe_in)
+		dup2(pc()->fd.previous[0], STDIN_FILENO);
 	if (cmd->outfiles)
 	{
 		if (!open_outfile(cmd->outfiles))
 			total_exit("outfile");
-		else if (pc()->processes != pc()->list_size)
-			dup2(pc()->fd.current[1], STDOUT_FILENO);
 	}
+	else if (cmd->is_pipe_out)
+		dup2(pc()->fd.current[1], STDOUT_FILENO);
 	close_fds();
 	if (is_built_in(cmd))
 		process_exit();
@@ -65,6 +69,14 @@ void	child_process(t_command *cmd)
 	process_exit();
 }
 
+int clear_forks(void)
+{
+	while (pc()->processes--)
+		wait(NULL);
+	perror("fork() error!");
+	return (1);	
+}
+
 int	pipe_command_process(t_command *cmd)
 {
 	t_command	*node;
@@ -72,18 +84,14 @@ int	pipe_command_process(t_command *cmd)
 	node = cmd;
 	while (node)
 	{
-		switch_pipe();
+		if (!switch_pipe())
+			return (1);
 		pc()->pid = fork();
 		if (pc()->pid == -1)
-		{
-			while (pc()->processes--)
-				wait(NULL);
-			perror("fork() error!");
-			return (1);
-		}
+			return (clear_forks());
 		pc()->processes++;
 		if (pc()->pid == 0)
-			child_process(cmd);
+			child_process(node);
 		ft_close(&pc()->fd.previous[0]);
 		ft_close(&pc()->fd.current[1]);
 		node = node->next;
