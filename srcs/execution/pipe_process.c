@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:17:24 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 19:24:19 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/16 18:03:43 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	child_process(t_command *cmd)
 	pc()->path = cmd_path(cmd->cmd);
 	if (!pc()->path)
 		total_exit("malloc() error!!");
-	execve(pc()->path, cmd->args, pc()->ms_env);
+	// execve(pc()->path, cmd->args, pc()->ms_env);
 	perror(cmd->cmd);
 	pc()->exit_status = 127;
 	process_exit();

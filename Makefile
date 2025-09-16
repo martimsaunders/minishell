@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: praders <praders@student.42.fr>            +#+  +:+       +#+         #
+#    By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/21 16:34:39 by mprazere          #+#    #+#              #
-#    Updated: 2025/09/16 15:17:55 by praders          ###   ########.fr        #
+#    Updated: 2025/09/16 17:39:42 by mateferr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ srcs/execution/built_ins.c srcs/execution/built_ins2.c \
 srcs/execution/exec_utils.c srcs/execution/execution.c \
 srcs/execution/fds_handle.c srcs/execution/free_exit.c \
 srcs/execution/here_doc.c srcs/execution/pipe_process.c \
-srcs/execution/single_process.c srcs/execution/utils.c
+srcs/execution/single_process.c srcs/execution/env_list.c
 
 OBJS = $(SRCS:.c=.o)
 

@@ -3,14 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:12:54 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/16 11:33:23 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/16 18:10:48 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+t_process	*pc(void)
+{
+	static t_process	pc;
+
+	return (&pc);
+}
+
+int	cmd_lstsize(t_command *lst)
+{
+	int	count;
+
+	count = 0;
+	while (lst)
+	{
+		count++;
+		lst = lst->next;
+	}
+	return (count);
+}
 
 int	execution_process(t_command *cmd, char **env)
 {
@@ -32,6 +52,7 @@ int	execution_process(t_command *cmd, char **env)
 TESTS:
 single and multiple exec commands with and without redirects OK 
 NOTES:
+finalizar env list e testar
 implementar sinais Ctrl /,D e C
 alterar ms_env para linked list
 testar exit status para built ins single command

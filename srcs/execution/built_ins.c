@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:03:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 18:37:58 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:59:20 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void ft_echo(t_command *cmd)
 
 void ft_env(t_command *cmd)
 {
+    t_env *list;
     int i;
 
     i = 0;
@@ -44,23 +45,27 @@ void ft_env(t_command *cmd)
         ft_putstr_fd("No arguments suported", 2);
         return ;
     }
-    while(pc()->ms_env[i])
-        printf("%s\n", pc()->ms_env[i++]);
-}
-
-void ft_pwd()
-{
-    int i;
-    char *path_name;
-
-    i = 0;  
-    if (strncmp(pc()->ms_env[i], "PWD=", 4) == 0)
+    list = pc()->ms_env;
+    while (list)
     {
-        path_name = pc()->ms_env[i];
-        path_name += 4;
-        printf("%s\n", path_name);
+        printf("%s=%s\n", list->name, list->value);
+        list = list->next;
     }
 }
+
+// void ft_pwd()
+// {
+//     int i;
+//     char *path_name;
+
+//     i = 0;  
+//     if (strncmp(pc()->ms_env[i], "PWD=", 4) == 0)
+//     {
+//         path_name = pc()->ms_env[i];
+//         path_name += 4;
+//         printf("%s\n", path_name);
+//     }
+// }
 
 void ft_exit()
 {
