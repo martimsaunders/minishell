@@ -6,7 +6,7 @@
 /*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/16 15:38:23 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/16 16:19:32 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,8 +142,9 @@ int	main(int argc, char **argv, char **env)
 			cmd = process_input(&state);
 			cleanup(&state);
 			(void) env;
-			if (cmd)
-				execution_process(cmd, env);
+			/* if (cmd)
+				execution_process(cmd, env); */
+			free_commands(cmd);
 		}
 	}
 	return (0);
