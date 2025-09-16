@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/15 18:55:43 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:23:01 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_parse_state
 typedef struct s_redirect
 {
 	int					type;
+	int					expand;
 	char				*filename;
 	struct s_redirect	*next;
 }						t_redirect;
@@ -70,8 +71,9 @@ typedef struct s_command
 
 typedef struct s_token
 {
-	int					index;
 	int					type;
+	int					index;
+	int					is_quoted;
 	char				*value;
 	struct s_token		*next;
 }						t_token;
@@ -104,9 +106,12 @@ typedef struct s_process
 }						t_process;
 
 int						mv(int set_value);
+int						dq(int set_value);
 int						is_quote(char c);
 int						is_op(char c);
-int						add_redirect(t_redirect **head, char *filename,
+int						handle_dollar_count3(char *raw_token, int *i, int var_start);
+int						handle_dollar_alloc3(char *raw_token, int *i, int var_start);
+int						add_redirect(t_redirect **head, char *filename, int is_quoted,
 							int is_append);
 int						handle_dollar_count(char *raw_token, int *i, int *size);
 int						process_loop(char *raw_token, char *token, int *size,
@@ -121,7 +126,7 @@ int						handle_dollar_alloc(char *token, char *raw_token,
 							int *i, int *size);
 char					**build_args_array(t_token *start);
 char					*extract_token(t_parse_state *state, int start,
-							int finish);
+							int finish, int *is_quoted);
 void					free_args(char **args, int i);
 void					free_token_list(t_token *head);
 void					free_command(t_command *command);
@@ -129,7 +134,7 @@ void					free_commands(t_command *commands);
 void					free_redirects(t_redirect *redirects);
 void					add_token_list(t_token **head, t_token *new_token);
 void					malloc_exit(t_token *token_list, t_parse_state *state);
-t_token					*create_token(char *value, int type);
+t_token					*create_token(char *value, int type, int is_quoted);
 t_token					*ms_parsing(t_parse_state *state);
 t_command				*create_command(void);
 t_command				*tokens_to_commands(t_token *tokens);

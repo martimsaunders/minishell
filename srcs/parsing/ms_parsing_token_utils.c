@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing_token_utils.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 10:34:29 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/15 15:41:23 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/16 12:59:54 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	count_token_size(char *raw_token, int in_single_quote,
 		if (c == '\'' && !in_double_quote)
 			in_single_quote = !in_single_quote;
 		else if (c == '\"' && !in_single_quote)
-			in_double_quote = !in_double_quote;
+			in_double_quote = dq(!in_double_quote);
 		else if (c == '$' && !in_single_quote)
 		{
 			if (!handle_dollar_count(raw_token, &i, &size))
@@ -59,7 +59,7 @@ static char	*process_token(char *raw_token)
 	return (token);
 }
 
-char	*extract_token(t_parse_state *state, int start, int finish)
+char	*extract_token(t_parse_state *state, int start, int finish, int *is_quoted)
 {
 	char	*raw_token;
 	char	*token;
@@ -70,13 +70,15 @@ char	*extract_token(t_parse_state *state, int start, int finish)
 	if (!raw_token)
 		return (NULL);
 	ft_strlcpy(raw_token, &state->input[start], len + 1);
+	if (ft_strchr(raw_token, '\'') || ft_strchr(raw_token, '\"'))
+		*is_quoted = 1;
 	token = process_token(raw_token);
 	if (!token)
 		return (free(raw_token), NULL);
 	return (free(raw_token), token);
 }
 
-t_token	*create_token(char *value, int type)
+t_token	*create_token(char *value, int type, int is_quoted)
 {
 	t_token	*new_token;
 
@@ -101,6 +103,7 @@ t_token	*create_token(char *value, int type)
 		return (free(value), free(new_token), NULL);
 	new_token->type = type;
 	new_token->next = NULL;
+	new_token->is_quoted = is_quoted;
 	return (free(value), new_token);
 }
 

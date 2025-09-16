@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_ttk_create_command.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 13:27:33 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/15 15:41:35 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:23:44 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ t_command	*create_command(void)
 	return (cmd);
 }
 
-int	add_redirect(t_redirect **head, char *filename, int is_append)
+int	add_redirect(t_redirect **head, char *filename, int is_quoted, int is_append)
 {
 	t_redirect	*new_redirect;
 	t_redirect	*current;
@@ -107,6 +107,7 @@ int	add_redirect(t_redirect **head, char *filename, int is_append)
 		return (mv(1), free(new_redirect), 0);
 	new_redirect->type = is_append;
 	new_redirect->next = NULL;
+	new_redirect->expand = is_quoted;
 	if (!*head)
 	{
 		*head = new_redirect;

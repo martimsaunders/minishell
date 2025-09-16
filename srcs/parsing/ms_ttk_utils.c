@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_ttk_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 12:10:30 by praders           #+#    #+#             */
-/*   Updated: 2025/09/15 15:41:41 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:24:05 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	ttc_redirects_in(t_command *current_cmd, t_token **current_token, int type)
 		return (ft_putstr_fd(PARERR " `>'\n", 2), 0);
 	else if ((*current_token)->type == APPEND_TOKEN)
 		return (ft_putstr_fd(PARERR " `>>'\n", 2), 0);
-	if (!add_redirect(&current_cmd->infiles, (*current_token)->value, type))
+	if (!add_redirect(&current_cmd->infiles, (*current_token)->value, (*current_token)->is_quoted, type))
 		return (0);
 	return (1);
 }
@@ -86,7 +86,7 @@ int	ttc_redirects_out(t_command *current_cmd, t_token **current_token, int type)
 		return (ft_putstr_fd(PARERR " `<'\n", 2), 0);
 	else if ((*current_token)->type == HEREDOC_TOKEN)
 		return (ft_putstr_fd(PARERR " `<<'\n", 2), 0);
-	if (!add_redirect(&current_cmd->outfiles, (*current_token)->value, type))
+	if (!add_redirect(&current_cmd->outfiles, (*current_token)->value, (*current_token)->is_quoted, type))
 		return (0);
 	return (1);
 }
