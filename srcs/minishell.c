@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/15 19:09:05 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:27:18 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-/*
+
 static void	print_commands(t_command *commands)
 {
 	t_command	*current_cmd;
@@ -46,11 +46,11 @@ static void	print_commands(t_command *commands)
 			while (current_redirect)
 			{
 				if (current_redirect->type == 2)
-					printf("[%s (heredoc)] ", current_redirect->filename);
+					printf("[%s (heredoc) expand: %d] ", current_redirect->filename, current_redirect->expand);
 				else if (current_redirect->type == 1)
-					printf("[%s (input)] ", current_redirect->filename);
+					printf("[%s (input)] expand: %d] ", current_redirect->filename, current_redirect->expand);
 				else
-					printf("[%s (unknown)] ", current_redirect->filename);
+					printf("[%s (unknown) expand: %d] ", current_redirect->filename, current_redirect->expand);
 				current_redirect = current_redirect->next;
 			}
 		}
@@ -66,8 +66,8 @@ static void	print_commands(t_command *commands)
 		{
 			while (current_redirect)
 			{
-				printf("[%s %s] ", current_redirect->filename,
-					current_redirect->type == 1 ? "(overwrite)" : "(append)");
+				printf("[%s %s expand: %d] ", current_redirect->filename,
+					current_redirect->type == 1 ? "(overwrite)" : "(append)", current_redirect->expand);
 				current_redirect = current_redirect->next;
 			}
 		}
@@ -80,7 +80,7 @@ static void	print_commands(t_command *commands)
 		cmd_count++;
 	}
 }
-*/
+
 static int	handle_input(t_parse_state *state)
 {
 	state->input = readline("😎 MINISHELL$: ");
@@ -110,15 +110,9 @@ static t_command *process_input(t_parse_state *state)
 		malloc_exit(tokens, state);
 	else if (!cmds)
 		pc()->exit_status = 1;
-	// else
-	// {
-	// 	print_commands(cmds);
-	// 	free_commands(cmds);
-	// 	pc()->exit_status = 0;
-	// }
-	// printf("EXIT STATUS: %d\n", pc()->exit_status);
-	free_token_list(tokens);
-	return cmds;
+	else
+		print_commands(cmds);
+	return (free_token_list(tokens), cmds);
 }
 
 static void	cleanup(t_parse_state *state)
@@ -148,8 +142,9 @@ int	main(int argc, char **argv, char **env)
 			cmd = process_input(&state);
 			cleanup(&state);
 			(void) env;
-			if (cmd)
-				execution_process(cmd, env);
+			free_commands(cmd);
+			/* if (cmd)
+				execution_process(cmd, env); */
 		}
 	}
 	return (0);

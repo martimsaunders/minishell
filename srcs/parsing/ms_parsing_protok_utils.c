@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing_protok_utils.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 15:02:17 by praders           #+#    #+#             */
-/*   Updated: 2025/09/15 15:41:21 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/16 15:16:20 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,12 @@ static int	handle_dollar_count2(char *raw_token, int *i, int *size)
 	while (raw_token[var_start] && (ft_isalnum(raw_token[var_start])
 			|| raw_token[var_start] == '_'))
 		var_start++;
+	if (!handle_dollar_count3(raw_token, i, var_start))
+	{
+		(*size)++;
+		(*i)++;
+		return (1);
+	}
 	var_name = malloc(var_start - (*i));
 	if (!var_name)
 		return (0);
@@ -64,6 +70,11 @@ static int	handle_dollar_alloc2(char *token, char *raw_token, int *i,
 	while (raw_token[var_start] && (ft_isalnum(raw_token[var_start])
 			|| raw_token[var_start] == '_'))
 		var_start++;
+	if (!handle_dollar_alloc3(raw_token, i, var_start))
+	{
+		token[(*size)++] = raw_token[(*i)++];
+		return (1);
+	}
 	var_name = malloc(var_start - (*i));
 	if (!var_name)
 		return (0);
@@ -74,9 +85,8 @@ static int	handle_dollar_alloc2(char *token, char *raw_token, int *i,
 		ft_strlcpy(&token[(*size)], env_value, ft_strlen(env_value) + 1);
 		(*size) += ft_strlen(env_value);
 	}
-	free(var_name);
 	(*i) = var_start;
-	return (1);
+	return (free(var_name), 1);
 }
 
 int	handle_dollar_alloc(char *token, char *raw_token, int *i, int *size)
@@ -115,7 +125,7 @@ int	process_loop(char *raw_token, char *token, int *size, int i)
 		if (c == '\'' && !in_double_quote)
 			in_single_quote = !in_single_quote;
 		else if (c == '\"' && !in_single_quote)
-			in_double_quote = !in_double_quote;
+			in_double_quote = dq(!in_double_quote);
 		else if (c == '$' && !in_single_quote)
 		{
 			if (!handle_dollar_alloc(token, raw_token, &i, size))
