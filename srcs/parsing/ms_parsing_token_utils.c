@@ -6,7 +6,7 @@
 /*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 10:34:29 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/16 12:59:54 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/16 16:09:55 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	count_token_size(char *raw_token, int in_single_quote,
 			in_single_quote = !in_single_quote;
 		else if (c == '\"' && !in_single_quote)
 			in_double_quote = dq(!in_double_quote);
-		else if (c == '$' && !in_single_quote)
+		else if ((c == '$' && !in_single_quote) && hd(2) != 1)
 		{
 			if (!handle_dollar_count(raw_token, &i, &size))
 				return (-1);
