@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:17:24 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 19:24:19 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/17 16:30:32 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,44 +27,39 @@ int	switch_pipe(void)
 	return (1);
 }
 
-void	process_exit(void)
+void redirect_pipe_handle(t_command *cmd)
 {
-	close(0);
-	close(1);
-	close_fds();
-	if (pc()->path)
-		free(pc()->path);
-	pc()->path = NULL;
-	if (pc()->ms_env)
-		free(pc()->ms_env);
-	free_command_list(&pc()->cmd);
-	exit(pc()->exit_status);
+	if (cmd->infiles)
+		pc()->exit_status = open_infile(cmd->infiles);
+	else if (cmd->is_pipe_in)
+		dup2(pc()->fd.previous[0], STDIN_FILENO);
+	if (cmd->outfiles)
+		pc()->exit_status = open_outfile(cmd->outfiles);
+	else if (cmd->is_pipe_out)
+		dup2(pc()->fd.current[1], STDOUT_FILENO);
+	if (pc()->exit_status == 1)
+		total_exit(strerror(errno));
 }
 
 void	child_process(t_command *cmd)
 {
-	if (cmd->infiles)
-	{
-		if (!open_infile(cmd->infiles))
-			total_exit("infile");
-	}
-	else if (cmd->is_pipe_in)
-		dup2(pc()->fd.previous[0], STDIN_FILENO);
-	if (cmd->outfiles)
-	{
-		if (!open_outfile(cmd->outfiles))
-			total_exit("outfile");
-	}
-	else if (cmd->is_pipe_out)
-		dup2(pc()->fd.current[1], STDOUT_FILENO);
+	char **exec_env;
+	
+	exec_env = NULL;
+	redirect_pipe_handle(cmd);
 	close_fds();
+	if (!cmd->cmd)
+		process_exit();
 	if (is_built_in(cmd))
 		process_exit();
 	pc()->path = cmd_path(cmd->cmd);
 	if (!pc()->path)
 		total_exit("malloc() error!!");
-	execve(pc()->path, cmd->args, pc()->ms_env);
-	perror(cmd->cmd);
+	create_exec_env(exec_env);
+	execve(pc()->path, cmd->args, exec_env);
+	free_array(exec_env);
+	ft_putstr_fd(cmd->cmd, 2);
+	ft_putendl_fd(": command not found", 2);
 	pc()->exit_status = 127;
 	process_exit();
 }

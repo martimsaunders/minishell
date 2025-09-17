@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 16:20:34 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/16 17:55:41 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	total_exit(char *msg)
 	if (pc()->path)
 		free(pc()->path);
 	if (pc()->ms_env)
-		free(pc()->ms_env);
+		delete_t_env_list(&pc()->ms_env);
 	close_fds();
 	if (pc()->cmd)
 		free_command_list(&pc()->cmd);

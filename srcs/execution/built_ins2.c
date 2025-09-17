@@ -6,39 +6,17 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:04:16 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 16:29:57 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/17 17:21:00 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	update_env(char *name, char *value)
-{
-	int		i;
-	char	*new_var;
-
-	if (!value)
-		return ;
-	new_var = ft_strjoin(name, value);
-	if (!new_var)
-		total_exit("malloc error!!");
-	i = 0;
-	while (pc()->ms_env[i])
-	{
-		if (ft_strncmp(pc()->ms_env[i], name, ft_strlen(name)) == 0)
-		{
-			free(pc()->ms_env[i]);
-			pc()->ms_env[i] = new_var;
-			break ;
-		}
-		i++;
-	}
-}
-
 int	ft_cd(t_command *cmd)
 {
-	int		ret_val;
+	int		cd;
 	char	pwd[1024];
+	char *home;
 
 	if (pc()->list_size > 2)
 	{
@@ -47,158 +25,93 @@ int	ft_cd(t_command *cmd)
 	}
 	getcwd(pwd, sizeof(pwd));
 	if (cmd->args[1] == NULL)
-		ret_val = chdir("/home");
+	{
+		home = ft_strjoin("/home/", t_env_find_value("USER"));
+		if (!home)
+			total_exit("malloc error!!");
+		cd = chdir(home);
+		free (home);
+	}
 	else
-		ret_val = chdir(cmd->args[1]);
-	if (ret_val == -1)
-	    return (errno);
-	update_env("OLDPWD=", pwd);
-	update_env("PWD=", getcwd(pwd, sizeof(pwd)));
+		cd = chdir(cmd->args[1]);
+	if (cd == -1)
+		return (errno);
+	update_env("OLDPWD", pwd);
+	update_env("PWD", getcwd(pwd, sizeof(pwd)));
 	return (0);
 }
 
-int	name_size(char *var)
+char	*has_name(char *str)
 {
-	int	i;
+	t_env	*node;
+	size_t	size;
 
-	i = 0;
-	while (var[i] != '=')
-		i++;
-	return (i);
-}
-int	has_name(char **my_env, char *arg)
-{
-	int	size;
-	int	j;
-
-	j = 0;
-	size = name_size(arg);
-	while (my_env[j])
+	node = pc()->ms_env;
+	while (node)
 	{
-		if (ft_strncmp(my_env[j], arg, size) == 0)
-		{
-			return (1);
-		}
-		j++;
+		size = ft_strlen(node->name);
+		if (ft_strncmp(node->name, str, size) == 0 && (str[size] == '='
+				|| str[size] == '\0'))
+			return (node->name);
+		node = node->next;
 	}
-	return (0);
+	return (NULL);
 }
 
-void	var_parse(char *arg, char *name, char *value)
+void	print_export_list(void)
 {
-	int	i;
-	int	size;
+	t_env	*node;
 
-	size = 0;
-	while (arg[size] && arg[size] != '=')
-		size++;
-	size++;
-	name = ft_calloc(size + 1, sizeof(char));
-	if (!name)
-		total_exit("malloc error!!");
-	i = 0;
-	while (arg[i] && arg[i] != '=')
+	node = pc()->ms_env;
+	while (node)
 	{
-		name[i] = arg[i];
-		i++;
+		printf("declare -x %s=%s\n", node->name, node->value);
+		node = node->next;
 	}
-	name[i++] = '=';
-	name[i] = '\0';
-	value = ft_strchr(arg, '=');
-	if (value)
-		value++;
 }
 
-void	add_env(char *arg)
+int	ft_export(char **args)
 {
-	char	**old_env;
-	char	**new_env;
-	int		i;
-
-	old_env = pc()->ms_env;
-	i = 0;
-	while (old_env[i])
-		i++;
-	new_env = ft_calloc(i + 2, sizeof(char *));
-	if (!new_env)
-		total_exit("malloc error!!");
-	i = -1;
-	while (old_env[++i])
-		new_env[i] = old_env[i];
-	new_env[i] = ft_strdup(arg);
-	if (!new_env[i++])
-		total_exit("malloc error!!");
-	new_env[i] = NULL;
-	free(old_env);
-	pc()->ms_env = new_env;
-}
-
-// verificar resultado bash comando sem argumentos (possivel lista de variaveis)
-int	ft_export(t_command *cmd)
-{
-	char	**my_env;
 	int		i;
 	char	*name;
 	char	*value;
+	t_env	*node;
 
-	my_env = pc()->ms_env;
 	i = 1;
-    name = NULL;
-    value = NULL;
-	while (cmd->args[i])
+	if (!args[i])
+		print_export_list();
+	while (args[i])
 	{
-		if (has_name(my_env, cmd->args[i]))
+		value = ft_strchr(args[i], '=');
+		if (value)
 		{
-			var_parse(cmd->args[i], name, value);
-			update_env(name, value);
+			name = has_name(args[i]);
+			if (name)
+				update_env(name, ++value);
+			else
+			{
+				node = create_env_node(args[i]);
+				t_env_add_back(&pc()->ms_env, node);
+			}
 		}
-		else
-			add_env(cmd->args[i]);
 		i++;
 	}
 	return (0);
 }
 
-void	remove_env(char **my_env, char *name)
+int	ft_unset(char **args)
 {
-	int		i;
-	char	**new_env;
-
-	i = 0;
-	while (my_env[i])
-		i++;
-	new_env = ft_calloc(i, sizeof(char *));
-	if (!new_env)
-		total_exit("malloc error!!");
-	i = -1;
-	while (my_env[++i])
-	{
-		if (ft_strncmp(my_env[i], name, ft_strlen(name)) != 0)
-			new_env[i] = my_env[i];
-	}
-	new_env[i] = NULL;
-	free(my_env);
-	pc()->ms_env = new_env;
-}
-// testar se os pointer estão corretamente usados
-int	ft_unset(t_command *cmd)
-{
-	char	**my_env;
 	int		i;
 	char	*name;
-	char	*value;
 
-    name = NULL;
-    value = NULL;
-	my_env = pc()->ms_env;
 	i = 1;
-	while (cmd->args[i])
+	if (!args[i])
+		return (0);
+	while (args[i])
 	{
-		if (has_name(my_env, cmd->args[i]))
-		{
-			var_parse(cmd->args[i], name, value);
-			remove_env(my_env, name);
-		}
+		name = has_name(args[i]);
+		if (name)
+			remove_env(name);
 		i++;
 	}
 	return (0);

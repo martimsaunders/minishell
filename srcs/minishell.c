@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
 /*   Updated: 2025/09/16 16:19:32 by praders          ###   ########.fr       */
@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/*
 static void	print_commands(t_command *commands)
 {
 	t_command	*current_cmd;
@@ -80,7 +80,7 @@ static void	print_commands(t_command *commands)
 		cmd_count++;
 	}
 }
-
+*/
 static int	handle_input(t_parse_state *state)
 {
 	state->input = readline("😎 MINISHELL$: ");
@@ -110,8 +110,6 @@ static t_command *process_input(t_parse_state *state)
 		malloc_exit(tokens, state);
 	else if (!cmds)
 		pc()->exit_status = 1;
-	else
-		print_commands(cmds);
 	return (free_token_list(tokens), cmds);
 }
 
@@ -141,10 +139,8 @@ int	main(int argc, char **argv, char **env)
 		{
 			cmd = process_input(&state);
 			cleanup(&state);
-			(void) env;
-			/* if (cmd)
-				execution_process(cmd, env); */
-			free_commands(cmd);
+			if (cmd)
+				execution_process(cmd, env);
 		}
 	}
 	return (0);

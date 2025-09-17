@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
 /*   Updated: 2025/09/16 16:00:48 by praders          ###   ########.fr       */
@@ -21,6 +21,7 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
+# include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -85,6 +86,14 @@ typedef struct s_parse_error
 }						t_parse_error;
 
 // execution structs
+
+typedef struct s_env
+{
+	char				*name;
+	char				*value;
+	struct s_env		*next;
+}						t_env;
+
 typedef struct s_fds
 {
 	int					pipe1[2];
@@ -102,7 +111,7 @@ typedef struct s_process
 	char				*path;
 	t_command			*cmd;
 	int					list_size;
-	char				**ms_env;
+	t_env				*ms_env;
 }						t_process;
 
 int						mv(int set_value);
@@ -110,10 +119,12 @@ int						dq(int set_value);
 int						hd(int set_value);
 int						is_quote(char c);
 int						is_op(char c);
-int						handle_dollar_count3(char *raw_token, int *i, int var_start);
-int						handle_dollar_alloc3(char *raw_token, int *i, int var_start);
-int						add_redirect(t_redirect **head, char *filename, int is_quoted,
-							int is_append);
+int						handle_dollar_count3(char *raw_token, int *i,
+							int var_start);
+int						handle_dollar_alloc3(char *raw_token, int *i,
+							int var_start);
+int						add_redirect(t_redirect **head, char *filename,
+							int is_quoted, int is_append);
 int						handle_dollar_count(char *raw_token, int *i, int *size);
 int						process_loop(char *raw_token, char *token, int *size,
 							int i);
@@ -146,11 +157,19 @@ t_command				*handle_world_token(t_command *current_cmd,
 
 // execution functions
 int						execution_process(t_command *cmd, char **env);
-
-// utils
 t_process				*pc(void);
 int						cmd_lstsize(t_command *lst);
-char					**create_env(char **env);
+
+// t_env list
+t_env					*create_env(char **env);
+void					t_env_add_back(t_env **list, t_env *node);
+void					value_fill(t_env *node, char *str);
+void					name_fill(t_env *node, char *str);
+void					delete_t_env_list(t_env **list);
+t_env					*create_env_node(char *str);
+int						update_env(char *name, char *value);
+void					remove_env(char *name);
+char					*t_env_find_value(char *name);
 
 // free exit
 void					total_exit(char *msg);
@@ -167,15 +186,19 @@ int						open_outfile(t_redirect *outfiles);
 
 // pipe process
 void					child_process(t_command *cmd);
-void					process_exit(void);
 int						switch_pipe(void);
 int						pipe_command_process(t_command *cmd);
 int						clear_forks(void);
+void					redirect_pipe_handle(t_command *cmd);
 
 // exec utils
 char					*path_validate(char *path, char *cmd);
 char					*cmd_path(char *cmd);
 int						exit_status_return(void);
+void					process_exit(void);
+void					create_exec_env(char **exec_env);
+
+// here doc
 int						hd_strncmp(const char *s1, const char *s2, size_t n);
 void					create_here_doc(char *delimiter);
 
@@ -186,12 +209,12 @@ void					single_cmd_child(t_command *cmd);
 int						is_built_in(t_command *cmd);
 
 // built ins
-void					ft_echo(t_command *cmd);
-void					ft_env(t_command *cmd);
-void					ft_pwd(void);
+int						ft_echo(t_command *cmd);
+int						ft_env(t_command *cmd);
 void					ft_exit(void);
+int						ft_pwd(void);
 int						ft_cd(t_command *cmd);
-int						ft_export(t_command *cmd);
-int						ft_unset(t_command *cmd);
+int						ft_export(char **args);
+int						ft_unset(char **args);
 
 #endif
