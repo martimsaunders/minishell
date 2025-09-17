@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:04:58 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 16:20:39 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/17 17:51:53 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,18 @@ int	hd_strncmp(const char *s1, const char *s2, size_t n)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
-void	create_here_doc(char *delimiter) // adicionar expancao e sinal ctrl
+void	create_here_doc(char *delimiter)
 {
 	size_t limit;
 	char *line;
 
 	if (pipe(pc()->fd.previous) < 0)
-		total_exit("pipe() error!");
+	{
+		perror("pipe() error!");
+		return ;
+	}
 	limit = ft_strlen(delimiter);
-	ft_printf("> ");
+	printf("> ");
 	line = get_next_line(STDIN_FILENO);
 	if (!line)
 		total_exit("mallo() error!");
@@ -42,7 +45,7 @@ void	create_here_doc(char *delimiter) // adicionar expancao e sinal ctrl
 	{
 		ft_putstr_fd(line, pc()->fd.previous[1]);
 		free(line);
-		ft_printf("> ");
+		printf("> ");
 		line = get_next_line(STDIN_FILENO);
 		if (!line)
 			total_exit("mallo() error!");

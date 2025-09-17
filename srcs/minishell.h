@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/16 18:05:32 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/17 17:21:39 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
+# include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -164,6 +165,10 @@ void					t_env_add_back(t_env **list, t_env *node);
 void					value_fill(t_env *node, char *str);
 void					name_fill(t_env *node, char *str);
 void					delete_t_env_list(t_env **list);
+t_env					*create_env_node(char *str);
+int						update_env(char *name, char *value);
+void					remove_env(char *name);
+char					*t_env_find_value(char *name);
 
 // free exit
 void					total_exit(char *msg);
@@ -180,15 +185,19 @@ int						open_outfile(t_redirect *outfiles);
 
 // pipe process
 void					child_process(t_command *cmd);
-void					process_exit(void);
 int						switch_pipe(void);
 int						pipe_command_process(t_command *cmd);
 int						clear_forks(void);
+void					redirect_pipe_handle(t_command *cmd);
 
 // exec utils
 char					*path_validate(char *path, char *cmd);
 char					*cmd_path(char *cmd);
 int						exit_status_return(void);
+void					process_exit(void);
+void					create_exec_env(char **exec_env);
+
+// here doc
 int						hd_strncmp(const char *s1, const char *s2, size_t n);
 void					create_here_doc(char *delimiter);
 
@@ -199,12 +208,12 @@ void					single_cmd_child(t_command *cmd);
 int						is_built_in(t_command *cmd);
 
 // built ins
-void					ft_echo(t_command *cmd);
-void					ft_env(t_command *cmd);
+int						ft_echo(t_command *cmd);
+int						ft_env(t_command *cmd);
 void					ft_exit(void);
-void					ft_pwd(void);
+int						ft_pwd(void);
 int						ft_cd(t_command *cmd);
-int						ft_export(t_command *cmd);
-int						ft_unset(t_command *cmd);
+int						ft_export(char **args);
+int						ft_unset(char **args);
 
 #endif

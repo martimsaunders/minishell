@@ -6,29 +6,31 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:05:14 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/16 18:04:17 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/17 16:27:28 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	is_built_in(t_command *cmd)
+int	is_built_in(t_command *cmd) //check exit status
 {
 	size_t	size;
 
+	if (!cmd->cmd)
+		return (0);
 	size = ft_strlen(cmd->cmd);
 	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
-		ft_echo(cmd);
+		pc()->exit_status = ft_echo(cmd);
 	else if (ft_strncmp(cmd->cmd, "cd", size) == 0)
 		pc()->exit_status = ft_cd(cmd);
 	else if (ft_strncmp(cmd->cmd, "pwd", size) == 0)
-		ft_pwd();
+		pc()->exit_status = ft_pwd();
 	else if (ft_strncmp(cmd->cmd, "export", size) == 0)
-		pc()->exit_status = ft_export(cmd);
+		pc()->exit_status = ft_export(cmd->args);
 	else if (ft_strncmp(cmd->cmd, "unset", size) == 0)
-		pc()->exit_status = ft_unset(cmd);
+		pc()->exit_status = ft_unset(cmd->args);
 	else if (ft_strncmp(cmd->cmd, "env", size) == 0)
-		ft_env(cmd);
+		pc()->exit_status = ft_env(cmd);
 	else if (ft_strncmp(cmd->cmd, "exit", size) == 0)
 		ft_exit();
 	else
@@ -39,21 +41,27 @@ int	is_built_in(t_command *cmd)
 void	single_command_fds_handle(t_command *cmd)
 {
 	if (cmd->infiles)
-		if (!open_infile(cmd->infiles))
-			perror("infile");
+		open_infile(cmd->infiles);
 	if (cmd->outfiles)
-		if (!open_outfile(cmd->outfiles))
-			perror("outfile");
+		open_outfile(cmd->outfiles);
 }
 
 void single_cmd_child(t_command *cmd)
 {
+	char **exec_env;
+	
+	exec_env = NULL;
 	close_fds();
+	if (!cmd->cmd)
+		process_exit();
 	pc()->path = cmd_path(cmd->cmd);
 	if (!pc()->path)
 		total_exit("malloc() error!!");
-	// execve(pc()->path, cmd->args, pc()->ms_env);
-	perror(cmd->cmd);
+	create_exec_env(exec_env);
+	execve(pc()->path, cmd->args, exec_env);
+	free_array(exec_env);
+	ft_putstr_fd(cmd->cmd, 2);
+	ft_putendl_fd(": command not found", 2);;
 	pc()->exit_status = 127;
 	process_exit();
 }
@@ -65,7 +73,10 @@ int	single_command_process(t_command *cmd)
 	
 	backup_stdin = dup(STDIN_FILENO);
 	backup_stdout = dup(STDOUT_FILENO);
-	single_command_fds_handle(cmd);
+	if (cmd->infiles)
+		pc()->exit_status = open_infile(cmd->infiles);
+	if (cmd->outfiles)
+		pc()->exit_status = open_outfile(cmd->outfiles);
 	if (is_built_in(cmd) == 0)
 	{
 		pc()->pid = fork();
@@ -77,10 +88,11 @@ int	single_command_process(t_command *cmd)
 		if (pc()->pid == 0)
 			single_cmd_child(cmd);
 		waitpid(pc()->pid, &pc()->exit_status, 0);
+		pc()->exit_status = exit_status_return();
 	}
 	dup2(backup_stdin, STDIN_FILENO);
 	dup2(backup_stdout, STDOUT_FILENO);
 	close(backup_stdin);
 	close(backup_stdout);
-	return (exit_status_return()); // verificar se o valor de exit é correto para cada built in
+	return (pc()->exit_status);
 }

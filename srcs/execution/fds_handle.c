@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 11:37:27 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/15 19:01:25 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/17 16:28:36 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,16 @@ int	open_infile(t_redirect *infiles)
 	file = infiles;
 	while (file)
 	{
-		// ft_close(&pc()->fd.previous[0]);
 		if (file->type == 1)
 			pc()->fd.previous[0] = open(file->filename, O_RDONLY);
 		else if (file->type == 2)
 			create_here_doc(file->filename);
 		if (pc()->fd.previous[0] < 0)
-			return (0);
+			return (perror(file->filename), 1);
 		file = file->next;
 	}
 	dup2(pc()->fd.previous[0], STDIN_FILENO);
-	return (1);
+	return (0);
 }
 
 int	open_outfile(t_redirect *outfiles)
@@ -64,7 +63,6 @@ int	open_outfile(t_redirect *outfiles)
 	file = outfiles;
 	while (file)
 	{
-		// ft_close(&pc()->fd.current[1]);
 		if (file->type == 1)
 			pc()->fd.current[1] = open(file->filename,
 					O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -72,9 +70,9 @@ int	open_outfile(t_redirect *outfiles)
 			pc()->fd.current[1] = open(file->filename,
 					O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (pc()->fd.current[1] < 0)
-			return (0);
+			return (perror(file->filename), 1);
 		file = file->next;
 	}
 	dup2(pc()->fd.current[1], STDOUT_FILENO);
-	return (1);
+	return (0);
 }

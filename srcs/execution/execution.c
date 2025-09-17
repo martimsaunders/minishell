@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:12:54 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/16 18:10:48 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/17 17:54:01 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,16 @@ int	cmd_lstsize(t_command *lst)
 	return (count);
 }
 
+int	exit_status_return(void)
+{
+	if (WIFEXITED(pc()->exit_status))
+		return (WEXITSTATUS(pc()->exit_status));
+	else if (WIFSIGNALED(pc()->exit_status))
+		return (128 + WTERMSIG(pc()->exit_status));
+	else
+		return (1);
+}
+
 int	execution_process(t_command *cmd, char **env)
 {
 	if (!pc()->ms_env)
@@ -51,11 +61,8 @@ int	execution_process(t_command *cmd, char **env)
 /*
 TESTS:
 single and multiple exec commands with and without redirects OK 
+built ins simple commands OK
 NOTES:
-finalizar env list e testar
+recriar here_doc em fork e implementar parsing
 implementar sinais Ctrl /,D e C
-alterar ms_env para linked list
-testar exit status para built ins single command
-implementar parsing no heredoc.
-verificar comportamentos com signals dentro da criação do hd
 */

@@ -6,13 +6,13 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:03:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/16 17:59:20 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/17 15:27:11 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void ft_echo(t_command *cmd)
+int ft_echo(t_command *cmd)
 {
     int new_line;
     int i;
@@ -32,18 +32,17 @@ void ft_echo(t_command *cmd)
     }
     if (new_line)
         printf("\n");
+    return (0);
 }
 
-void ft_env(t_command *cmd)
+int ft_env(t_command *cmd)
 {
     t_env *list;
-    int i;
-
-    i = 0;
+    
     if (cmd->args[1] != NULL)
     {
-        ft_putstr_fd("No arguments suported", 2);
-        return ;
+        ft_putendl_fd("No arguments suported", 2);
+        return (1);
     }
     list = pc()->ms_env;
     while (list)
@@ -51,29 +50,29 @@ void ft_env(t_command *cmd)
         printf("%s=%s\n", list->name, list->value);
         list = list->next;
     }
+    return (0);
 }
 
-// void ft_pwd()
-// {
-//     int i;
-//     char *path_name;
+int ft_pwd() //testar empty value
+{
+    char pwd[1024];
 
-//     i = 0;  
-//     if (strncmp(pc()->ms_env[i], "PWD=", 4) == 0)
-//     {
-//         path_name = pc()->ms_env[i];
-//         path_name += 4;
-//         printf("%s\n", path_name);
-//     }
-// }
+    if (getcwd(pwd, sizeof(pwd)))
+        printf("%s\n", pwd);
+    return (0);
+}
 
 void ft_exit()
 {
+    int exit_value;
+    
     if(pc()->path)
 		free(pc()->path);
     pc()->path = NULL;
 	close_fds();
 	if(pc()->cmd)
 		free_command_list(&pc()->cmd);
-    exit(WEXITSTATUS(pc()->exit_status));
+    exit_value = exit_status_return();
+    printf("exit\n");
+    exit(exit_value);
 }
