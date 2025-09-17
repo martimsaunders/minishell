@@ -6,7 +6,7 @@
 /*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 15:02:17 by praders           #+#    #+#             */
-/*   Updated: 2025/09/16 16:31:10 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/17 18:40:36 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,12 +129,12 @@ int	process_loop(char *raw_token, char *token, int *size, int i)
 		else if ((c == '$' && !in_single_quote) && hd(2) != 1)
 		{
 			if (!handle_dollar_alloc(token, raw_token, &i, size))
-				return (hd(0), 0);
+				return (0);
 			continue ;
 		}
 		else
 			token[(*size)++] = raw_token[i];
 		i++;
 	}
-	return (1);
+	return (hd(0), 1);
 }
