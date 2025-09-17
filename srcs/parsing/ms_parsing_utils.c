@@ -6,7 +6,7 @@
 /*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 10:37:03 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/16 12:57:39 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/16 16:10:12 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ int	process_operator2(t_parse_state *state, int add, t_token **new_token)
 	token = extract_token(state, state->current, state->current + add, &is_quoted);
 	if (!token)
 		return (0);
+	if (ft_strncmp(token, "<<", 3) == 0)
+		hd(1);
 	*new_token = create_token(token, 1, is_quoted);
 	if (!*new_token)
 		return (0);

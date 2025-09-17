@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/17 17:21:39 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/16 16:00:48 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ typedef struct s_process
 
 int						mv(int set_value);
 int						dq(int set_value);
+int						hd(int set_value);
 int						is_quote(char c);
 int						is_op(char c);
 int						handle_dollar_count3(char *raw_token, int *i,

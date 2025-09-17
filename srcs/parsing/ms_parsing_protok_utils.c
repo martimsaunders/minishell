@@ -6,7 +6,7 @@
 /*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 15:02:17 by praders           #+#    #+#             */
-/*   Updated: 2025/09/16 15:16:20 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/16 16:31:10 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,10 +126,10 @@ int	process_loop(char *raw_token, char *token, int *size, int i)
 			in_single_quote = !in_single_quote;
 		else if (c == '\"' && !in_single_quote)
 			in_double_quote = dq(!in_double_quote);
-		else if (c == '$' && !in_single_quote)
+		else if ((c == '$' && !in_single_quote) && hd(2) != 1)
 		{
 			if (!handle_dollar_alloc(token, raw_token, &i, size))
-				return (0);
+				return (hd(0), 0);
 			continue ;
 		}
 		else
