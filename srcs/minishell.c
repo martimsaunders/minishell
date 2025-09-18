@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/16 16:19:32 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/18 16:47:29 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,9 +139,19 @@ int	main(int argc, char **argv, char **env)
 		{
 			cmd = process_input(&state);
 			cleanup(&state);
+			// (void)env;
+			// print_commands(cmd);
 			if (cmd)
 				execution_process(cmd, env);
 		}
 	}
 	return (0);
 }
+
+/*
+NOTES:
+'' e command not found exit 1
+$a ignorado exit 0
+mas vem ambos como comando vazio, como destinguir?
+$a ls -> ls deve ser o comando e $a ignorado se nao houver expansao
+*/

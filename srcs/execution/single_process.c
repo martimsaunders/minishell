@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:05:14 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/17 16:27:28 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/18 12:30:07 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	is_built_in(t_command *cmd) //check exit status
 {
 	size_t	size;
 
-	if (!cmd->cmd)
+	if (!cmd->cmd || !*cmd->cmd)
 		return (0);
 	size = ft_strlen(cmd->cmd);
 	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
@@ -60,10 +60,21 @@ void single_cmd_child(t_command *cmd)
 	create_exec_env(exec_env);
 	execve(pc()->path, cmd->args, exec_env);
 	free_array(exec_env);
-	ft_putstr_fd(cmd->cmd, 2);
+	if (!*cmd->cmd)
+		ft_putstr_fd("''", 2);
+	else
+		ft_putstr_fd(cmd->cmd, 2);
 	ft_putendl_fd(": command not found", 2);;
 	pc()->exit_status = 127;
 	process_exit();
+}
+
+void restore_fds(int backup_stdin, int backup_stdout)
+{
+	dup2(backup_stdin, STDIN_FILENO);
+	dup2(backup_stdout, STDOUT_FILENO);
+	close(backup_stdin);
+	close(backup_stdout);
 }
 
 int	single_command_process(t_command *cmd)
@@ -90,9 +101,6 @@ int	single_command_process(t_command *cmd)
 		waitpid(pc()->pid, &pc()->exit_status, 0);
 		pc()->exit_status = exit_status_return();
 	}
-	dup2(backup_stdin, STDIN_FILENO);
-	dup2(backup_stdout, STDOUT_FILENO);
-	close(backup_stdin);
-	close(backup_stdout);
+	restore_fds(backup_stdin, backup_stdout);
 	return (pc()->exit_status);
 }
