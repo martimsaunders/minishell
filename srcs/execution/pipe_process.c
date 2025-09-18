@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:17:24 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/17 16:30:32 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/18 12:05:38 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,10 @@ void	child_process(t_command *cmd)
 	create_exec_env(exec_env);
 	execve(pc()->path, cmd->args, exec_env);
 	free_array(exec_env);
-	ft_putstr_fd(cmd->cmd, 2);
+	if (!*cmd->cmd)
+		ft_putstr_fd("''", 2);
+	else
+		ft_putstr_fd(cmd->cmd, 2);
 	ft_putendl_fd(": command not found", 2);
 	pc()->exit_status = 127;
 	process_exit();

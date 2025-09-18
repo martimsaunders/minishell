@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 10:53:46 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/17 16:24:18 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/18 15:01:27 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ char	*cmd_path(char *cmd)
 	path = NULL;
 	if (!cmd)
 		return (ft_strdup(""));
-	if (ft_strchr(cmd, '/') || getenv("PATH") == NULL)
+	if (ft_strchr(cmd, '/') || t_env_has_name("PATH") == NULL)
 		return (ft_strdup(cmd));
-	path = ft_split(getenv("PATH"), ':');
+	path = ft_split(t_env_find_value("PATH"), ':');
 	if (!path)
 		total_exit("malloc() error!");
 	i = 0;

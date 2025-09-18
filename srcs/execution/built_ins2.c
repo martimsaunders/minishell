@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:04:16 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/17 17:21:00 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/18 15:01:27 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	ft_cd(t_command *cmd)
 	return (0);
 }
 
-char	*has_name(char *str)
+char	*t_env_has_name(char *str)
 {
 	t_env	*node;
 	size_t	size;
@@ -85,7 +85,7 @@ int	ft_export(char **args)
 		value = ft_strchr(args[i], '=');
 		if (value)
 		{
-			name = has_name(args[i]);
+			name = t_env_has_name(args[i]);
 			if (name)
 				update_env(name, ++value);
 			else
@@ -109,7 +109,7 @@ int	ft_unset(char **args)
 		return (0);
 	while (args[i])
 	{
-		name = has_name(args[i]);
+		name = t_env_has_name(args[i]);
 		if (name)
 			remove_env(name);
 		i++;

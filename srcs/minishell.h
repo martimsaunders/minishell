@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/16 16:00:48 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/18 16:55:40 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,7 @@ t_env					*create_env_node(char *str);
 int						update_env(char *name, char *value);
 void					remove_env(char *name);
 char					*t_env_find_value(char *name);
+char					*t_env_has_name(char *str);
 
 // free exit
 void					total_exit(char *msg);
@@ -199,8 +200,10 @@ void					process_exit(void);
 void					create_exec_env(char **exec_env);
 
 // here doc
+int						create_here_doc(t_redirect *file);
+void					expand_str(char *line);
 int						hd_strncmp(const char *s1, const char *s2, size_t n);
-void					create_here_doc(char *delimiter);
+void					hd_child_process(t_redirect *file);
 
 // single process
 int						single_command_process(t_command *cmd);
