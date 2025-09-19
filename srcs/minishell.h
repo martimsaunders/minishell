@@ -42,6 +42,8 @@
 # define ERRQUO "😵 minishell: syntax error: unexpected end of file\n"
 # define PARERR "😵 minishell: syntax error near unexpected token"
 
+extern int signal_detected;
+
 typedef struct s_parse_state
 {
 	int					current;
@@ -106,6 +108,7 @@ typedef struct s_process
 {
 	t_fds				fd;
 	pid_t				pid;
+	pid_t 				*pid_array;
 	int					processes;
 	int					exit_status;
 	char				*path;
@@ -156,6 +159,7 @@ t_command				*handle_world_token(t_command *current_cmd,
 							t_token *current_token);
 
 // execution functions
+void init_signals();
 int						execution_process(t_command *cmd, char **env);
 t_process				*pc(void);
 int						cmd_lstsize(t_command *lst);
@@ -207,7 +211,7 @@ void					hd_child_process(t_redirect *file);
 
 // single process
 int						single_command_process(t_command *cmd);
-void					single_command_fds_handle(t_command *cmd);
+int					single_command_fds_handle(t_command *cmd);
 void					single_cmd_child(t_command *cmd);
 int						is_built_in(t_command *cmd);
 

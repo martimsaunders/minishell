@@ -87,6 +87,7 @@ int	pipe_command_process(t_command *cmd)
 		pc()->pid = fork();
 		if (pc()->pid == -1)
 			return (clear_forks());
+		pc()->pid_array[pc()->processes] = pc()->pid;
 		pc()->processes++;
 		if (pc()->pid == 0)
 			child_process(node);
@@ -95,7 +96,7 @@ int	pipe_command_process(t_command *cmd)
 		node = node->next;
 	}
 	waitpid(pc()->pid, &pc()->exit_status, 0);
-	while (--pc()->processes) // verificar, possivel loop a menos ou a mais
+	while (--pc()->processes)
 		wait(NULL);
 	return (exit_status_return());
 }

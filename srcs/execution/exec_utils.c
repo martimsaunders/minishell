@@ -59,6 +59,8 @@ void	process_exit(void)
 	close(0);
 	close(1);
 	close_fds();
+	if (pc()->pid_array)
+		free(pc()->pid_array);
 	if (pc()->path)
 		free(pc()->path);
 	pc()->path = NULL;

@@ -45,10 +45,17 @@ int	open_infile(t_redirect *infiles)
 	pc()->exit_status = 0;
 	while (file)
 	{
+		if (file->type == 2)
+			pc()->exit_status = create_here_doc(file);
+		if (pc()->exit_status != 0)
+			return (pc()->exit_status);
+		file = file->next;
+	}
+	file = infiles;
+	while (file)
+	{
 		if (file->type == 1)
 			pc()->fd.previous[0] = open(file->filename, O_RDONLY);
-		else if (file->type == 2)
-			pc()->exit_status = create_here_doc(file);
 		if (pc()->fd.previous[0] < 0)
 			return (perror(file->filename), 1);
 		file = file->next;

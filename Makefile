@@ -30,7 +30,8 @@ srcs/execution/exec_utils.c srcs/execution/execution.c \
 srcs/execution/fds_handle.c srcs/execution/free_exit.c \
 srcs/execution/here_doc.c srcs/execution/pipe_process.c \
 srcs/execution/single_process.c srcs/execution/env_list.c \
-srcs/execution/env_list2.c srcs/execution/here_doc_utils.c
+srcs/execution/env_list2.c srcs/execution/here_doc_utils.c \
+srcs/execution/signals.c
 
 OBJS = $(SRCS:.c=.o)
 

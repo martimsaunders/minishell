@@ -38,12 +38,13 @@ int	is_built_in(t_command *cmd) //check exit status
 	return (1);
 }
 
-void	single_command_fds_handle(t_command *cmd)
+int	single_command_fds_handle(t_command *cmd)
 {
 	if (cmd->infiles)
-		open_infile(cmd->infiles);
+		pc()->exit_status = open_infile(cmd->infiles);
 	if (cmd->outfiles)
-		open_outfile(cmd->outfiles);
+		pc()->exit_status = open_outfile(cmd->outfiles);
+	return (pc()->exit_status);
 }
 
 void single_cmd_child(t_command *cmd)
@@ -84,22 +85,21 @@ int	single_command_process(t_command *cmd)
 	
 	backup_stdin = dup(STDIN_FILENO);
 	backup_stdout = dup(STDOUT_FILENO);
-	if (cmd->infiles)
-		pc()->exit_status = open_infile(cmd->infiles);
-	if (cmd->outfiles)
-		pc()->exit_status = open_outfile(cmd->outfiles);
-	if (is_built_in(cmd) == 0)
+	if (single_command_fds_handle(cmd) == 0)
 	{
-		pc()->pid = fork();
-		if (pc()->pid == -1)
+		if (is_built_in(cmd) == 0)
 		{
-			perror("fork() error!");
-			return (1);
+			pc()->pid = fork();
+			if (pc()->pid == -1)
+			{
+				perror("fork() error!");
+				return (1);
+			}
+			if (pc()->pid == 0)
+				single_cmd_child(cmd);
+			waitpid(pc()->pid, &pc()->exit_status, 0);
+			pc()->exit_status = exit_status_return();
 		}
-		if (pc()->pid == 0)
-			single_cmd_child(cmd);
-		waitpid(pc()->pid, &pc()->exit_status, 0);
-		pc()->exit_status = exit_status_return();
 	}
 	restore_fds(backup_stdin, backup_stdout);
 	return (pc()->exit_status);

@@ -50,7 +50,13 @@ int	execution_process(t_command *cmd, char **env)
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
 	if (pc()->list_size > 1)
+	{
+		pc()->pid_array = ft_calloc(pc()->list_size + 1, sizeof(pid_t));
+		if (!pc()->pid_array)
+			total_exit("malloc error!!");
+		pc()->pid_array[pc()->list_size] = -1;
 		pc()->exit_status = pipe_command_process(cmd);
+	}
 	else if (pc()->list_size == 1)
 		pc()->exit_status = single_command_process(cmd);
 	close_fds();
@@ -63,6 +69,6 @@ TESTS:
 single and multiple exec commands with and without redirects OK 
 built ins simple commands OK
 NOTES:
-recriar here_doc em fork e implementar parsing
-implementar sinais Ctrl /,D e C
+here doc deve ser a primeira coisa a se fazer e nao roda nenhum processo em simultaneo
+erro em kill processes
 */

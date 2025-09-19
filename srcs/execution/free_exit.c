@@ -15,6 +15,8 @@
 void	total_exit(char *msg)
 {
 	perror(msg);
+	if (pc()->pid_array)
+		free(pc()->pid_array);
 	if (pc()->path)
 		free(pc()->path);
 	if (pc()->ms_env)

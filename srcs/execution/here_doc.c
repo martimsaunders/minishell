@@ -36,7 +36,7 @@ void	hd_child_process(t_redirect *file)
 	{
 		line = readline("> ");
 		if (!line || hd_strncmp(line, file->filename,
-				ft_strlen(file->filename)) == 0)
+				ft_strlen(file->filename)) == 0 || signal_detected)
 			break ;
 		if (file->expand == 0)
 			expand_str(line);
@@ -46,6 +46,11 @@ void	hd_child_process(t_redirect *file)
 	if (line)
 		free(line);
 	ft_close(&pc()->fd.previous[1]);
+	if (signal_detected)
+	{
+		signal_detected = 0;
+		exit(130);
+	}
 	exit(0);
 }
 
