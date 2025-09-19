@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/18 16:55:40 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/19 16:21:23 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,7 @@ void					free_token_list(t_token *head);
 void					free_command(t_command *command);
 void					free_commands(t_command *commands);
 void					free_redirects(t_redirect *redirects);
+void					remove_empty_tokens(t_token **token_list);
 void					add_token_list(t_token **head, t_token *new_token);
 void					malloc_exit(t_token *token_list, t_parse_state *state);
 t_token					*create_token(char *value, int type, int is_quoted);

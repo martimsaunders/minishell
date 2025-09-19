@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/18 16:47:29 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/19 16:25:43 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-/*
+
 static void	print_commands(t_command *commands)
 {
 	t_command	*current_cmd;
@@ -80,7 +80,7 @@ static void	print_commands(t_command *commands)
 		cmd_count++;
 	}
 }
-*/
+
 static int	handle_input(t_parse_state *state)
 {
 	state->input = readline("😎 MINISHELL$: ");
@@ -140,7 +140,7 @@ int	main(int argc, char **argv, char **env)
 			cmd = process_input(&state);
 			cleanup(&state);
 			// (void)env;
-			// print_commands(cmd);
+			print_commands(cmd);
 			if (cmd)
 				execution_process(cmd, env);
 		}

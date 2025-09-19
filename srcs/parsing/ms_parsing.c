@@ -6,7 +6,7 @@
 /*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 10:47:53 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/16 12:58:18 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/19 16:25:13 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,5 +125,5 @@ t_token	*ms_parsing(t_parse_state *state)
 		malloc_exit(token_list, state);
 	else if (state->in_quotes != 0)
 		return (free_token_list(token_list), ft_putstr_fd(ERRQUO, 2), NULL);
-	return (token_list);
+	return (remove_empty_tokens(&token_list), token_list);
 }
