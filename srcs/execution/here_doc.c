@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:04:58 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/22 16:22:10 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 18:08:00 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,7 @@ int	hd_strncmp(const char *s1, const char *s2, size_t n)
 void	hd_child_process(t_redirect *file, int hd_fd[2])
 {
 	char	*line;
-
-	signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_IGN);
+	
 	pc()->exit_status = 0;
 	line = NULL;
 	close(hd_fd[0]);
@@ -94,16 +92,16 @@ int write_here_doc(t_redirect *file, int hd_idx)
 				hd_child_process(node, hd_pipe);
 			close(hd_pipe[1]);
 			waitpid(pid, &pc()->exit_status, 0);
-			printf("EXIT STATUS- %i\n", pc()->exit_status);
-			if (pc()->exit_status != 0)
+			if (sigint_detected)
 				break ;
 		}
 		node = node->next;
 		if (node && node->type == 2)
 			close(hd_pipe[0]);
 	}
-	pc()->fd.here_docs[hd_idx] = hd_pipe[0];
-	return (exit_status_return());
+	if (exit_status_return() == 0)
+		pc()->fd.here_docs[hd_idx] = hd_pipe[0];
+	return (pc()->exit_status);
 }
 
 int	create_here_doc(t_command *cmd)
@@ -112,7 +110,7 @@ int	create_here_doc(t_command *cmd)
 	t_command *node;
 
 	if (has_here_docs(cmd) == false)
-		return (printf("!HERE DOC\n"), pc()->exit_status);
+		return (pc()->exit_status);
 	node = cmd;
 	hd_idx = 0;
 	while (node)

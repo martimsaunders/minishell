@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:12:54 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/22 16:17:35 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 18:23:09 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,16 @@ int	is_built_in(t_command *cmd)
 
 int	exit_status_return(void)
 {
+	int exit_code;
+	
 	if (WIFEXITED(pc()->exit_status))
-		return (WEXITSTATUS(pc()->exit_status));
+		exit_code = WEXITSTATUS(pc()->exit_status);
 	else if (WIFSIGNALED(pc()->exit_status))
-		return (128 + WTERMSIG(pc()->exit_status));
+		exit_code = 128 + WTERMSIG(pc()->exit_status);
 	else
-		return (1);
+		exit_code = 1;
+	pc()->exit_status = exit_code;
+	return (exit_code);
 }
 
 int	execution_process(t_command *cmd, char **env)
@@ -76,9 +80,7 @@ int	execution_process(t_command *cmd, char **env)
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
 	pc()->exit_status = create_here_doc(cmd);
-	if (pc()->exit_status != 0)
-		printf("Ctrl C!!!!\n");
-	if (pc()->list_size > 1)
+	if (!sigint_detected && pc()->list_size > 1)
 	{
 		pc()->pid_array = ft_calloc(pc()->list_size + 1, sizeof(pid_t));
 		if (!pc()->pid_array)
@@ -86,7 +88,7 @@ int	execution_process(t_command *cmd, char **env)
 		pc()->pid_array[pc()->list_size] = -1;
 		pc()->exit_status = pipe_command_process(cmd);
 	}
-	else if (pc()->list_size == 1)
+	else if (!sigint_detected && pc()->list_size == 1)
 		pc()->exit_status = single_command_process(cmd);
 	close_fds();
 	free_command_list(&cmd);
@@ -98,6 +100,5 @@ TESTS:
 single and multiple exec commands with and without redirects OK 
 built ins simple commands OK
 NOTES:
-here doc deve ser a primeira coisa a se fazer e nao roda nenhum processo em simultaneo
-erro em kill processes
+reorganizar codigo geral e implementar saida correta de Ctrl C
 */

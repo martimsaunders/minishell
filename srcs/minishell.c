@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 16:28:34 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 18:19:50 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,8 @@ static int	handle_input(t_parse_state *state)
 	state->input = readline("😎 MINISHELL$: ");
 	if (!state->input)
 		return (0);
-	if (state->input[0] == '\0' || signal_detected)
+	if (state->input[0] == '\0' || sigint_detected)
 	{
-		if (signal_detected)
-			signal_detected = 0;
 		free(state->input);
 		return (1);
 	}
@@ -131,7 +129,7 @@ int	main(int argc, char **argv, char **env)
 	(void)argv;
 	if (argc != 1)
 		return (1);
-	init_signals();
+	init_signals(1);
 	ft_memset(&state, 0, sizeof(t_parse_state));
 	while (1)
 	{
@@ -146,6 +144,14 @@ int	main(int argc, char **argv, char **env)
 			print_commands(cmd);
 			if (cmd)
 				execution_process(cmd, env);
+		}
+		if (sigint_detected)
+		{
+			sigint_detected = 0;
+			// write(STDOUT_FILENO, "\n", 1);
+			// rl_on_new_line();
+			// rl_replace_line("", 0);
+			// rl_redisplay();
 		}
 	}
 	return (0);
