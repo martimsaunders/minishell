@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 16:05:56 by praders           #+#    #+#             */
-/*   Updated: 2025/09/19 16:28:51 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/22 12:33:40 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 int	hd(int set_value)
 {
-	static int double_quote_value;
+	static int here_doc_value;
 	if (set_value != 2)
-		double_quote_value = set_value;
-	return (double_quote_value);
+		here_doc_value = set_value;
+	return (here_doc_value);
 }
 
 int	dq(int set_value)
