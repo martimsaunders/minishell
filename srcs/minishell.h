@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 16:27:49 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 16:45:03 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ typedef struct s_command
 	bool				has_hd;
 	char				*cmd;
 	char				**args;
-	bool				has_hd;
 	t_redirect			*infiles;
 	t_redirect			*outfiles;
 	struct s_command	*next;

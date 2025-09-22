@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 13:27:33 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 15:29:54 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/22 16:39:03 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,11 @@ int	add_redirect(t_redirect **head, char *filename, int is_quoted, int is_append
 	new_redirect = malloc(sizeof(t_redirect));
 	if (!new_redirect)
 		return (mv(1), 0);
+	ft_memset(new_redirect, 0, sizeof(t_redirect));
 	new_redirect->filename = ft_strdup(filename);
 	if (!new_redirect->filename)
 		return (mv(1), free(new_redirect), 0);
 	new_redirect->type = is_append;
-	new_redirect->next = NULL;
 	new_redirect->expand = is_quoted;
 	if (!*head)
 	{
