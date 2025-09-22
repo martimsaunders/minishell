@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 12:25:27 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/22 16:27:49 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@
 # define ERRQUO "😵 minishell: syntax error: unexpected end of file\n"
 # define PARERR "😵 minishell: syntax error near unexpected token"
 
+extern int				signal_detected;
+
 typedef struct s_parse_state
 {
 	int					current;
@@ -55,6 +57,7 @@ typedef struct s_redirect
 {
 	int					type;
 	bool				expand;
+	int					hd_fd;
 	char				*filename;
 	struct s_redirect	*next;
 }						t_redirect;
@@ -66,6 +69,7 @@ typedef struct s_command
 	bool				has_hd;
 	char				*cmd;
 	char				**args;
+	bool				has_hd;
 	t_redirect			*infiles;
 	t_redirect			*outfiles;
 	struct s_command	*next;
@@ -97,6 +101,7 @@ typedef struct s_env
 
 typedef struct s_fds
 {
+	int					*here_docs;
 	int					pipe1[2];
 	int					pipe2[2];
 	int					*current;
@@ -107,6 +112,7 @@ typedef struct s_process
 {
 	t_fds				fd;
 	pid_t				pid;
+	pid_t				*pid_array;
 	int					processes;
 	int					exit_status;
 	char				*path;
@@ -158,6 +164,7 @@ t_command				*handle_world_token(t_command *current_cmd,
 							t_token *current_token);
 
 // execution functions
+void					init_signals(void);
 int						execution_process(t_command *cmd, char **env);
 t_process				*pc(void);
 int						cmd_lstsize(t_command *lst);
@@ -202,14 +209,14 @@ void					process_exit(void);
 void					create_exec_env(char **exec_env);
 
 // here doc
-int						create_here_doc(t_redirect *file);
+int						create_here_doc(t_command *cmd);
 void					expand_str(char *line);
 int						hd_strncmp(const char *s1, const char *s2, size_t n);
-void					hd_child_process(t_redirect *file);
+void					hd_child_process(t_redirect *file, int hd_fd[2]);
 
 // single process
 int						single_command_process(t_command *cmd);
-void					single_command_fds_handle(t_command *cmd);
+int						single_command_fds_handle(t_command *cmd);
 void					single_cmd_child(t_command *cmd);
 int						is_built_in(t_command *cmd);
 

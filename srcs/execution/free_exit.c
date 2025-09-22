@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/16 17:55:41 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 15:22:36 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,18 @@
 
 void	total_exit(char *msg)
 {
+	int i;
+	
 	perror(msg);
+	if (pc()->fd.here_docs)
+	{
+		i = 0;
+		while (pc()->fd.here_docs[i] != -1)
+			close(pc()->fd.here_docs[i++]);
+		free(pc()->fd.here_docs);
+	}
+	if (pc()->pid_array)
+		free(pc()->pid_array);
 	if (pc()->path)
 		free(pc()->path);
 	if (pc()->ms_env)

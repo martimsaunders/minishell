@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 10:53:46 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/18 15:01:27 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 15:23:50 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,20 @@ char	*cmd_path(char *cmd)
 
 void	process_exit(void)
 {
+	int i;
+	
 	close(0);
 	close(1);
 	close_fds();
+	if (pc()->fd.here_docs)
+	{
+		i = 0;
+		while (pc()->fd.here_docs[i] != -1)
+			close(pc()->fd.here_docs[i++]);
+		free(pc()->fd.here_docs);
+	}
+	if (pc()->pid_array)
+		free(pc()->pid_array);
 	if (pc()->path)
 		free(pc()->path);
 	pc()->path = NULL;

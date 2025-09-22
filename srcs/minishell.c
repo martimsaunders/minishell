@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 12:14:16 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/22 16:28:34 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,10 @@ static int	handle_input(t_parse_state *state)
 	state->input = readline("😎 MINISHELL$: ");
 	if (!state->input)
 		return (0);
-	if (state->input[0] == '\0')
+	if (state->input[0] == '\0' || signal_detected)
 	{
+		if (signal_detected)
+			signal_detected = 0;
 		free(state->input);
 		return (1);
 	}
@@ -127,9 +129,10 @@ int	main(int argc, char **argv, char **env)
 	t_command *cmd;
 
 	(void)argv;
-	ft_memset(&state, 0, sizeof(t_parse_state));
 	if (argc != 1)
 		return (1);
+	init_signals();
+	ft_memset(&state, 0, sizeof(t_parse_state));
 	while (1)
 	{
 		status = handle_input(&state);
