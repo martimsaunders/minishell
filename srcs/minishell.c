@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/19 16:25:43 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/22 12:14:16 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,3 +155,15 @@ $a ignorado exit 0
 mas vem ambos como comando vazio, como destinguir?
 $a ls -> ls deve ser o comando e $a ignorado se nao houver expansao
 */
+
+/* 😎 MINISHELL$: << $USER cat
+=== Comando 1 ===
+CMD: cat
+ARGS: [cat] 
+INFILES: [$USER (heredoc) expand: 0] 
+OUTFILES: (null)
+PIPE_IN: 0, PIPE_OUT: 0
+
+> $PATH
+free(): double free detected in tcache 2
+�� */

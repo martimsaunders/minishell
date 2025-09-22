@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/19 16:21:23 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/22 12:25:27 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef struct s_parse_state
 typedef struct s_redirect
 {
 	int					type;
-	int					expand;
+	bool				expand;
 	char				*filename;
 	struct s_redirect	*next;
 }						t_redirect;
@@ -63,6 +63,7 @@ typedef struct s_command
 {
 	int					is_pipe_in;
 	int					is_pipe_out;
+	bool				has_hd;
 	char				*cmd;
 	char				**args;
 	t_redirect			*infiles;
