@@ -6,37 +6,11 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:05:14 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/18 12:30:07 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 15:55:07 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	is_built_in(t_command *cmd) //check exit status
-{
-	size_t	size;
-
-	if (!cmd->cmd || !*cmd->cmd)
-		return (0);
-	size = ft_strlen(cmd->cmd);
-	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
-		pc()->exit_status = ft_echo(cmd);
-	else if (ft_strncmp(cmd->cmd, "cd", size) == 0)
-		pc()->exit_status = ft_cd(cmd);
-	else if (ft_strncmp(cmd->cmd, "pwd", size) == 0)
-		pc()->exit_status = ft_pwd();
-	else if (ft_strncmp(cmd->cmd, "export", size) == 0)
-		pc()->exit_status = ft_export(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "unset", size) == 0)
-		pc()->exit_status = ft_unset(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "env", size) == 0)
-		pc()->exit_status = ft_env(cmd);
-	else if (ft_strncmp(cmd->cmd, "exit", size) == 0)
-		ft_exit();
-	else
-		return (0);
-	return (1);
-}
 
 int	single_command_fds_handle(t_command *cmd)
 {
@@ -51,6 +25,8 @@ void single_cmd_child(t_command *cmd)
 {
 	char **exec_env;
 	
+	signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_IGN);
 	exec_env = NULL;
 	close_fds();
 	if (!cmd->cmd)
@@ -85,21 +61,19 @@ int	single_command_process(t_command *cmd)
 	
 	backup_stdin = dup(STDIN_FILENO);
 	backup_stdout = dup(STDOUT_FILENO);
-	if (single_command_fds_handle(cmd) == 0)
+	single_command_fds_handle(cmd);
+	if (is_built_in(cmd) == 0)
 	{
-		if (is_built_in(cmd) == 0)
+		pc()->pid = fork();
+		if (pc()->pid == -1)
 		{
-			pc()->pid = fork();
-			if (pc()->pid == -1)
-			{
-				perror("fork() error!");
-				return (1);
-			}
-			if (pc()->pid == 0)
-				single_cmd_child(cmd);
-			waitpid(pc()->pid, &pc()->exit_status, 0);
-			pc()->exit_status = exit_status_return();
+			perror("fork() error!");
+			return (1);
 		}
+		if (pc()->pid == 0)
+			single_cmd_child(cmd);
+		waitpid(pc()->pid, &pc()->exit_status, 0);
+		pc()->exit_status = exit_status_return();
 	}
 	restore_fds(backup_stdin, backup_stdout);
 	return (pc()->exit_status);

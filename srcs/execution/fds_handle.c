@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 11:37:27 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/18 13:33:13 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 15:18:41 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,19 +45,14 @@ int	open_infile(t_redirect *infiles)
 	pc()->exit_status = 0;
 	while (file)
 	{
-		if (file->type == 2)
-			pc()->exit_status = create_here_doc(file);
-		if (pc()->exit_status != 0)
-			return (pc()->exit_status);
-		file = file->next;
-	}
-	file = infiles;
-	while (file)
-	{
 		if (file->type == 1)
+		{
 			pc()->fd.previous[0] = open(file->filename, O_RDONLY);
 		if (pc()->fd.previous[0] < 0)
 			return (perror(file->filename), 1);
+		}
+		else if (file->type == 2)
+			pc()->fd.previous[0] = file->hd_fd;
 		file = file->next;
 	}
 	dup2(pc()->fd.previous[0], STDIN_FILENO);

@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:04:58 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/18 16:54:08 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 16:22:10 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,46 +26,105 @@ int	hd_strncmp(const char *s1, const char *s2, size_t n)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
-void	hd_child_process(t_redirect *file)
+void	hd_child_process(t_redirect *file, int hd_fd[2])
 {
 	char	*line;
 
+	signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_IGN);
+	pc()->exit_status = 0;
 	line = NULL;
-	ft_close(&pc()->fd.previous[0]);
+	close(hd_fd[0]);
 	while (1)
 	{
 		line = readline("> ");
 		if (!line || hd_strncmp(line, file->filename,
-				ft_strlen(file->filename)) == 0 || signal_detected)
+				ft_strlen(file->filename)) == 0)
 			break ;
 		if (file->expand == 0)
 			expand_str(line);
-		ft_putendl_fd(line, pc()->fd.previous[1]);
+		ft_putendl_fd(line, hd_fd[1]);
 		free(line);
 	}
 	if (line)
 		free(line);
-	ft_close(&pc()->fd.previous[1]);
-	if (signal_detected)
-	{
-		signal_detected = 0;
-		exit(130);
-	}
-	exit(0);
+	close(hd_fd[1]);
+	process_exit();
 }
 
-int	create_here_doc(t_redirect *file)
+bool has_here_docs(t_command *cmd)
+{
+	t_command *node;
+	int hd_count;
+
+	hd_count = 0;
+	node = cmd;
+	while(node)
+	{
+		if (node->has_hd == true)
+			hd_count++;
+		node = node->next;
+	}
+	if (!hd_count)
+		return (false);
+	pc()->fd.here_docs = ft_calloc(hd_count + 1, sizeof(int));
+	if (!pc()->fd.here_docs)
+		total_exit("malloc() error");
+	pc()->fd.here_docs[hd_count] = -1;
+	return (true);
+}
+
+int write_here_doc(t_redirect *file, int hd_idx)
 {
 	pid_t	pid;
-
-	if (pipe(pc()->fd.previous) < 0)
-		return (perror("pipe() error!"), 1);
-	pid = fork();
-	if (pid == -1)
-		return (perror("fork() error!"), 1);
-	if (pid == 0)
-		hd_child_process(file);
-	ft_close(&pc()->fd.previous[1]);
-	waitpid(pid, &pc()->exit_status, 0);
+	int hd_pipe[2];
+	t_redirect *node;
+	
+	node = file;
+	while (node)
+	{
+		if (node->type == 2)
+		{
+			if (pipe(hd_pipe) < 0)
+				return (perror("pipe() error!"), 1);
+			pid = fork();
+			if (pid == -1)
+				return (perror("fork() error!"), 1);
+			if (pid == 0)
+				hd_child_process(node, hd_pipe);
+			close(hd_pipe[1]);
+			waitpid(pid, &pc()->exit_status, 0);
+			printf("EXIT STATUS- %i\n", pc()->exit_status);
+			if (pc()->exit_status != 0)
+				break ;
+		}
+		node = node->next;
+		if (node && node->type == 2)
+			close(hd_pipe[0]);
+	}
+	pc()->fd.here_docs[hd_idx] = hd_pipe[0];
 	return (exit_status_return());
+}
+
+int	create_here_doc(t_command *cmd)
+{
+	int hd_idx;
+	t_command *node;
+
+	if (has_here_docs(cmd) == false)
+		return (printf("!HERE DOC\n"), pc()->exit_status);
+	node = cmd;
+	hd_idx = 0;
+	while (node)
+	{
+		if (node->has_hd == true)
+		{
+			pc()->exit_status = write_here_doc(node->infiles, hd_idx);
+			if (pc()->exit_status != 0)
+				break ;
+			node->infiles->hd_fd = pc()->fd.here_docs[hd_idx++];
+		}
+		node = node->next;
+	}
+	return (pc()->exit_status);
 }

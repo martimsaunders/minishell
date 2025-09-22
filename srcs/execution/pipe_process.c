@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:17:24 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/18 12:05:38 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 15:55:55 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ void	child_process(t_command *cmd)
 {
 	char **exec_env;
 	
+	signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_IGN);
 	exec_env = NULL;
 	redirect_pipe_handle(cmd);
 	close_fds();

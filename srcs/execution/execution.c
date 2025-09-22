@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:12:54 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/17 17:54:01 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/22 16:17:35 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,32 @@ int	cmd_lstsize(t_command *lst)
 	return (count);
 }
 
+int	is_built_in(t_command *cmd)
+{
+	size_t	size;
+
+	if (!cmd->cmd || !*cmd->cmd)
+		return (0);
+	size = ft_strlen(cmd->cmd);
+	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
+		pc()->exit_status = ft_echo(cmd);
+	else if (ft_strncmp(cmd->cmd, "cd", size) == 0)
+		pc()->exit_status = ft_cd(cmd);
+	else if (ft_strncmp(cmd->cmd, "pwd", size) == 0)
+		pc()->exit_status = ft_pwd();
+	else if (ft_strncmp(cmd->cmd, "export", size) == 0)
+		pc()->exit_status = ft_export(cmd->args);
+	else if (ft_strncmp(cmd->cmd, "unset", size) == 0)
+		pc()->exit_status = ft_unset(cmd->args);
+	else if (ft_strncmp(cmd->cmd, "env", size) == 0)
+		pc()->exit_status = ft_env(cmd);
+	else if (ft_strncmp(cmd->cmd, "exit", size) == 0)
+		ft_exit();
+	else
+		return (0);
+	return (1);
+}
+
 int	exit_status_return(void)
 {
 	if (WIFEXITED(pc()->exit_status))
@@ -49,6 +75,9 @@ int	execution_process(t_command *cmd, char **env)
 	pc()->cmd = cmd;
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
+	pc()->exit_status = create_here_doc(cmd);
+	if (pc()->exit_status != 0)
+		printf("Ctrl C!!!!\n");
 	if (pc()->list_size > 1)
 	{
 		pc()->pid_array = ft_calloc(pc()->list_size + 1, sizeof(pid_t));
