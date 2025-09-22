@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_ttk_create_command.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 13:27:33 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/16 15:23:44 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/22 15:29:54 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,13 +84,7 @@ t_command	*create_command(void)
 	cmd = malloc(sizeof(t_command));
 	if (!cmd)
 		return (mv(1), NULL);
-	cmd->cmd = NULL;
-	cmd->args = NULL;
-	cmd->infiles = NULL;
-	cmd->outfiles = NULL;
-	cmd->next = NULL;
-	cmd->is_pipe_in = 0;
-	cmd->is_pipe_out = 0;
+	ft_memset(cmd, 0, sizeof(t_command));
 	return (cmd);
 }
 
