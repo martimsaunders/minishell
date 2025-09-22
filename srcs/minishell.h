@@ -163,7 +163,7 @@ t_command				*handle_world_token(t_command *current_cmd,
 							t_token *current_token);
 
 // execution functions
-void					init_signals(int p);
+void					init_signals();
 int						execution_process(t_command *cmd, char **env);
 t_process				*pc(void);
 int						cmd_lstsize(t_command *lst);
@@ -208,10 +208,11 @@ void					process_exit(void);
 void					create_exec_env(char **exec_env);
 
 // here doc
-int						create_here_doc(t_command *cmd);
+int						here_docs_check(t_command *cmd);
 void					expand_str(char *line);
 int						hd_strncmp(const char *s1, const char *s2, size_t n);
 void					hd_child_process(t_redirect *file, int hd_fd[2]);
+bool has_here_docs(t_command *cmd);
 
 // single process
 int						single_command_process(t_command *cmd);

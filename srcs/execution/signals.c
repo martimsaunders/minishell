@@ -23,20 +23,22 @@ static void sig_handler(int sig)
     i = 0;
     if (pc()->pid_array)
     {
+        printf("TRY KILL\n");
         while (pc()->pid_array[i] != -1)
             kill(pc()->pid_array[i++], SIGINT);
     }
+    write(STDOUT_FILENO, "\n", 1);
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
 }
 
-void init_signals(int process)
+void init_signals()
 {
     struct sigaction sa;
 
     sigemptyset(&sa.sa_mask);
-    if (process == 1)
-        sa.sa_handler = sig_handler;
-    else if (process == 2)
-        sa.sa_handler = SIG_DFL;
+    sa.sa_handler = sig_handler;
     sa.sa_flags = 0;
     sigaction(SIGINT, &sa, NULL);
     signal(SIGQUIT, SIG_IGN);

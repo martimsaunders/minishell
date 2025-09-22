@@ -19,43 +19,17 @@ t_process	*pc(void)
 	return (&pc);
 }
 
-int	cmd_lstsize(t_command *lst)
+void reset_pc()
 {
-	int	count;
-
-	count = 0;
-	while (lst)
-	{
-		count++;
-		lst = lst->next;
-	}
-	return (count);
-}
-
-int	is_built_in(t_command *cmd)
-{
-	size_t	size;
-
-	if (!cmd->cmd || !*cmd->cmd)
-		return (0);
-	size = ft_strlen(cmd->cmd);
-	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
-		pc()->exit_status = ft_echo(cmd);
-	else if (ft_strncmp(cmd->cmd, "cd", size) == 0)
-		pc()->exit_status = ft_cd(cmd);
-	else if (ft_strncmp(cmd->cmd, "pwd", size) == 0)
-		pc()->exit_status = ft_pwd();
-	else if (ft_strncmp(cmd->cmd, "export", size) == 0)
-		pc()->exit_status = ft_export(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "unset", size) == 0)
-		pc()->exit_status = ft_unset(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "env", size) == 0)
-		pc()->exit_status = ft_env(cmd);
-	else if (ft_strncmp(cmd->cmd, "exit", size) == 0)
-		ft_exit();
-	else
-		return (0);
-	return (1);
+	close_fds();
+	pc()->cmd = NULL;
+	pc()->list_size = 0;
+	free(pc()->fd.here_docs);
+	pc()->fd.here_docs = 0;
+	free(pc()->pid_array);
+	pc()->pid_array = 0;
+	pc()->processes = 0;
+	pc()->path = NULL;
 }
 
 int	exit_status_return(void)
@@ -79,7 +53,7 @@ int	execution_process(t_command *cmd, char **env)
 	pc()->cmd = cmd;
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
-	pc()->exit_status = create_here_doc(cmd);
+	pc()->exit_status = here_docs_check(cmd);
 	if (!sigint_detected && pc()->list_size > 1)
 	{
 		pc()->pid_array = ft_calloc(pc()->list_size + 1, sizeof(pid_t));
@@ -90,8 +64,9 @@ int	execution_process(t_command *cmd, char **env)
 	}
 	else if (!sigint_detected && pc()->list_size == 1)
 		pc()->exit_status = single_command_process(cmd);
-	close_fds();
 	free_command_list(&cmd);
+	sigint_detected = 0;
+	reset_pc();
 	return (pc()->exit_status);
 }
 
@@ -100,5 +75,6 @@ TESTS:
 single and multiple exec commands with and without redirects OK 
 built ins simple commands OK
 NOTES:
+adicionar varavel enum que diz se estou num proc filho ou pai para o sigint ser executado de acordo
 reorganizar codigo geral e implementar saida correta de Ctrl C
 */

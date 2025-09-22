@@ -24,12 +24,12 @@ srcs/parsing/ms_ttk_utils.c srcs/parsing/ms_parsing_protok_utils.c \
 srcs/parsing/ms_exit_malloc.c srcs/parsing/ms_utils.c \
 srcs/parsing/ms_parsing_protok_utils2.c \
 \
-srcs/execution/built_ins.c srcs/execution/built_ins2.c \
-srcs/execution/exec_utils.c srcs/execution/execution.c \
+srcs/execution/built_ins/built_ins.c srcs/execution/built_ins/built_ins2.c \
+srcs/execution/processes/execve_utils.c srcs/execution/execution.c \
 srcs/execution/fds_handle.c srcs/execution/free_exit.c \
-srcs/execution/here_doc.c srcs/execution/pipe_process.c \
-srcs/execution/single_process.c srcs/execution/env_list.c \
-srcs/execution/env_list2.c srcs/execution/here_doc_utils.c \
+srcs/execution/here_doc/here_doc.c srcs/execution/pipe_process.c \
+srcs/execution/single_process.c srcs/execution/lists/list_manage.c \
+srcs/execution/lists/create_list.c srcs/execution/here_doc/here_doc_utils.c \
 srcs/execution/signals.c
 
 OBJS = $(SRCS:.c=.o)

@@ -10,7 +10,43 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
+
+bool has_here_docs(t_command *cmd)
+{
+	t_command *node;
+	int hd_count;
+
+	hd_count = 0;
+	node = cmd;
+	while(node)
+	{
+		if (node->has_hd == true)
+			hd_count++;
+		node = node->next;
+	}
+	if (!hd_count)
+		return (false);
+	pc()->fd.here_docs = ft_calloc(hd_count + 1, sizeof(int));
+	if (!pc()->fd.here_docs)
+		total_exit("malloc() error");
+	pc()->fd.here_docs[hd_count] = -1;
+	return (true);
+}
+
+int	hd_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	if (!s1 || !s2)
+		return (-1);
+	i = 0;
+	while (s1[i] == s2[i] && s1[i] && s2[i] && i < n)
+		i++;
+	if (s1[i] == '\n' && i == n)
+		return (0);
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
 
 static char	*fill_new_line(char *begin, char *to_expand, char *end)
 {
