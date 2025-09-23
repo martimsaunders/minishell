@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 18:19:50 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 14:50:46 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,11 +86,6 @@ static int	handle_input(t_parse_state *state)
 	state->input = readline("😎 MINISHELL$: ");
 	if (!state->input)
 	{
-		if (sigint_detected)
-		{
-			sigint_detected = 0;
-			return (1);
-		}
 		return (0);
 	}
 	if (state->input[0] == '\0')

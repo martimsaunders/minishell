@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:04:58 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/22 18:08:00 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 14:58:54 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	hd_child_process(t_redirect *file, int hd_fd[2])
 {
 	char	*line;
 	
+	signal(SIGINT, SIG_DFL);
 	pc()->exit_status = 0;
 	line = NULL;
 	close(hd_fd[0]);
@@ -45,6 +46,7 @@ int here_doc_process(t_redirect *node, int hd_pipe[2])
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork() error!"), 1);
+	pc()->sigmode = HERE_DOC;
 	if (pid == 0)
 		hd_child_process(node, hd_pipe);
 	close(hd_pipe[1]);
@@ -63,14 +65,14 @@ int write_here_doc(t_redirect *file, int hd_idx)
 		if (node->type == 2)
 		{
 			pc()->exit_status = here_doc_process(node, hd_pipe);
-			if (sigint_detected)
+			if (sig_detect)
 				break ;
 		}
 		node = node->next;
 		if (node && node->type == 2)
 			close(hd_pipe[0]);
 	}
-	if (pc()->exit_status == 0)
+	if (!sig_detect)
 		pc()->fd.here_docs[hd_idx] = hd_pipe[0];
 	return (pc()->exit_status);
 }
@@ -89,7 +91,7 @@ int	here_docs_check(t_command *cmd)
 		if (node->has_hd == true)
 		{
 			pc()->exit_status = write_here_doc(node->infiles, hd_idx);
-			if (pc()->exit_status != 0)
+			if (sig_detect)
 				break ;
 			node->infiles->hd_fd = pc()->fd.here_docs[hd_idx++];
 		}

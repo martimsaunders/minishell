@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:05:14 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/22 15:55:07 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 14:59:06 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void single_cmd_child(t_command *cmd)
 	char **exec_env;
 	
 	signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_IGN);
 	exec_env = NULL;
 	close_fds();
 	if (!cmd->cmd)
@@ -70,10 +69,11 @@ int	single_command_process(t_command *cmd)
 			perror("fork() error!");
 			return (1);
 		}
+		pc()->sigmode = EXECVE;
 		if (pc()->pid == 0)
 			single_cmd_child(cmd);
 		waitpid(pc()->pid, &pc()->exit_status, 0);
-		pc()->exit_status = exit_status_return();
+		exit_status_return();
 	}
 	restore_fds(backup_stdin, backup_stdout);
 	return (pc()->exit_status);

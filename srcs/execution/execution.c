@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:12:54 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/22 18:23:09 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 15:11:30 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,12 @@ void reset_pc()
 	pc()->pid_array = 0;
 	pc()->processes = 0;
 	pc()->path = NULL;
+	pc()->sigmode = INPUT;
+	if (sig_detect)
+	{
+		sig_detect = 0;
+		write(STDOUT_FILENO, "\n", 1);
+	}
 }
 
 int	exit_status_return(void)
@@ -54,18 +60,20 @@ int	execution_process(t_command *cmd, char **env)
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
 	pc()->exit_status = here_docs_check(cmd);
-	if (!sigint_detected && pc()->list_size > 1)
+	if (pc()->sigmode != SIGNAL)
 	{
-		pc()->pid_array = ft_calloc(pc()->list_size + 1, sizeof(pid_t));
-		if (!pc()->pid_array)
-			total_exit("malloc error!!");
-		pc()->pid_array[pc()->list_size] = -1;
-		pc()->exit_status = pipe_command_process(cmd);
+		if (pc()->list_size > 1)
+		{
+			// pc()->pid_array = ft_calloc(pc()->list_size + 1, sizeof(pid_t));
+			// if (!pc()->pid_array)
+			// 	total_exit("malloc error!!");
+			// pc()->pid_array[pc()->list_size] = -1;
+			pc()->exit_status = pipe_command_process(cmd);
+		}
+		else if (pc()->list_size == 1)
+			pc()->exit_status = single_command_process(cmd);
 	}
-	else if (!sigint_detected && pc()->list_size == 1)
-		pc()->exit_status = single_command_process(cmd);
 	free_command_list(&cmd);
-	sigint_detected = 0;
 	reset_pc();
 	return (pc()->exit_status);
 }

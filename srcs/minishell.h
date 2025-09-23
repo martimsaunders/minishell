@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 18:04:33 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 15:03:27 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@
 
 # define ERRQUO "😵 minishell: syntax error: unexpected end of file\n"
 # define PARERR "😵 minishell: syntax error near unexpected token"
-
-extern int				sigint_detected;
 
 typedef struct s_parse_state
 {
@@ -91,6 +89,16 @@ typedef struct s_parse_error
 
 // execution structs
 
+typedef enum e_mode
+{
+	SIGNAL,
+	INPUT,
+	HERE_DOC,
+	EXECVE
+} t_mode;
+
+extern int sig_detect;
+
 typedef struct s_env
 {
 	char				*name;
@@ -118,6 +126,7 @@ typedef struct s_process
 	t_command			*cmd;
 	int					list_size;
 	t_env				*ms_env;
+	t_mode sigmode;
 }						t_process;
 
 int						mv(int set_value);
