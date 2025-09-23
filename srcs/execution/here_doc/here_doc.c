@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:04:58 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/23 14:58:54 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 18:43:14 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,21 @@ void	hd_child_process(t_redirect *file, int hd_fd[2])
 {
 	char	*line;
 	
-	signal(SIGINT, SIG_DFL);
+	init_signals_here_doc();
 	pc()->exit_status = 0;
 	line = NULL;
 	close(hd_fd[0]);
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || hd_strncmp(line, file->filename,
-				ft_strlen(file->filename)) == 0)
+		if (!line || hd_strncmp(line, file->filename, ft_strlen(file->filename)) == 0)
+		{
+			if (!line)
+				printf("bash: warning: here-document delimited by end-of-file (wanted `%s')\n", file->filename);
 			break ;
+		}
 		if (file->expand == 0)
-			expand_str(line);
+			line = expand_str(line);
 		ft_putendl_fd(line, hd_fd[1]);
 		free(line);
 	}

@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:03:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/18 14:57:06 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 19:04:34 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@ int	is_built_in(t_command *cmd)
 	size_t	size;
 
 	if (!cmd->cmd || !*cmd->cmd)
-		return (0);
+    {
+        pc()->exit_status = 0;
+		return (1);
+    }
 	size = ft_strlen(cmd->cmd);
 	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
 		pc()->exit_status = ft_echo(cmd);

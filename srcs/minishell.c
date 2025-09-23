@@ -6,12 +6,12 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/23 14:50:46 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 18:59:07 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/*
 static void	print_commands(t_command *commands)
 {
 	t_command	*current_cmd;
@@ -80,7 +80,7 @@ static void	print_commands(t_command *commands)
 		cmd_count++;
 	}
 }
-
+*/
 static int	handle_input(t_parse_state *state)
 {
 	state->input = readline("😎 MINISHELL$: ");
@@ -133,6 +133,7 @@ int	main(int argc, char **argv, char **env)
 		return (1);
 	init_signals();
 	ft_memset(&state, 0, sizeof(t_parse_state));
+	pc()->ms_env = create_env(env);
 	while (1)
 	{
 		status = handle_input(&state);
@@ -143,7 +144,7 @@ int	main(int argc, char **argv, char **env)
 			cmd = process_input(&state);
 			cleanup(&state);
 			// (void)env;
-			print_commands(cmd);
+			// print_commands(cmd);
 			if (cmd)
 				execution_process(cmd, env);
 		}
@@ -153,20 +154,7 @@ int	main(int argc, char **argv, char **env)
 
 /*
 NOTES:
-'' e command not found exit 1
 $a ignorado exit 0
 mas vem ambos como comando vazio, como destinguir?
 $a ls -> ls deve ser o comando e $a ignorado se nao houver expansao
 */
-
-/* 😎 MINISHELL$: << $USER cat
-=== Comando 1 ===
-CMD: cat
-ARGS: [cat] 
-INFILES: [$USER (heredoc) expand: 0] 
-OUTFILES: (null)
-PIPE_IN: 0, PIPE_OUT: 0
-
-> $PATH
-free(): double free detected in tcache 2
-�� */

@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/23 15:03:27 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 18:42:59 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,9 @@ typedef enum e_mode
 	INPUT,
 	HERE_DOC,
 	EXECVE
-} t_mode;
+}						t_mode;
 
-extern int sig_detect;
+extern int				sig_detect;
 
 typedef struct s_env
 {
@@ -126,7 +126,7 @@ typedef struct s_process
 	t_command			*cmd;
 	int					list_size;
 	t_env				*ms_env;
-	t_mode sigmode;
+	t_mode				sigmode;
 }						t_process;
 
 int						mv(int set_value);
@@ -172,7 +172,8 @@ t_command				*handle_world_token(t_command *current_cmd,
 							t_token *current_token);
 
 // execution functions
-void					init_signals();
+void					init_signals(void);
+void					init_signals_execve(void);
 int						execution_process(t_command *cmd, char **env);
 t_process				*pc(void);
 int						cmd_lstsize(t_command *lst);
@@ -218,10 +219,12 @@ void					create_exec_env(char **exec_env);
 
 // here doc
 int						here_docs_check(t_command *cmd);
-void					expand_str(char *line);
+char					*expand_str(char *line);
 int						hd_strncmp(const char *s1, const char *s2, size_t n);
 void					hd_child_process(t_redirect *file, int hd_fd[2]);
-bool has_here_docs(t_command *cmd);
+bool					has_here_docs(t_command *cmd);
+void					here_doc_handler(int sig);
+void					init_signals_here_doc(void);
 
 // single process
 int						single_command_process(t_command *cmd);
