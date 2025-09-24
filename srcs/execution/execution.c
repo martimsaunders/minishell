@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:12:54 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/22 16:17:35 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 16:30:37 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,53 +19,38 @@ t_process	*pc(void)
 	return (&pc);
 }
 
-int	cmd_lstsize(t_command *lst)
+void reset_pc()
 {
-	int	count;
-
-	count = 0;
-	while (lst)
+	close_fds();
+	pc()->cmd = NULL;
+	pc()->list_size = 0;
+	free(pc()->fd.here_docs);
+	pc()->fd.here_docs = 0;
+	free(pc()->pid_array);
+	pc()->pid_array = 0;
+	pc()->processes = 0;
+	pc()->path = NULL;
+	if (sig_detect)
 	{
-		count++;
-		lst = lst->next;
+		sig_detect = 0;
 	}
-	return (count);
-}
-
-int	is_built_in(t_command *cmd)
-{
-	size_t	size;
-
-	if (!cmd->cmd || !*cmd->cmd)
-		return (0);
-	size = ft_strlen(cmd->cmd);
-	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
-		pc()->exit_status = ft_echo(cmd);
-	else if (ft_strncmp(cmd->cmd, "cd", size) == 0)
-		pc()->exit_status = ft_cd(cmd);
-	else if (ft_strncmp(cmd->cmd, "pwd", size) == 0)
-		pc()->exit_status = ft_pwd();
-	else if (ft_strncmp(cmd->cmd, "export", size) == 0)
-		pc()->exit_status = ft_export(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "unset", size) == 0)
-		pc()->exit_status = ft_unset(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "env", size) == 0)
-		pc()->exit_status = ft_env(cmd);
-	else if (ft_strncmp(cmd->cmd, "exit", size) == 0)
-		ft_exit();
-	else
-		return (0);
-	return (1);
+	if (pc()->sigmode == HERE_DOC)
+		// write(STDOUT_FILENO, "\n", 1);
+	pc()->sigmode = INPUT;
 }
 
 int	exit_status_return(void)
 {
+	int exit_code;
+	
 	if (WIFEXITED(pc()->exit_status))
-		return (WEXITSTATUS(pc()->exit_status));
+		exit_code = WEXITSTATUS(pc()->exit_status);
 	else if (WIFSIGNALED(pc()->exit_status))
-		return (128 + WTERMSIG(pc()->exit_status));
+		exit_code = 128 + WTERMSIG(pc()->exit_status);
 	else
-		return (1);
+		exit_code = 1;
+	pc()->exit_status = exit_code;
+	return (exit_code);
 }
 
 int	execution_process(t_command *cmd, char **env)
@@ -75,21 +60,22 @@ int	execution_process(t_command *cmd, char **env)
 	pc()->cmd = cmd;
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
-	pc()->exit_status = create_here_doc(cmd);
-	if (pc()->exit_status != 0)
-		printf("Ctrl C!!!!\n");
-	if (pc()->list_size > 1)
+	pc()->exit_status = here_docs_check(cmd);
+	if (!sig_detect)
 	{
-		pc()->pid_array = ft_calloc(pc()->list_size + 1, sizeof(pid_t));
-		if (!pc()->pid_array)
-			total_exit("malloc error!!");
-		pc()->pid_array[pc()->list_size] = -1;
-		pc()->exit_status = pipe_command_process(cmd);
+		if (pc()->list_size > 1)
+		{
+			// pc()->pid_array = ft_calloc(pc()->list_size + 1, sizeof(pid_t));
+			// if (!pc()->pid_array)
+			// 	total_exit("malloc error!!");
+			// pc()->pid_array[pc()->list_size] = -1;
+			pc()->exit_status = pipe_command_process(cmd);
+		}
+		else if (pc()->list_size == 1)
+			pc()->exit_status = single_command_process(cmd);
 	}
-	else if (pc()->list_size == 1)
-		pc()->exit_status = single_command_process(cmd);
-	close_fds();
 	free_command_list(&cmd);
+	reset_pc();
 	return (pc()->exit_status);
 }
 
@@ -98,6 +84,6 @@ TESTS:
 single and multiple exec commands with and without redirects OK 
 built ins simple commands OK
 NOTES:
-here doc deve ser a primeira coisa a se fazer e nao roda nenhum processo em simultaneo
-erro em kill processes
+adicionar varavel enum que diz se estou num proc filho ou pai para o sigint ser executado de acordo
+reorganizar codigo geral e implementar saida correta de Ctrl C
 */

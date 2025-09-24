@@ -42,8 +42,6 @@
 # define ERRQUO "😵 minishell: syntax error: unexpected end of file\n"
 # define PARERR "😵 minishell: syntax error near unexpected token"
 
-extern int				signal_detected;
-
 typedef struct s_parse_state
 {
 	int					current;
@@ -91,6 +89,16 @@ typedef struct s_parse_error
 
 // execution structs
 
+typedef enum e_mode
+{
+	SIGNAL,
+	INPUT,
+	HERE_DOC,
+	EXECVE
+}						t_mode;
+
+extern int				sig_detect;
+
 typedef struct s_env
 {
 	char				*name;
@@ -118,6 +126,7 @@ typedef struct s_process
 	t_command			*cmd;
 	int					list_size;
 	t_env				*ms_env;
+	t_mode				sigmode;
 }						t_process;
 
 int						mv(int set_value);
@@ -164,6 +173,7 @@ t_command				*handle_world_token(t_command *current_cmd,
 
 // execution functions
 void					init_signals(void);
+void					init_signals_execve(void);
 int						execution_process(t_command *cmd, char **env);
 t_process				*pc(void);
 int						cmd_lstsize(t_command *lst);
@@ -208,10 +218,13 @@ void					process_exit(void);
 void					create_exec_env(char **exec_env);
 
 // here doc
-int						create_here_doc(t_command *cmd);
-void					expand_str(char *line);
+int						here_docs_check(t_command *cmd);
+char					*expand_str(char *line);
 int						hd_strncmp(const char *s1, const char *s2, size_t n);
 void					hd_child_process(t_redirect *file, int hd_fd[2]);
+bool					has_here_docs(t_command *cmd);
+void					here_doc_handler(int sig);
+void					init_signals_here_doc(void);
 
 // single process
 int						single_command_process(t_command *cmd);

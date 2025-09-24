@@ -6,11 +6,40 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:03:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/18 14:57:06 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/23 19:04:34 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
+
+int	is_built_in(t_command *cmd)
+{
+	size_t	size;
+
+	if (!cmd->cmd || !*cmd->cmd)
+    {
+        pc()->exit_status = 0;
+		return (1);
+    }
+	size = ft_strlen(cmd->cmd);
+	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
+		pc()->exit_status = ft_echo(cmd);
+	else if (ft_strncmp(cmd->cmd, "cd", size) == 0)
+		pc()->exit_status = ft_cd(cmd);
+	else if (ft_strncmp(cmd->cmd, "pwd", size) == 0)
+		pc()->exit_status = ft_pwd();
+	else if (ft_strncmp(cmd->cmd, "export", size) == 0)
+		pc()->exit_status = ft_export(cmd->args);
+	else if (ft_strncmp(cmd->cmd, "unset", size) == 0)
+		pc()->exit_status = ft_unset(cmd->args);
+	else if (ft_strncmp(cmd->cmd, "env", size) == 0)
+		pc()->exit_status = ft_env(cmd);
+	else if (ft_strncmp(cmd->cmd, "exit", size) == 0)
+		ft_exit();
+	else
+		return (0);
+	return (1);
+}
 
 int ft_echo(t_command *cmd)
 {
@@ -55,7 +84,7 @@ int ft_env(t_command *cmd)
     return (0);
 }
 
-int ft_pwd() //testar empty value
+int ft_pwd()
 {
     char pwd[1024];
 
