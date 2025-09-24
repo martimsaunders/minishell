@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 16:05:56 by praders           #+#    #+#             */
-/*   Updated: 2025/09/24 14:02:28 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:30:27 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ int	mv(int set_value)
 
 void	remove_empty_tokens(t_token **token_list)
 {
-	t_token *current;
-	t_token *prev;
-	t_token *temp;
+	t_token	*current;
+	t_token	*prev;
+	t_token	*temp;
 
 	current = *token_list;
 	prev = NULL;

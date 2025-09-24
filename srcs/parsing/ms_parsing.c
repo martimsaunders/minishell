@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 10:47:53 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/24 14:02:17 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:29:36 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,24 +52,23 @@ static int	process_space(t_parse_state *state, t_token **token_list)
 }
 
 static int	process_operator(t_parse_state *state, t_token **token_list,
-		int is_quoted)
+		int i_q)
 {
 	t_token	*new_token;
 	char	*token;
 
 	if (state->current > state->token_start)
 	{
-		token = extract_token(state, state->token_start, state->current,
-				&is_quoted);
+		token = extract_token(state, state->token_start, state->current, &i_q);
 		if (!token)
 			return (0);
-		new_token = create_token(token, 0, is_quoted);
+		new_token = create_token(token, 0, i_q);
 		if (!new_token)
 			return (0);
 		add_token_list(token_list, new_token);
 	}
 	if ((state->input[state->current] == '<' && state->input[state->current
-			+ 1] == '<') || (state->input[state->current] == '>'
+				+ 1] == '<') || (state->input[state->current] == '>'
 			&& state->input[state->current + 1] == '>'))
 	{
 		if (!process_operator2(state, 2, &new_token))
