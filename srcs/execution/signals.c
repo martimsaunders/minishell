@@ -6,85 +6,66 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:12:38 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/23 17:18:26 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 12:23:16 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int sig_detect = 0;
+int			sig_detect = 0;
 
-static void sig_handler(int sig)
+void	sig_handler(int sig)
 {
-    (void)sig;
-    sig_detect = 1;
-    if (pc()->sigmode == INPUT)
-    {
-        pc()->exit_status = 130;
-        sig_detect = 0;
-        write(STDOUT_FILENO, "\n", 1);
-        rl_replace_line("", 0);
-        rl_on_new_line();
-        rl_redisplay();
-    }
-    else if (pc()->sigmode == EXECVE)
-    {
-        write(STDOUT_FILENO, "\n", 1);
-        // pc()->sigmode = SIGNAL;
-    }
+	(void)sig;
+	sig_detect = 1;
+	if (pc()->sigmode == INPUT)
+	{
+		pc()->exit_status = 130;
+		sig_detect = 0;
+		write(STDOUT_FILENO, "\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
+	else if (pc()->sigmode == EXECVE)
+		write(STDOUT_FILENO, "\n", 1);
 }
 
-void here_doc_handler(int sig)
+static void	here_doc_handler(int sig)
 {
-    (void)sig;
-    write(STDOUT_FILENO, "\n", 1);
-    rl_replace_line("", 0);
-    rl_on_new_line();
-    // rl_redisplay();
-    pc()->exit_status = 130;
-    process_exit();
+	(void)sig;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	pc()->exit_status = 130;
+	process_exit();
 }
 
-void init_signals_here_doc()
+static void	execve_handler(int sig)
 {
-    struct sigaction sa;
-
-    sigemptyset(&sa.sa_mask);
-    sa.sa_handler = here_doc_handler;
-    sa.sa_flags = SA_RESTART;
-    sigaction(SIGINT, &sa, NULL);
-    signal(SIGQUIT, SIG_IGN);
+	(void)sig;
+	pc()->exit_status = 131;
+	process_exit();
 }
 
-void execve_handler(int sig)
+void	init_signals_here_doc(void)
 {
-    (void)sig;
-    // write(STDOUT_FILENO, "^\\Quit (core dumped)\n", 21);
-    pc()->exit_status = 131;
-    process_exit();
+	struct sigaction	sa;
+
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = here_doc_handler;
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+	signal(SIGQUIT, SIG_IGN);
 }
 
-void init_signals_execve()
+void	init_signals_execve(void)
 {
-    struct sigaction sa;
+	struct sigaction	sa;
 
-    sigemptyset(&sa.sa_mask);
-    sa.sa_handler = execve_handler;
-    sa.sa_flags = SA_RESTART;
-    sigaction(SIGQUIT, &sa, NULL);
-    signal(SIGINT, SIG_DFL);
-}
-
-
-
-void init_signals()
-{
-    struct sigaction sa;
-
-    sigemptyset(&sa.sa_mask);
-    sa.sa_handler = sig_handler;
-    sa.sa_flags = SA_RESTART;
-    sigaction(SIGINT, &sa, NULL);
-    signal(SIGQUIT, SIG_IGN);
-    pc()->sigmode = INPUT;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = execve_handler;
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGQUIT, &sa, NULL);
+	signal(SIGINT, SIG_DFL);
 }

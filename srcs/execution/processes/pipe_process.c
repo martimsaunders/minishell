@@ -6,11 +6,11 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:17:24 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/23 17:08:52 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 18:09:23 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../minishell.h"
 
 int	switch_pipe(void)
 {
@@ -24,17 +24,19 @@ int	switch_pipe(void)
 		perror("pipe() error!");
 		return (0);
 	}
+	// printf("current[0]- %i\n",pc()->fd.current[0]);
+	// printf("current[1]- %i\n",pc()->fd.current[1]);
 	return (1);
 }
 
-void redirect_pipe_handle(t_command *cmd)
+void	redirect_pipe_handle(t_command *cmd)
 {
 	if (cmd->infiles)
-		pc()->exit_status = open_infile(cmd->infiles);
+		pc()->exit_status = open_infile(cmd);
 	else if (cmd->is_pipe_in)
 		dup2(pc()->fd.previous[0], STDIN_FILENO);
 	if (cmd->outfiles)
-		pc()->exit_status = open_outfile(cmd->outfiles);
+		pc()->exit_status = open_outfile(cmd->infiles);
 	else if (cmd->is_pipe_out)
 		dup2(pc()->fd.current[1], STDOUT_FILENO);
 	if (pc()->exit_status == 1)
@@ -43,8 +45,8 @@ void redirect_pipe_handle(t_command *cmd)
 
 void	child_process(t_command *cmd)
 {
-	char **exec_env;
-	
+	char	**exec_env;
+
 	init_signals_execve();
 	exec_env = NULL;
 	redirect_pipe_handle(cmd);
@@ -59,6 +61,7 @@ void	child_process(t_command *cmd)
 	create_exec_env(exec_env);
 	execve(pc()->path, cmd->args, exec_env);
 	free_array(exec_env);
+	ft_putstr_fd("😵 ", 2);
 	if (!*cmd->cmd)
 		ft_putstr_fd("''", 2);
 	else
@@ -68,12 +71,12 @@ void	child_process(t_command *cmd)
 	process_exit();
 }
 
-int clear_forks(void)
+int	clear_forks(void)
 {
 	while (pc()->processes--)
 		wait(NULL);
 	perror("fork() error!");
-	return (1);	
+	return (1);
 }
 
 int	pipe_command_process(t_command *cmd)
@@ -88,7 +91,6 @@ int	pipe_command_process(t_command *cmd)
 		pc()->pid = fork();
 		if (pc()->pid == -1)
 			return (clear_forks());
-		// pc()->pid_array[pc()->processes] = pc()->pid;
 		pc()->processes++;
 		pc()->sigmode = EXECVE;
 		if (pc()->pid == 0)
@@ -100,5 +102,7 @@ int	pipe_command_process(t_command *cmd)
 	waitpid(pc()->pid, &pc()->exit_status, 0);
 	while (--pc()->processes)
 		wait(NULL);
+	if (exit_status_return() == 131)
+		ft_putendl_fd("😵 Quit (core dumped)", 2);
 	return (exit_status_return());
 }

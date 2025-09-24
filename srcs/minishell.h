@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 16:45:03 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 18:22:26 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ typedef struct s_redirect
 {
 	int					type;
 	bool				expand;
-	int					hd_fd;
 	char				*filename;
 	struct s_redirect	*next;
 }						t_redirect;
@@ -64,6 +63,7 @@ typedef struct s_command
 {
 	int					is_pipe_in;
 	int					is_pipe_out;
+	int					hd_fd;
 	bool				has_hd;
 	char				*cmd;
 	char				**args;
@@ -108,9 +108,11 @@ typedef struct s_env
 
 typedef struct s_fds
 {
-	int					*here_docs;
+	int					stdin_cpy;
+	int					stdout_cpy;
 	int					pipe1[2];
 	int					pipe2[2];
+	int					hd_fd[2];
 	int					*current;
 	int					*previous;
 }						t_fds;
@@ -119,7 +121,6 @@ typedef struct s_process
 {
 	t_fds				fd;
 	pid_t				pid;
-	pid_t				*pid_array;
 	int					processes;
 	int					exit_status;
 	char				*path;
@@ -172,13 +173,14 @@ t_command				*handle_world_token(t_command *current_cmd,
 							t_token *current_token);
 
 // execution functions
+void					sig_handler(int sig);
 void					init_signals(void);
 void					init_signals_execve(void);
-int						execution_process(t_command *cmd, char **env);
+int						execution_process(t_command *cmd);
 t_process				*pc(void);
-int						cmd_lstsize(t_command *lst);
 
 // t_env list
+int						cmd_lstsize(t_command *lst);
 t_env					*create_env(char **env);
 void					t_env_add_back(t_env **list, t_env *node);
 void					value_fill(t_env *node, char *str);
@@ -200,7 +202,7 @@ void					free_redirect_list(t_redirect **list);
 void					init_fds(void);
 void					ft_close(int *fd);
 void					close_fds(void);
-int						open_infile(t_redirect *infiles);
+int						open_infile(t_command *infiles);
 int						open_outfile(t_redirect *outfiles);
 
 // pipe process
@@ -221,9 +223,8 @@ void					create_exec_env(char **exec_env);
 int						here_docs_check(t_command *cmd);
 char					*expand_str(char *line);
 int						hd_strncmp(const char *s1, const char *s2, size_t n);
-void					hd_child_process(t_redirect *file, int hd_fd[2]);
+void					hd_child_process(t_redirect *file);
 bool					has_here_docs(t_command *cmd);
-void					here_doc_handler(int sig);
 void					init_signals_here_doc(void);
 
 // single process

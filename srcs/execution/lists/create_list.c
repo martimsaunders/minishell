@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_list.c                                         :+:      :+:    :+:   */
+/*   create_list.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 17:37:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/17 14:48:14 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 12:26:52 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void name_fill(t_env *node, char *str)
+void	name_fill(t_env *node, char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] && str[i] != '=')
@@ -31,10 +31,10 @@ void name_fill(t_env *node, char *str)
 	node->name[i] = '\0';
 }
 
-void value_fill(t_env *node, char *str)
+void	value_fill(t_env *node, char *str)
 {
-	char *value;
-	int i;
+	char	*value;
+	int		i;
 
 	value = ft_strchr(str, '=');
 	value++;
@@ -53,10 +53,10 @@ void value_fill(t_env *node, char *str)
 	node->value[i] = '\0';
 }
 
-t_env *create_env_node(char *str)
+t_env	*create_env_node(char *str)
 {
-	t_env *node;
-	
+	t_env	*node;
+
 	node = ft_calloc(1, sizeof(t_env));
 	if (!node)
 		total_exit("malloc() error!!");
@@ -66,25 +66,25 @@ t_env *create_env_node(char *str)
 	return (node);
 }
 
-void t_env_add_back(t_env **list, t_env *node)
+void	t_env_add_back(t_env **list, t_env *node)
 {
-    t_env *last;
+	t_env	*last;
 
-    if (*list == NULL)
+	if (*list == NULL)
 		*list = node;
-    else
-    {
-        last = *list;
-        while (last->next)
-            last = last->next;
-        last->next = node;
-    }
+	else
+	{
+		last = *list;
+		while (last->next)
+			last = last->next;
+		last->next = node;
+	}
 }
 
-t_env *create_env(char **env)
+t_env	*create_env(char **env)
 {
 	t_env	*ms_env;
-	t_env *node;
+	t_env	*node;
 	int		i;
 
 	ms_env = NULL;
@@ -92,7 +92,7 @@ t_env *create_env(char **env)
 	while (env[i])
 	{
 		node = create_env_node(env[i]);
-        t_env_add_back(&ms_env, node);
+		t_env_add_back(&ms_env, node);
 		i++;
 	}
 	return (ms_env);

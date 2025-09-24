@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/22 15:22:36 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 18:17:05 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,31 @@
 
 void	total_exit(char *msg)
 {
-	int i;
-	
 	perror(msg);
-	if (pc()->fd.here_docs)
-	{
-		i = 0;
-		while (pc()->fd.here_docs[i] != -1)
-			close(pc()->fd.here_docs[i++]);
-		free(pc()->fd.here_docs);
-	}
-	if (pc()->pid_array)
-		free(pc()->pid_array);
+	close_fds();
 	if (pc()->path)
 		free(pc()->path);
 	if (pc()->ms_env)
 		delete_t_env_list(&pc()->ms_env);
-	close_fds();
 	if (pc()->cmd)
 		free_command_list(&pc()->cmd);
+	clear_history();
 	exit(1);
+}
+
+void	process_exit(void)
+{
+	close(0);
+	close(1);
+	close_fds();
+	if (pc()->path)
+		free(pc()->path);
+	pc()->path = NULL;
+	if (pc()->ms_env)
+		delete_t_env_list(&pc()->ms_env);
+	free_command_list(&pc()->cmd);
+	clear_history();
+	exit(pc()->exit_status);
 }
 
 void	free_redirect_list(t_redirect **list)
@@ -65,6 +70,7 @@ void	free_command_list(t_command **list)
 	while (cmd)
 	{
 		node = cmd;
+		ft_close(&cmd->hd_fd);
 		if (cmd->cmd)
 			free(cmd->cmd);
 		if (cmd->args)
