@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:04:58 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/23 18:43:14 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:01:00 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	hd_child_process(t_redirect *file, int hd_fd[2])
 {
 	char	*line;
-	
+
 	init_signals_here_doc();
 	pc()->exit_status = 0;
 	line = NULL;
@@ -23,10 +23,12 @@ void	hd_child_process(t_redirect *file, int hd_fd[2])
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || hd_strncmp(line, file->filename, ft_strlen(file->filename)) == 0)
+		if (!line || hd_strncmp(line, file->filename,
+				ft_strlen(file->filename)) == 0)
 		{
 			if (!line)
-				printf("bash: warning: here-document delimited by end-of-file (wanted `%s')\n", file->filename);
+				printf("bash: warning: here-document delimited by end-of-file (wanted `%s')\n",
+					file->filename);
 			break ;
 		}
 		if (file->expand == 0)
@@ -40,10 +42,10 @@ void	hd_child_process(t_redirect *file, int hd_fd[2])
 	process_exit();
 }
 
-int here_doc_process(t_redirect *node, int hd_pipe[2])
+int	here_doc_process(t_redirect *node, int hd_pipe[2])
 {
 	pid_t	pid;
-	
+
 	if (pipe(hd_pipe) < 0)
 		return (perror("pipe() error!"), 1);
 	pid = fork();
@@ -57,11 +59,11 @@ int here_doc_process(t_redirect *node, int hd_pipe[2])
 	return (exit_status_return());
 }
 
-int write_here_doc(t_redirect *file, int hd_idx)
+int	write_here_doc(t_redirect *file, int hd_idx)
 {
-	int hd_pipe[2];
-	t_redirect *node;
-	
+	int			hd_pipe[2];
+	t_redirect	*node;
+
 	node = file;
 	while (node)
 	{
@@ -82,8 +84,8 @@ int write_here_doc(t_redirect *file, int hd_idx)
 
 int	here_docs_check(t_command *cmd)
 {
-	int hd_idx;
-	t_command *node;
+	int			hd_idx;
+	t_command	*node;
 
 	if (has_here_docs(cmd) == false)
 		return (pc()->exit_status);

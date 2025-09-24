@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*   execve_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 10:53:46 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/22 15:23:50 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:01:09 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ char	*cmd_path(char *cmd)
 
 void	process_exit(void)
 {
-	int i;
-	
+	int	i;
+
 	close(0);
 	close(1);
 	close_fds();
@@ -100,11 +100,12 @@ int	exec_env_array_fill(char **exec_env, int i)
 	return (0);
 }
 
-void create_exec_env(char **exec_env)
+char	**create_exec_env(void)
 {
 	t_env	*lst;
 	int		size;
 	int		i;
+	char	**exec_env;
 
 	size = 0;
 	lst = pc()->ms_env;
@@ -125,4 +126,5 @@ void create_exec_env(char **exec_env)
 			total_exit("malloc error!!");
 		}
 	}
+	return (exec_env);
 }

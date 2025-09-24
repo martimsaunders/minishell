@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/23 18:59:07 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:03:32 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 /*
 static void	print_commands(t_command *commands)
 {
@@ -46,11 +47,14 @@ static void	print_commands(t_command *commands)
 			while (current_redirect)
 			{
 				if (current_redirect->type == 2)
-					printf("[%s (heredoc) expand: %d] ", current_redirect->filename, current_redirect->expand);
+					printf("[%s (heredoc) expand: %d] ",
+						current_redirect->filename, current_redirect->expand);
 				else if (current_redirect->type == 1)
-					printf("[%s (input)] expand: %d] ", current_redirect->filename, current_redirect->expand);
+					printf("[%s (input)] expand: %d] ",
+						current_redirect->filename, current_redirect->expand);
 				else
-					printf("[%s (unknown) expand: %d] ", current_redirect->filename, current_redirect->expand);
+					printf("[%s (unknown) expand: %d] ",
+						current_redirect->filename, current_redirect->expand);
 				current_redirect = current_redirect->next;
 			}
 		}
@@ -67,7 +71,8 @@ static void	print_commands(t_command *commands)
 			while (current_redirect)
 			{
 				printf("[%s %s expand: %d] ", current_redirect->filename,
-					current_redirect->type == 1 ? "(overwrite)" : "(append)", current_redirect->expand);
+					current_redirect->type == 1 ? "(overwrite)" : "(append)",
+						current_redirect->expand);
 				current_redirect = current_redirect->next;
 			}
 		}
@@ -86,17 +91,16 @@ static int	handle_input(t_parse_state *state)
 	state->input = readline("😎 MINISHELL$: ");
 	if (!state->input)
 	{
-		return (0);
+		if (pc()->ms_env)
+			delete_t_env_list(&pc()->ms_env);
+		return (clear_history(), ft_putendl_fd("exit", STDOUT_FILENO), 0);
 	}
 	if (state->input[0] == '\0')
-	{
-		free(state->input);
-		return (1);
-	}
+		return (free(state->input), 1);
 	return (2);
 }
 
-static t_command *process_input(t_parse_state *state)
+static t_command	*process_input(t_parse_state *state)
 {
 	t_token		*tokens;
 	t_command	*cmds;
@@ -105,7 +109,7 @@ static t_command *process_input(t_parse_state *state)
 	if (!tokens)
 	{
 		pc()->exit_status = 1;
-		return NULL;
+		return (NULL);
 	}
 	cmds = tokens_to_commands(tokens);
 	if (mv(0) == 1)
@@ -126,7 +130,7 @@ int	main(int argc, char **argv, char **env)
 {
 	t_parse_state	state;
 	int				status;
-	t_command *cmd;
+	t_command		*cmd;
 
 	(void)argv;
 	if (argc != 1)
@@ -143,8 +147,6 @@ int	main(int argc, char **argv, char **env)
 		{
 			cmd = process_input(&state);
 			cleanup(&state);
-			// (void)env;
-			// print_commands(cmd);
 			if (cmd)
 				execution_process(cmd, env);
 		}

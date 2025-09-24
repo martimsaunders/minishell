@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fds_handle.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 11:37:27 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/22 15:18:41 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:01:17 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ int	open_infile(t_redirect *infiles)
 		if (file->type == 1)
 		{
 			pc()->fd.previous[0] = open(file->filename, O_RDONLY);
-		if (pc()->fd.previous[0] < 0)
-			return (perror(file->filename), 1);
+			if (pc()->fd.previous[0] < 0)
+				return (perror(file->filename), 1);
 		}
 		else if (file->type == 2)
 			pc()->fd.previous[0] = file->hd_fd;

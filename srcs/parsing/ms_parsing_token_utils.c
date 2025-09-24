@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 10:34:29 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 12:24:07 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:02:12 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ static char	*process_token(char *raw_token)
 	return (token);
 }
 
-char	*extract_token(t_parse_state *state, int start, int finish, int *is_quoted)
+char	*extract_token(t_parse_state *state, int start, int finish,
+		int *is_quoted)
 {
 	char	*raw_token;
 	char	*token;

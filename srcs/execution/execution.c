@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:12:54 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/23 16:30:37 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:01:14 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_process	*pc(void)
 	return (&pc);
 }
 
-void reset_pc()
+void	reset_pc(void)
 {
 	close_fds();
 	pc()->cmd = NULL;
@@ -36,13 +36,13 @@ void reset_pc()
 	}
 	if (pc()->sigmode == HERE_DOC)
 		// write(STDOUT_FILENO, "\n", 1);
-	pc()->sigmode = INPUT;
+		pc()->sigmode = INPUT;
 }
 
 int	exit_status_return(void)
 {
-	int exit_code;
-	
+	int	exit_code;
+
 	if (WIFEXITED(pc()->exit_status))
 		exit_code = WEXITSTATUS(pc()->exit_status);
 	else if (WIFSIGNALED(pc()->exit_status))
@@ -81,7 +81,7 @@ int	execution_process(t_command *cmd, char **env)
 
 /*
 TESTS:
-single and multiple exec commands with and without redirects OK 
+single and multiple exec commands with and without redirects OK
 built ins simple commands OK
 NOTES:
 adicionar varavel enum que diz se estou num proc filho ou pai para o sigint ser executado de acordo

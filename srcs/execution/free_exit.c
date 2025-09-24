@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_exit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:24:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/22 15:22:36 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:01:20 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	total_exit(char *msg)
 {
-	int i;
-	
+	int	i;
+
 	perror(msg);
 	if (pc()->fd.here_docs)
 	{

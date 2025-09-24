@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 16:45:03 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 11:31:17 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@ char					*path_validate(char *path, char *cmd);
 char					*cmd_path(char *cmd);
 int						exit_status_return(void);
 void					process_exit(void);
-void					create_exec_env(char **exec_env);
+char					**create_exec_env(void);
 
 // here doc
 int						here_docs_check(t_command *cmd);

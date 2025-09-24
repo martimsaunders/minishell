@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:04:16 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/18 15:01:27 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:00:53 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	ft_cd(t_command *cmd)
 {
 	int		cd;
 	char	pwd[1024];
-	char *home;
+	char	*home;
 
 	if (pc()->list_size > 2)
 	{
@@ -30,7 +30,7 @@ int	ft_cd(t_command *cmd)
 		if (!home)
 			total_exit("malloc error!!");
 		cd = chdir(home);
-		free (home);
+		free(home);
 	}
 	else
 		cd = chdir(cmd->args[1]);

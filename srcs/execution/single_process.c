@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single_process.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:05:14 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/23 17:20:30 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:01:28 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,31 +21,31 @@ int	single_command_fds_handle(t_command *cmd)
 	return (pc()->exit_status);
 }
 
-void single_cmd_child(t_command *cmd)
+void	single_cmd_child(t_command *cmd)
 {
-	char **exec_env;
-	
+	char	**exec_env;
+
 	init_signals_execve();
-	exec_env = NULL;
 	close_fds();
 	if (!cmd->cmd)
 		process_exit();
 	pc()->path = cmd_path(cmd->cmd);
 	if (!pc()->path)
 		total_exit("malloc() error!!");
-	create_exec_env(exec_env);
+	exec_env = create_exec_env();
 	execve(pc()->path, cmd->args, exec_env);
 	free_array(exec_env);
 	if (!*cmd->cmd)
 		ft_putstr_fd("''", 2);
 	else
 		ft_putstr_fd(cmd->cmd, 2);
-	ft_putendl_fd(": command not found", 2);;
+	ft_putendl_fd(": command not found", 2);
+	;
 	pc()->exit_status = 127;
 	process_exit();
 }
 
-void restore_fds(int backup_stdin, int backup_stdout)
+void	restore_fds(int backup_stdin, int backup_stdout)
 {
 	dup2(backup_stdin, STDIN_FILENO);
 	dup2(backup_stdout, STDOUT_FILENO);
@@ -55,9 +55,9 @@ void restore_fds(int backup_stdin, int backup_stdout)
 
 int	single_command_process(t_command *cmd)
 {
-	int backup_stdin;
-	int backup_stdout;
-	
+	int	backup_stdin;
+	int	backup_stdout;
+
 	backup_stdin = dup(STDIN_FILENO);
 	backup_stdout = dup(STDOUT_FILENO);
 	single_command_fds_handle(cmd);

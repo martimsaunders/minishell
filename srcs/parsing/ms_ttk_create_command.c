@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 13:27:33 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/22 16:39:03 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:02:20 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,8 @@ t_command	*create_command(void)
 	return (cmd);
 }
 
-int	add_redirect(t_redirect **head, char *filename, int is_quoted, int is_append)
+int	add_redirect(t_redirect **head, char *filename, int is_quoted,
+		int is_append)
 {
 	t_redirect	*new_redirect;
 	t_redirect	*current;

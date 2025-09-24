@@ -3,27 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing_protok_utils2.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:15:55 by praders           #+#    #+#             */
-/*   Updated: 2025/09/16 15:16:25 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/24 14:02:09 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int handle_dollar_count3(char *raw_token, int *i, int var_start)
+int	handle_dollar_count3(char *raw_token, int *i, int var_start)
 {
-	if (var_start == (*i) + 1 && (!raw_token[var_start] || raw_token[var_start] == ' '))
+	if (var_start == (*i) + 1 && (!raw_token[var_start]
+			|| raw_token[var_start] == ' '))
 		return (0);
 	else if ((var_start == (*i) + 1 && dq(2) != 0))
 		return (0);
 	return (1);
 }
 
-int handle_dollar_alloc3(char *raw_token, int *i, int var_start)
+int	handle_dollar_alloc3(char *raw_token, int *i, int var_start)
 {
-	if (var_start == (*i) + 1 && (!raw_token[var_start] || raw_token[var_start] == ' '))
+	if (var_start == (*i) + 1 && (!raw_token[var_start]
+			|| raw_token[var_start] == ' '))
 		return (0);
 	else if ((var_start == (*i) + 1 && dq(2) != 0))
 		return (0);

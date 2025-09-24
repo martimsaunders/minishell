@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing_protok_utils.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 15:02:17 by praders           #+#    #+#             */
-/*   Updated: 2025/09/17 18:40:36 by praders          ###   ########.fr       */
+/*   Updated: 2025/09/24 13:55:58 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	handle_dollar_count2(char *raw_token, int *i, int *size)
 		return (0);
 	ft_strlcpy(var_name, &raw_token[(*i) + 1], var_start - (*i));
 	var_name[var_start - (*i) - 1] = '\0';
-	env_value = getenv(var_name);
+	env_value = t_env_find_value(var_name);
 	if (env_value)
 		(*size) += ft_strlen(env_value);
 	free(var_name);
@@ -79,7 +79,7 @@ static int	handle_dollar_alloc2(char *token, char *raw_token, int *i,
 	if (!var_name)
 		return (0);
 	ft_strlcpy(var_name, &raw_token[(*i) + 1], var_start - (*i));
-	env_value = getenv(var_name);
+	env_value = t_env_find_value(var_name);
 	if (env_value)
 	{
 		ft_strlcpy(&token[(*size)], env_value, ft_strlen(env_value) + 1);

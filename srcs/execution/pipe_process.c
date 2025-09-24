@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_process.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/19 17:17:24 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/23 17:08:52 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/24 14:01:22 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	switch_pipe(void)
 	return (1);
 }
 
-void redirect_pipe_handle(t_command *cmd)
+void	redirect_pipe_handle(t_command *cmd)
 {
 	if (cmd->infiles)
 		pc()->exit_status = open_infile(cmd->infiles);
@@ -43,8 +43,8 @@ void redirect_pipe_handle(t_command *cmd)
 
 void	child_process(t_command *cmd)
 {
-	char **exec_env;
-	
+	char	**exec_env;
+
 	init_signals_execve();
 	exec_env = NULL;
 	redirect_pipe_handle(cmd);
@@ -56,7 +56,7 @@ void	child_process(t_command *cmd)
 	pc()->path = cmd_path(cmd->cmd);
 	if (!pc()->path)
 		total_exit("malloc() error!!");
-	create_exec_env(exec_env);
+	exec_env = create_exec_env();
 	execve(pc()->path, cmd->args, exec_env);
 	free_array(exec_env);
 	if (!*cmd->cmd)
@@ -68,12 +68,12 @@ void	child_process(t_command *cmd)
 	process_exit();
 }
 
-int clear_forks(void)
+int	clear_forks(void)
 {
 	while (pc()->processes--)
 		wait(NULL);
 	perror("fork() error!");
-	return (1);	
+	return (1);
 }
 
 int	pipe_command_process(t_command *cmd)
