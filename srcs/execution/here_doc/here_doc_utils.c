@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 16:53:30 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/24 14:19:44 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:09:14 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ bool	has_here_docs(t_command *cmd)
 {
 	t_command	*node;
 	int			hd_count;
+	int			*i;
 
 	hd_count = 0;
 	node = cmd;
@@ -27,7 +28,8 @@ bool	has_here_docs(t_command *cmd)
 	}
 	if (!hd_count)
 		return (false);
-	pc()->fd.here_docs = ft_calloc(hd_count + 1, sizeof(int));
+	i = ft_calloc(hd_count + 1, sizeof(int));
+	pc()->fd.here_docs = i;
 	if (!pc()->fd.here_docs)
 		total_exit("malloc() error");
 	pc()->fd.here_docs[hd_count] = -1;

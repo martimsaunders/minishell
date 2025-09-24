@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:12:54 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/24 14:01:14 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:11:38 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ void	reset_pc(void)
 	pc()->pid_array = 0;
 	pc()->processes = 0;
 	pc()->path = NULL;
-	if (sig_detect)
+	if (g_sig_detect)
 	{
-		sig_detect = 0;
+		g_sig_detect = 0;
 	}
 	if (pc()->sigmode == HERE_DOC)
 		// write(STDOUT_FILENO, "\n", 1);
@@ -61,7 +61,7 @@ int	execution_process(t_command *cmd, char **env)
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
 	pc()->exit_status = here_docs_check(cmd);
-	if (!sig_detect)
+	if (!g_sig_detect)
 	{
 		if (pc()->list_size > 1)
 		{

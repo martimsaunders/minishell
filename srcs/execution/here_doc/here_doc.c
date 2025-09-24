@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 16:04:58 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/24 14:01:00 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:11:38 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,14 @@ int	write_here_doc(t_redirect *file, int hd_idx)
 		if (node->type == 2)
 		{
 			pc()->exit_status = here_doc_process(node, hd_pipe);
-			if (sig_detect)
+			if (g_sig_detect)
 				break ;
 		}
 		node = node->next;
 		if (node && node->type == 2)
 			close(hd_pipe[0]);
 	}
-	if (!sig_detect)
+	if (!g_sig_detect)
 		pc()->fd.here_docs[hd_idx] = hd_pipe[0];
 	return (pc()->exit_status);
 }
@@ -96,7 +96,7 @@ int	here_docs_check(t_command *cmd)
 		if (node->has_hd == true)
 		{
 			pc()->exit_status = write_here_doc(node->infiles, hd_idx);
-			if (sig_detect)
+			if (g_sig_detect)
 				break ;
 			node->infiles->hd_fd = pc()->fd.here_docs[hd_idx++];
 		}

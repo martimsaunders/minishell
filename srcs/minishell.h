@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 12:09:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/24 11:31:17 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:11:38 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ typedef enum e_mode
 	EXECVE
 }						t_mode;
 
-extern int				sig_detect;
+extern int				g_sig_detect;
 
 typedef struct s_env
 {

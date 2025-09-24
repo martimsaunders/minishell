@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 11:37:27 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/24 14:15:17 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:07:06 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	close_fds(void)
 int	open_infile(t_redirect *infiles)
 {
 	t_redirect	*file;
+	int			i;
 
 	file = infiles;
 	pc()->exit_status = 0;
@@ -47,7 +48,8 @@ int	open_infile(t_redirect *infiles)
 	{
 		if (file->type == 1)
 		{
-			pc()->fd.previous[0] = open(file->filename, O_RDONLY);
+			i = open(file->filename, O_RDONLY);
+			pc()->fd.previous[0] = i;
 			if (pc()->fd.previous[0] < 0)
 				return (perror(file->filename), 1);
 		}
@@ -62,16 +64,21 @@ int	open_infile(t_redirect *infiles)
 int	open_outfile(t_redirect *outfiles)
 {
 	t_redirect	*file;
+	int			i;
 
 	file = outfiles;
 	while (file)
 	{
 		if (file->type == 1)
-			pc()->fd.current[1] = open(file->filename,
-					O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		{
+			i = open(file->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			pc()->fd.current[1] = i;
+		}
 		else if (file->type == 2)
-			pc()->fd.current[1] = open(file->filename,
-					O_WRONLY | O_CREAT | O_APPEND, 0644);
+		{
+			i = open(file->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			pc()->fd.current[1] = i;
+		}
 		if (pc()->fd.current[1] < 0)
 			return (perror(file->filename), 1);
 		file = file->next;

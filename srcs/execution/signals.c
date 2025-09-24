@@ -6,22 +6,22 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 17:12:38 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/24 14:01:52 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:11:38 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int			sig_detect = 0;
+int			g_sig_detect = 0;
 
 static void	sig_handler(int sig)
 {
 	(void)sig;
-	sig_detect = 1;
+	g_sig_detect = 1;
 	if (pc()->sigmode == INPUT)
 	{
 		pc()->exit_status = 130;
-		sig_detect = 0;
+		g_sig_detect = 0;
 		write(STDOUT_FILENO, "\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
