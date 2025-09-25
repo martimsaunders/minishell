@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 10:47:53 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/25 11:33:19 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 14:53:59 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int	process_space(t_parse_state *state, t_token **token_list)
 			return (0);
 		add_token_list(token_list, new_token);
 	}
-	while (state->input[state->current] == ' ')
+	while (is_ws(state->input, state->current))
 		state->current++;
 	state->token_start = state->current;
 	return (1);
@@ -111,7 +111,7 @@ t_token	*ms_parsing(t_parse_state *state)
 	{
 		if (is_quote(state->input[state->current]))
 			process_quote(state);
-		else if (state->input[state->current] == ' ' && state->in_quotes == 0)
+		else if (is_ws(state->input, state->current) && state->in_quotes == 0)
 		{
 			if (!process_space(state, &token_list))
 				malloc_exit(token_list, state);

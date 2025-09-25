@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 10:37:03 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/24 14:02:15 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/25 14:51:28 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@ int	is_quote(char c)
 	else if (c == '\'')
 		return (1);
 	return (0);
+}
+
+bool	is_ws(char *str, int i)
+{
+	if (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+		return (true);
+	return (false);
 }
 
 int	is_op(char c)

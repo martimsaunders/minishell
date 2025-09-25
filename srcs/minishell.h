@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:45 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 12:59:33 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 14:51:55 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@
 
 # define ERRQUO "😵 minishell: syntax error: unexpected end of file\n"
 # define PARERR "😵 minishell: syntax error near unexpected token"
-# define ERR_HD "😒 warning: here-document delimited \
+# define ERR_HD \
+	"😒 warning: here-document delimited \
 by end-of-file (wanted `%s')\n"
 
 typedef struct s_parse_state
@@ -154,6 +155,7 @@ int						ttc_redirects_out(t_command *current_cmd,
 							t_token **current_token, int type);
 int						handle_dollar_alloc(char *token, char *raw_token,
 							int *i, int *size);
+bool					is_ws(char *str, int i);
 char					**build_args_array(t_token *start);
 char					*extract_token(t_parse_state *state, int start,
 							int finish, int *is_quoted);
