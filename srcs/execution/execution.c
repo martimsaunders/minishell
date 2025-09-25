@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:06:17 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:07:04 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 18:28:04 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	reset_pc(void)
 	pc()->list_size = 0;
 	pc()->processes = 0;
 	pc()->path = NULL;
+	pc()->pid = 0;
 	if (g_sig_detect)
 		g_sig_detect = 0;
 	pc()->sigmode = INPUT;
@@ -61,7 +62,7 @@ int	execution_process(t_command *cmd)
 	pc()->cmd = cmd;
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
-	pc()->exit_status = here_docs_check(cmd);
+	here_docs_check(cmd);
 	if (!g_sig_detect)
 	{
 		if (pc()->list_size > 1)
@@ -74,3 +75,11 @@ int	execution_process(t_command *cmd)
 	reset_pc();
 	return (pc()->exit_status);
 }
+/*
+exit aceitar so argumantos numericos e exit status numero
+exit escreve sempre no terminal
+export nao pode ter sinais alem do =
+export nao aceita var a comecar por = nem numeros
+comando absoluto nao da command not found ou is a directory ou no such file or dir
+
+*/

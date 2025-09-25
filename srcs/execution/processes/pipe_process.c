@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:08:59 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 13:26:30 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 18:33:28 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,21 @@ int	switch_pipe(void)
 void	redirect_pipe_handle(t_command *cmd)
 {
 	if (cmd->infiles)
+	{
 		pc()->exit_status = open_infile(cmd);
+		if (pc()->exit_status == 1)
+			process_exit();
+	}
 	else if (cmd->is_pipe_in)
 		dup2(pc()->fd.previous[0], STDIN_FILENO);
 	if (cmd->outfiles)
-		pc()->exit_status = open_outfile(cmd->infiles);
+	{
+		pc()->exit_status = open_outfile(cmd->outfiles);
+		if (pc()->exit_status == 1)
+			process_exit();
+	}
 	else if (cmd->is_pipe_out)
 		dup2(pc()->fd.current[1], STDOUT_FILENO);
-	if (pc()->exit_status == 1)
-		total_exit(strerror(errno));
 }
 
 void	child_process(t_command *cmd)
@@ -59,12 +65,10 @@ void	child_process(t_command *cmd)
 	exec_env = create_exec_env();
 	execve(pc()->path, cmd->args, exec_env);
 	free_array(exec_env);
-	ft_putstr_fd("😴 ", 2);
 	if (!*cmd->cmd)
-		ft_putstr_fd("''", 2);
+		write(2, "😴 '': command not found\n", 28);
 	else
-		ft_putstr_fd(cmd->cmd, 2);
-	ft_putendl_fd(": command not found", 2);
+		ms_putendl_fd(cmd->cmd);
 	pc()->exit_status = 127;
 	process_exit();
 }
@@ -101,6 +105,6 @@ int	pipe_command_process(t_command *cmd)
 	while (--pc()->processes)
 		wait(NULL);
 	if (exit_status_return() == 131)
-		ft_putendl_fd("🙂‍↔️ Quit (core dumped)", 2);
-	return (exit_status_return());
+		ft_putendl_fd("😖 Quit (core dumped)", 2);
+	return (pc()->exit_status);
 }

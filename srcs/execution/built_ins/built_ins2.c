@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:17:36 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 12:53:46 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 18:09:09 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,27 @@ int	ft_cd(t_command *cmd)
 {
 	int		cd;
 	char	pwd[1024];
-	char	*home;
 
 	if (pc()->list_size > 2)
-	{
-		ft_putendl_fd("😤 cd: too many arguments", 2);
-		return (1);
-	}
-	getcwd(pwd, sizeof(pwd));
+		return (ft_putendl_fd("😤 cd: too many arguments", 2), 1);
+	if (!getcwd(pwd, sizeof(pwd)))
+		return (ft_putendl_fd("🤯 cd: error retrieving current directory: \
+getcwd: cannot access parent directories: No such file or directory", 2), 1);
 	if (cmd->args[1] == NULL)
 	{
-		home = ft_strjoin("/home/", t_env_find_value("USER"));
-		if (!home)
-			total_exit("malloc error!!");
-		cd = chdir(home);
-		free(home);
+		if (!t_env_has_name("HOME"))
+			return (ft_putendl_fd("🙄 cd: HOME not set", 2), 1);
+		cd = chdir(t_env_find_value("HOME"));
 	}
 	else
 		cd = chdir(cmd->args[1]);
 	if (cd == -1)
-		return (errno);
+		return (ft_putstr_fd("😬 cd: ", 2), perror(cmd->args[1]), 1);
 	update_env("OLDPWD", pwd);
-	update_env("PWD", getcwd(pwd, sizeof(pwd)));
+	if (!getcwd(pwd, sizeof(pwd)))
+		return (ft_putendl_fd("🤯 cd: error retrieving current directory: \
+getcwd: cannot access parent directories: No such file or directory", 2), 1);
+	update_env("PWD", pwd);
 	return (0);
 }
 
@@ -65,7 +64,7 @@ void	print_export_list(void)
 	node = pc()->ms_env;
 	while (node)
 	{
-		printf("declare -x %s=%s\n", node->name, node->value);
+		printf("declare -x %s=\"%s\"\n", node->name, node->value);
 		node = node->next;
 	}
 }

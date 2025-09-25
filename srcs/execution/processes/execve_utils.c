@@ -6,11 +6,30 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:07:23 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:08:01 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 15:31:24 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+void	ms_putendl_fd(char *s)
+{
+	char *new_line;
+	char *temp;
+	size_t i;
+
+	new_line = ft_strjoin("😴 ", s);
+	if (!new_line)
+		total_exit("malloc error");
+	temp = new_line;
+	new_line = ft_strjoin(temp, ": command not found\n");
+	free(temp);
+	if (!new_line)
+		total_exit("malloc error");
+	i = ft_strlen(new_line);
+	write(2, new_line, i);
+	free(new_line);
+}
 
 char	*path_validate(char *path, char *cmd)
 {

@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:45 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 12:59:33 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 16:44:39 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@
 
 # define ERRQUO "😵 minishell: syntax error: unexpected end of file\n"
 # define PARERR "😵 minishell: syntax error near unexpected token"
-# define ERR_HD "😒 warning: here-document delimited \
+# define ERR_HD \
+	"😒 warning: here-document delimited \
 by end-of-file (wanted `%s')\n"
 
 typedef struct s_parse_state
@@ -215,6 +216,7 @@ int						clear_forks(void);
 void					redirect_pipe_handle(t_command *cmd);
 
 // exec utils
+void					ms_putendl_fd(char *s);
 char					*path_validate(char *path, char *cmd);
 char					*cmd_path(char *cmd);
 int						exit_status_return(void);
@@ -231,7 +233,7 @@ void					init_signals_here_doc(void);
 
 // single process
 int						single_command_process(t_command *cmd);
-int						single_command_fds_handle(t_command *cmd);
+bool					single_command_fds_handle(t_command *cmd);
 void					single_cmd_child(t_command *cmd);
 int						is_built_in(t_command *cmd);
 

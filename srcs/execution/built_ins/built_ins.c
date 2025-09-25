@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:15:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 13:29:23 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 18:00:16 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,9 @@ int	ft_pwd(void)
 
 	if (getcwd(pwd, sizeof(pwd)))
 		printf("%s\n", pwd);
+	else
+		return (ft_putendl_fd("🤯 cd: error retrieving current directory: \
+getcwd: cannot access parent directories: No such file or directory", 2), 1);
 	return (0);
 }
 
