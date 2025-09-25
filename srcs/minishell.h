@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:45 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 10:57:51 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 12:59:33 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@
 
 # define ERRQUO "😵 minishell: syntax error: unexpected end of file\n"
 # define PARERR "😵 minishell: syntax error near unexpected token"
+# define ERR_HD "😒 warning: here-document delimited \
+by end-of-file (wanted `%s')\n"
 
 typedef struct s_parse_state
 {
@@ -156,7 +158,7 @@ char					**build_args_array(t_token *start);
 char					*extract_token(t_parse_state *state, int start,
 							int finish, int *is_quoted);
 void					free_args(char **args, int i);
-void					free_token_list(t_token *head);
+void					free_token_list(t_token *head, int i);
 void					free_command(t_command *command);
 void					free_commands(t_command *commands);
 void					free_redirects(t_redirect *redirects);

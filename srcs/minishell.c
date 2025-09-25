@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:59 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 10:58:34 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 13:35:07 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ static void	print_commands(t_command *commands)
 	}
 }
 */
+
 static int	handle_input(t_parse_state *state)
 {
 	state->input = readline("😎 minishell: ");
@@ -93,7 +94,7 @@ static int	handle_input(t_parse_state *state)
 	{
 		if (pc()->ms_env)
 			delete_t_env_list(&pc()->ms_env);
-		return (clear_history(), ft_putendl_fd("exit", STDOUT_FILENO), 0);
+		return (clear_history(), ft_putendl_fd("😉 exit", STDOUT_FILENO), 0);
 	}
 	if (state->input[0] == '\0')
 		return (free(state->input), 1);
@@ -107,16 +108,13 @@ static t_command	*process_input(t_parse_state *state)
 
 	tokens = ms_parsing(state);
 	if (!tokens)
-	{
-		pc()->exit_status = 1;
 		return (NULL);
-	}
 	cmds = tokens_to_commands(tokens);
 	if (mv(0) == 1)
 		malloc_exit(tokens, state);
 	else if (!cmds)
-		pc()->exit_status = 1;
-	return (free_token_list(tokens), cmds);
+		pc()->exit_status = 2;
+	return (free_token_list(tokens, 0), cmds);
 }
 
 static void	cleanup(t_parse_state *state)

@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:17:36 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:17:38 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 12:53:46 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ft_cd(t_command *cmd)
 
 	if (pc()->list_size > 2)
 	{
-		ft_putendl_fd("cd: too many arguments", 2);
+		ft_putendl_fd("😤 cd: too many arguments", 2);
 		return (1);
 	}
 	getcwd(pwd, sizeof(pwd));

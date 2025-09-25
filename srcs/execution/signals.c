@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:04:02 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:04:05 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 11:24:43 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int			g_sig_detect = 0;
 
-static void	sig_handler(int sig)
+void	sig_handler(int sig)
 {
 	(void)sig;
 	g_sig_detect = 1;

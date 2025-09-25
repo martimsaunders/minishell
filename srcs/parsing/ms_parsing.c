@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 10:47:53 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/24 14:29:36 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/25 11:33:19 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,6 @@ t_token	*ms_parsing(t_parse_state *state)
 	if (!process_last_word(state, &token_list))
 		malloc_exit(token_list, state);
 	else if (state->in_quotes != 0)
-		return (free_token_list(token_list), ft_putstr_fd(ERRQUO, 2), NULL);
+		return (free_token_list(token_list, 1), ft_putstr_fd(ERRQUO, 2), NULL);
 	return (remove_empty_tokens(&token_list), token_list);
 }

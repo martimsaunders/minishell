@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:11:12 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:15:08 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 13:08:43 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ void	hd_child_process(t_redirect *file)
 				ft_strlen(file->filename)) == 0)
 		{
 			if (!line)
-				printf("😵 warning: here-document delimited by end-of-file (wanted `%s')\n",
-					file->filename);
+				printf(ERR_HD, file->filename);
 			break ;
 		}
 		if (file->expand == 0)

@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:04:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:05:51 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 12:57:58 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	open_infile(t_command *cmd)
 			fd = open(file->filename, O_RDONLY);
 			pc()->fd.previous[0] = fd;
 			if (pc()->fd.previous[0] < 0)
-				return (ft_putstr_fd("😵 minishell: ", 2),
+				return (ft_putstr_fd("🤒 ", 2),
 					perror(file->filename), 1);
 		}
 		else if (file->type == 2)
@@ -94,7 +94,7 @@ int	open_outfile(t_redirect *outfiles)
 			fd = open(file->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		pc()->fd.current[1] = fd;
 		if (pc()->fd.current[1] < 0)
-			return (ft_putstr_fd("😵 minishell: ", 2), perror(file->filename),
+			return (ft_putstr_fd("🤒 ", 2), perror(file->filename),
 				1);
 		file = file->next;
 	}

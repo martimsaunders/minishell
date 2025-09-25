@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:08:59 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:09:05 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 13:26:30 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	child_process(t_command *cmd)
 	exec_env = create_exec_env();
 	execve(pc()->path, cmd->args, exec_env);
 	free_array(exec_env);
-	ft_putstr_fd("😵 ", 2);
+	ft_putstr_fd("😴 ", 2);
 	if (!*cmd->cmd)
 		ft_putstr_fd("''", 2);
 	else
@@ -101,6 +101,6 @@ int	pipe_command_process(t_command *cmd)
 	while (--pc()->processes)
 		wait(NULL);
 	if (exit_status_return() == 131)
-		ft_putendl_fd("😵 Quit (core dumped)", 2);
+		ft_putendl_fd("🙂‍↔️ Quit (core dumped)", 2);
 	return (exit_status_return());
 }

@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 16:02:51 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/15 15:41:17 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 11:34:31 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	free_args(char **args, int i)
 	free(args);
 }
 
-void	free_token_list(t_token *head)
+void	free_token_list(t_token *head, int i)
 {
 	t_token	*current;
 	t_token	*next;
@@ -83,4 +83,6 @@ void	free_token_list(t_token *head)
 		free(current);
 		current = next;
 	}
+	if (i == 1)
+		pc()->exit_status = 2;
 }

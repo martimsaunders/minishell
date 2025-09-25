@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:10:46 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:10:56 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 11:19:55 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ bool	has_here_docs(t_command *cmd)
 {
 	t_command	*node;
 	int			hd_count;
-	int			*i;
 
 	hd_count = 0;
 	node = cmd;

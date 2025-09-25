@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:15:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:15:57 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 13:29:23 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int	ft_env(t_command *cmd)
 
 	if (cmd->args[1] != NULL)
 	{
-		ft_putendl_fd("No arguments suported", 2);
+		ft_putendl_fd("😢 No arguments suported", 2);
 		return (1);
 	}
 	list = pc()->ms_env;
@@ -101,6 +101,7 @@ void	ft_exit(void)
 	if (pc()->cmd)
 		free_command_list(&pc()->cmd);
 	exit_value = exit_status_return();
-	printf("exit\n");
+	if (pc()->processes == 0)
+		printf("😉 exit\n");
 	exit(exit_value);
 }
