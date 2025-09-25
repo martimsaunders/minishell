@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/02 11:58:38 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/24 14:03:32 by mprazere         ###   ########.fr       */
+/*   Created: 2025/09/25 10:57:59 by mateferr          #+#    #+#             */
+/*   Updated: 2025/09/25 10:58:34 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ static void	print_commands(t_command *commands)
 */
 static int	handle_input(t_parse_state *state)
 {
-	state->input = readline("😎 MINISHELL$: ");
+	state->input = readline("😎 minishell: ");
 	if (!state->input)
 	{
 		if (pc()->ms_env)
@@ -148,15 +148,8 @@ int	main(int argc, char **argv, char **env)
 			cmd = process_input(&state);
 			cleanup(&state);
 			if (cmd)
-				execution_process(cmd, env);
+				execution_process(cmd);
 		}
 	}
 	return (0);
 }
-
-/*
-NOTES:
-$a ignorado exit 0
-mas vem ambos como comando vazio, como destinguir?
-$a ls -> ls deve ser o comando e $a ignorado se nao houver expansao
-*/

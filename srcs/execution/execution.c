@@ -3,14 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/03 15:12:54 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/24 15:11:38 by mprazere         ###   ########.fr       */
+/*   Created: 2025/09/25 11:06:17 by mateferr          #+#    #+#             */
+/*   Updated: 2025/09/25 11:07:04 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	init_signals(void)
+{
+	struct sigaction	sa;
+
+	sigemptyset(&sa.sa_mask);
+	sa.sa_handler = sig_handler;
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGINT, &sa, NULL);
+	signal(SIGQUIT, SIG_IGN);
+	pc()->sigmode = INPUT;
+}
 
 t_process	*pc(void)
 {
@@ -21,22 +33,13 @@ t_process	*pc(void)
 
 void	reset_pc(void)
 {
-	close_fds();
 	pc()->cmd = NULL;
 	pc()->list_size = 0;
-	free(pc()->fd.here_docs);
-	pc()->fd.here_docs = 0;
-	free(pc()->pid_array);
-	pc()->pid_array = 0;
 	pc()->processes = 0;
 	pc()->path = NULL;
 	if (g_sig_detect)
-	{
 		g_sig_detect = 0;
-	}
-	if (pc()->sigmode == HERE_DOC)
-		// write(STDOUT_FILENO, "\n", 1);
-		pc()->sigmode = INPUT;
+	pc()->sigmode = INPUT;
 }
 
 int	exit_status_return(void)
@@ -53,10 +56,8 @@ int	exit_status_return(void)
 	return (exit_code);
 }
 
-int	execution_process(t_command *cmd, char **env)
+int	execution_process(t_command *cmd)
 {
-	if (!pc()->ms_env)
-		pc()->ms_env = create_env(env);
 	pc()->cmd = cmd;
 	pc()->list_size = cmd_lstsize(cmd);
 	init_fds();
@@ -64,26 +65,12 @@ int	execution_process(t_command *cmd, char **env)
 	if (!g_sig_detect)
 	{
 		if (pc()->list_size > 1)
-		{
-			// pc()->pid_array = ft_calloc(pc()->list_size + 1, sizeof(pid_t));
-			// if (!pc()->pid_array)
-			// 	total_exit("malloc error!!");
-			// pc()->pid_array[pc()->list_size] = -1;
 			pc()->exit_status = pipe_command_process(cmd);
-		}
 		else if (pc()->list_size == 1)
 			pc()->exit_status = single_command_process(cmd);
 	}
+	close_fds();
 	free_command_list(&cmd);
 	reset_pc();
 	return (pc()->exit_status);
 }
-
-/*
-TESTS:
-single and multiple exec commands with and without redirects OK
-built ins simple commands OK
-NOTES:
-adicionar varavel enum que diz se estou num proc filho ou pai para o sigint ser executado de acordo
-reorganizar codigo geral e implementar saida correta de Ctrl C
-*/

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/15 16:03:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/24 14:00:51 by mprazere         ###   ########.fr       */
+/*   Created: 2025/09/25 11:15:55 by mateferr          #+#    #+#             */
+/*   Updated: 2025/09/25 11:15:57 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,7 @@ int	is_built_in(t_command *cmd)
 	size_t	size;
 
 	if (!cmd->cmd || !*cmd->cmd)
-	{
-		pc()->exit_status = 0;
-		return (1);
-	}
+		return (0);
 	size = ft_strlen(cmd->cmd);
 	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
 		pc()->exit_status = ft_echo(cmd);

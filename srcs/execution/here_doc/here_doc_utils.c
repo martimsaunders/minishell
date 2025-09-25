@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/18 16:53:30 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/24 15:09:14 by mprazere         ###   ########.fr       */
+/*   Created: 2025/09/25 11:10:46 by mateferr          #+#    #+#             */
+/*   Updated: 2025/09/25 11:10:56 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,13 @@ bool	has_here_docs(t_command *cmd)
 	node = cmd;
 	while (node)
 	{
+		node->hd_fd = -1;
 		if (node->has_hd == true)
 			hd_count++;
 		node = node->next;
 	}
-	if (!hd_count)
+	if (hd_count == 0)
 		return (false);
-	i = ft_calloc(hd_count + 1, sizeof(int));
-	pc()->fd.here_docs = i;
-	if (!pc()->fd.here_docs)
-		total_exit("malloc() error");
-	pc()->fd.here_docs[hd_count] = -1;
 	return (true);
 }
 
@@ -71,12 +67,15 @@ static char	*fill_new_line(char *begin, char *to_expand, char *end)
 	return (line);
 }
 
-static char	*modify_line(char *line, char *to_expand, int token_size)
+static char	*modify_line(char *line, char *to_expand, int token_size,
+		bool extit_status)
 {
 	char	*begin;
 	char	*end;
 	int		size;
 
+	if (extit_status)
+		return (free(line), ft_itoa(pc()->exit_status));
 	size = 0;
 	while (line[size] && line[size] != '$')
 		size++;
@@ -98,21 +97,25 @@ char	*expand_str(char *line)
 	int		size;
 	char	*exp;
 	char	*token;
-	char	*to_expand;
 
 	exp = ft_strchr(line, '$');
 	if (!exp)
 		return (line);
 	size = 0;
 	exp++;
-	while (exp[size] && ft_isalnum(exp[size]))
+	while (exp[size] && (ft_isalnum(exp[size]) || exp[size] == '?'))
 		size++;
 	if (size == 0)
 		return (line);
 	token = ft_substr(exp, 0, size);
 	if (!token)
 		return (free(line), total_exit("malloc error!!"), NULL);
-	to_expand = t_env_has_name(token);
+	if (size == 1 && ft_strncmp(token, "?", size) == 0)
+		line = modify_line(line, NULL, 1, true);
+	else
+		line = modify_line(line, t_env_has_name(token), size + 1, false);
 	free(token);
-	return (modify_line(line, to_expand, size + 1));
+	if (!line)
+		total_exit("malloc() error");
+	return (line);
 }

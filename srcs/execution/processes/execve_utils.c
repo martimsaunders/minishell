@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execve_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/04 10:53:46 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/24 14:01:09 by mprazere         ###   ########.fr       */
+/*   Created: 2025/09/25 11:07:23 by mateferr          #+#    #+#             */
+/*   Updated: 2025/09/25 11:08:01 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,31 +52,6 @@ char	*cmd_path(char *cmd)
 	if (!pathname)
 		return (ft_strdup(cmd));
 	return (pathname);
-}
-
-void	process_exit(void)
-{
-	int	i;
-
-	close(0);
-	close(1);
-	close_fds();
-	if (pc()->fd.here_docs)
-	{
-		i = 0;
-		while (pc()->fd.here_docs[i] != -1)
-			close(pc()->fd.here_docs[i++]);
-		free(pc()->fd.here_docs);
-	}
-	if (pc()->pid_array)
-		free(pc()->pid_array);
-	if (pc()->path)
-		free(pc()->path);
-	pc()->path = NULL;
-	if (pc()->ms_env)
-		delete_t_env_list(&pc()->ms_env);
-	free_command_list(&pc()->cmd);
-	exit(pc()->exit_status);
 }
 
 int	exec_env_array_fill(char **exec_env, int i)

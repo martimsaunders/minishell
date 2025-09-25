@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+         #
+#    By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/21 16:34:39 by mprazere          #+#    #+#              #
-#    Updated: 2025/09/22 12:10:27 by mprazere         ###   ########.fr        #
+#    Updated: 2025/09/24 12:30:45 by mateferr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,8 +27,8 @@ srcs/parsing/ms_parsing_protok_utils2.c \
 srcs/execution/built_ins/built_ins.c srcs/execution/built_ins/built_ins2.c \
 srcs/execution/processes/execve_utils.c srcs/execution/execution.c \
 srcs/execution/fds_handle.c srcs/execution/free_exit.c \
-srcs/execution/here_doc/here_doc.c srcs/execution/pipe_process.c \
-srcs/execution/single_process.c srcs/execution/lists/list_manage.c \
+srcs/execution/here_doc/here_doc.c srcs/execution/processes/pipe_process.c \
+srcs/execution/processes/single_process.c srcs/execution/lists/list_manage.c \
 srcs/execution/lists/create_list.c srcs/execution/here_doc/here_doc_utils.c \
 srcs/execution/signals.c
 
