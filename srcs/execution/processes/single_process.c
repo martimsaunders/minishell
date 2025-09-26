@@ -29,6 +29,33 @@ bool	single_command_fds_handle(t_command *cmd)
 	return (true);
 }
 
+void exec_fail(char	**exec_env, t_command *cmd)
+{
+	free_array(exec_env);
+	if (ft_strchr(cmd->cmd, '/'))
+	{
+		if (access(cmd->cmd, F_OK) != 0)
+		{
+			ms_putstr_fd("🤨 ", cmd->cmd, "No such file or directory\n", 2);
+			pc()->exit_status = 127;
+		}
+		else
+		{
+			ms_putstr_fd("🥸 ", cmd->cmd, "Is a directory\n", 2);
+			pc()->exit_status = 126;
+		}
+	}
+	else
+	{
+		if (!*cmd->cmd)
+			ms_putstr_fd("😴 ", "''", ": command not found\n", 2);
+		else
+			ms_putstr_fd("😴 ", cmd->cmd, ": command not found\n", 2);
+		pc()->exit_status = 127;
+	}
+	process_exit();
+}
+
 void	single_cmd_child(t_command *cmd)
 {
 	char	**exec_env;
@@ -42,15 +69,7 @@ void	single_cmd_child(t_command *cmd)
 		total_exit("malloc() error!!");
 	exec_env = create_exec_env();
 	execve(pc()->path, cmd->args, exec_env);
-	free_array(exec_env);
-	ft_putstr_fd("😴 ", 2);
-	if (!*cmd->cmd)
-		ft_putstr_fd("''", 2);
-	else
-		ft_putstr_fd(cmd->cmd, 2);
-	ft_putendl_fd(": command not found", 2);
-	pc()->exit_status = 127;
-	process_exit();
+	exec_fail(exec_env, cmd);
 }
 
 int	single_command_process(t_command *cmd)
@@ -63,10 +82,7 @@ int	single_command_process(t_command *cmd)
 		{
 			pc()->pid = fork();
 			if (pc()->pid == -1)
-			{
-				perror("fork() error!");
-				return (1);
-			}
+				return (perror("fork() error!"), 1);
 			pc()->sigmode = EXECVE;
 			if (pc()->pid == 0)
 				single_cmd_child(cmd);
@@ -77,7 +93,5 @@ int	single_command_process(t_command *cmd)
 	}
 	dup2(pc()->fd.stdin_cpy, STDIN_FILENO);
 	dup2(pc()->fd.stdout_cpy, STDOUT_FILENO);
-	ft_close(&pc()->fd.stdin_cpy);
-	ft_close(&pc()->fd.stdout_cpy);
 	return (pc()->exit_status);
 }

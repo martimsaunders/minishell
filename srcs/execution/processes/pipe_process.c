@@ -64,13 +64,7 @@ void	child_process(t_command *cmd)
 		total_exit("malloc() error!!");
 	exec_env = create_exec_env();
 	execve(pc()->path, cmd->args, exec_env);
-	free_array(exec_env);
-	if (!*cmd->cmd)
-		write(2, "😴 '': command not found\n", 28);
-	else
-		ms_putendl_fd(cmd->cmd);
-	pc()->exit_status = 127;
-	process_exit();
+	exec_fail(exec_env, cmd);
 }
 
 int	clear_forks(void)

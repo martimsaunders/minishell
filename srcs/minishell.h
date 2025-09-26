@@ -31,6 +31,7 @@
 # include <term.h>
 # include <termios.h>
 # include <unistd.h>
+# include <limits.h>
 
 # define WORD_TOKEN 0
 # define PIPE_TOKEN 1
@@ -216,7 +217,8 @@ int						clear_forks(void);
 void					redirect_pipe_handle(t_command *cmd);
 
 // exec utils
-void					ms_putendl_fd(char *s);
+void exec_fail(char	**exec_env, t_command *cmd);
+void					ms_putstr_fd(char *s1, char *s2, char *s3, int fd);
 char					*path_validate(char *path, char *cmd);
 char					*cmd_path(char *cmd);
 int						exit_status_return(void);
@@ -240,10 +242,10 @@ int						is_built_in(t_command *cmd);
 // built ins
 int						ft_echo(t_command *cmd);
 int						ft_env(t_command *cmd);
-void					ft_exit(void);
+void					ft_exit(char **args);
 int						ft_pwd(void);
 int						ft_cd(t_command *cmd);
-int						ft_export(char **args);
+void					ft_export(char **args);
 int						ft_unset(char **args);
 
 #endif

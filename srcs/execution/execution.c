@@ -76,10 +76,10 @@ int	execution_process(t_command *cmd)
 	return (pc()->exit_status);
 }
 /*
-exit aceitar so argumantos numericos e exit status numero
-exit escreve sempre no terminal
-export nao pode ter sinais alem do =
-export nao aceita var a comecar por = nem numeros
-comando absoluto nao da command not found ou is a directory ou no such file or dir
-
+verificar exit error exit status number
+export verificar exit code error
+comando absoluto exit codes verificar
+testtar mais built ins
+norme - ficheiros mais de 5 funcs
+refazer folha avl
 */

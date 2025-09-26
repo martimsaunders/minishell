@@ -12,22 +12,30 @@
 
 #include "../../minishell.h"
 
-void	ms_putendl_fd(char *s)
+void	ms_putstr_fd(char *s1, char *s2, char *s3, int fd)
 {
 	char *new_line;
 	char *temp;
 	size_t i;
 
-	new_line = ft_strjoin("😴 ", s);
-	if (!new_line)
-		total_exit("malloc error");
-	temp = new_line;
-	new_line = ft_strjoin(temp, ": command not found\n");
-	free(temp);
+	if (!s1 && !s2 && !s3)
+		return ;
+	if (!s2 && !s3)
+		new_line = ft_strdup(s1);
+	else
+	{
+		new_line = ft_strjoin(s1, s2);
+		if (s3)
+		{
+			temp = new_line;
+			new_line = ft_strjoin(temp, s3);
+			free(temp);
+		}
+	}
 	if (!new_line)
 		total_exit("malloc error");
 	i = ft_strlen(new_line);
-	write(2, new_line, i);
+	write(fd, new_line, i);
 	free(new_line);
 }
 
@@ -57,8 +65,6 @@ char	*cmd_path(char *cmd)
 
 	pathname = NULL;
 	path = NULL;
-	if (!cmd)
-		return (ft_strdup(""));
 	if (ft_strchr(cmd, '/') || t_env_has_name("PATH") == NULL)
 		return (ft_strdup(cmd));
 	path = ft_split(t_env_find_value("PATH"), ':');

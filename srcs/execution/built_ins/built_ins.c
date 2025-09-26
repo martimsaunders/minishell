@@ -26,13 +26,13 @@ int	is_built_in(t_command *cmd)
 	else if (ft_strncmp(cmd->cmd, "pwd", size) == 0)
 		pc()->exit_status = ft_pwd();
 	else if (ft_strncmp(cmd->cmd, "export", size) == 0)
-		pc()->exit_status = ft_export(cmd->args);
+		ft_export(cmd->args);
 	else if (ft_strncmp(cmd->cmd, "unset", size) == 0)
 		pc()->exit_status = ft_unset(cmd->args);
 	else if (ft_strncmp(cmd->cmd, "env", size) == 0)
 		pc()->exit_status = ft_env(cmd);
 	else if (ft_strncmp(cmd->cmd, "exit", size) == 0)
-		ft_exit();
+		ft_exit(cmd->args);
 	else
 		return (0);
 	return (1);
@@ -54,12 +54,13 @@ int	ft_echo(t_command *cmd)
 	}
 	while (cmd->args[i] != NULL)
 	{
-		printf("%s", cmd->args[i++]);
-		if (cmd->args[i])
-			printf(" ");
+		ms_putstr_fd(cmd->args[i], NULL, NULL, 1);
+		i++;
+		if (cmd->args[i] != NULL)
+			ms_putstr_fd(" ", NULL, NULL, 1);
 	}
 	if (new_line)
-		printf("\n");
+		ms_putstr_fd("\n", NULL, NULL, 1);
 	return (0);
 }
 
@@ -69,7 +70,7 @@ int	ft_env(t_command *cmd)
 
 	if (cmd->args[1] != NULL)
 	{
-		ft_putendl_fd("😢 No arguments suported", 2);
+		ms_putstr_fd("😢 No arguments suported\n", NULL, NULL, 2);
 		return (1);
 	}
 	list = pc()->ms_env;
@@ -88,23 +89,81 @@ int	ft_pwd(void)
 	if (getcwd(pwd, sizeof(pwd)))
 		printf("%s\n", pwd);
 	else
-		return (ft_putendl_fd("🤯 cd: error retrieving current directory: \
-getcwd: cannot access parent directories: No such file or directory", 2), 1);
+	{
+		ms_putstr_fd("🤯 cd: error retrieving current directory: \
+getcwd: cannot access parent directories: No such file or directory\n",
+ NULL, NULL, 2);
+		return (1);
+	}
 	return (0);
 }
 
-void	ft_exit(void)
+bool exit_check_overflow(long long value, int sig, int digit)
 {
-	int	exit_value;
+	if (sig == 1)
+	{
+		if (value > (LLONG_MAX - digit) / 10)
+			return (false);
+	}
+	else if (sig == -1)
+	{
+		if (value > (-(LLONG_MIN + digit) / 10))
+			return (false);
+	}
+	return (true);
+}
 
-	if (pc()->path)
-		free(pc()->path);
-	pc()->path = NULL;
-	close_fds();
-	if (pc()->cmd)
-		free_command_list(&pc()->cmd);
-	exit_value = exit_status_return();
+bool exit_argtoll(const char *arg)
+{
+	long long value;
+	unsigned char status;
+	int sig;
+
+	value = 0;
+	sig = 1;
+	while (*arg && ((*arg >= 9 && *arg <= 13) || *arg == 32))
+		arg++;
+	if (*arg == '+' || *arg == '-')
+		if (*arg++ == '-')
+			sig = -1;
+	while (*arg && *arg >= '0' && *arg <= '9')
+	{
+		if (exit_check_overflow(value, sig, *arg - '0') == false)
+			return (false);
+		value = value * 10 + (*arg++ - '0');
+	}
+	while (*arg && ((*arg >= 9 && *arg <= 13) || *arg == 32))
+		arg++;
+	if (*arg)
+		return (false);
+	value = value * sig;
+	status = (unsigned char)value;
+	pc()->exit_status = (int)status;
+	return (true);
+}
+
+void	ft_exit(char **args)
+{
 	if (pc()->processes == 0)
-		printf("😉 exit\n");
-	exit(exit_value);
+	{
+		dup2(pc()->fd.stdout_cpy, STDOUT_FILENO);
+		ms_putstr_fd("😉 exit\n", NULL, NULL, 1);
+	}
+	if (args[1] != NULL)
+	{
+		if (args[2] != NULL)
+		{
+			pc()->exit_status = 2;
+			ms_putstr_fd("😒 exit: ", "too many arguments\n", NULL, 2);
+		}
+		else
+		{
+			if (exit_argtoll(args[1]) == false)
+			{
+				ms_putstr_fd("😒 exit: ", args[1], ": numeric argument required\n", 2);
+				pc()->exit_status = 2;
+			}
+		}
+	}
+	process_exit();
 }
