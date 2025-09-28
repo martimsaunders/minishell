@@ -57,64 +57,6 @@ char	*t_env_has_name(char *str)
 	return (NULL);
 }
 
-void	print_export_list(void)
-{
-	t_env	*node;
-	char *line;
-	char *temp;
-	int i;
-
-	node = pc()->ms_env;
-	while (node)
-	{
-		line = ft_strjoin("declare -x ", node->name);
-		temp = line;
-		line = ft_strjoin(temp, "=\"");
-		free(temp);
-		temp = line;
-		line = ft_strjoin(temp, node->value);
-		free(temp);
-		temp = line;
-		line = ft_strjoin(temp, "\"\n");
-		free(temp);
-		if (!line)
-			total_exit("malloc error");
-		i = ft_strlen(line);
-		write(1, line, i);
-		free(line);
-		node = node->next;
-	}
-}
-
-bool export_check_var(char *arg)
-{
-	bool ret;
-	int i;
-
-	i = 0;
-	ret = true;
-	if (ft_isalpha(arg[i]) == 0 && arg[i] != '_')
-		ret = false;
-	i++;
-	while (arg[i] && ret == true)
-	{
-		if (ft_isalpha(arg[i]) == 0 && arg[i] != '_' && ft_isdigit(arg[i]) == 0 && arg[i] != '=')
-			ret = false;
-		i++;
-	}
-	if (ret == false)
-	{
-		pc()->exit_status = 1;
-		ms_putstr_fd("🤧 ", arg, " not a valid identifier\n", 2);
-	}
-	else
-	{
-		if (ft_strchr(arg, '=') == NULL)
-			ret = false;
-	}
-	return (ret);
-}
-
 void	ft_export(char **args)
 {
 	int		i;

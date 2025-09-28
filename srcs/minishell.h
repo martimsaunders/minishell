@@ -239,6 +239,12 @@ bool					single_command_fds_handle(t_command *cmd);
 void					single_cmd_child(t_command *cmd);
 int						is_built_in(t_command *cmd);
 
+// built ins utils
+bool exit_check_overflow(long long value, int sig, int digit);
+bool exit_argtoll(const char *arg);
+void	print_export_list(void);
+bool export_check_var(char *arg);
+
 // built ins
 int						ft_echo(t_command *cmd);
 int						ft_env(t_command *cmd);

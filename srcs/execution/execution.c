@@ -76,10 +76,9 @@ int	execution_process(t_command *cmd)
 	return (pc()->exit_status);
 }
 /*
-verificar exit error exit status number
+exit verificar error exit status number
 export verificar exit code error
 comando absoluto exit codes verificar
-testtar mais built ins
-norme - ficheiros mais de 5 funcs
+testar mais built ins
 refazer folha avl
 */
