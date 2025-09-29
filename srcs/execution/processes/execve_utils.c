@@ -6,11 +6,38 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:07:23 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 11:08:01 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/29 11:34:07 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+void	ms_putstr_fd(char *s1, char *s2, char *s3, int fd)
+{
+	char	*new_line;
+	char	*temp;
+	size_t	i;
+
+	if (!s1 && !s2 && !s3)
+		return ;
+	if (!s2 && !s3)
+		new_line = ft_strdup(s1);
+	else
+	{
+		new_line = ft_strjoin(s1, s2);
+		if (s3)
+		{
+			temp = new_line;
+			new_line = ft_strjoin(temp, s3);
+			free(temp);
+		}
+	}
+	if (!new_line)
+		total_exit("malloc error");
+	i = ft_strlen(new_line);
+	write(fd, new_line, i);
+	free(new_line);
+}
 
 char	*path_validate(char *path, char *cmd)
 {
@@ -38,8 +65,6 @@ char	*cmd_path(char *cmd)
 
 	pathname = NULL;
 	path = NULL;
-	if (!cmd)
-		return (ft_strdup(""));
 	if (ft_strchr(cmd, '/') || t_env_has_name("PATH") == NULL)
 		return (ft_strdup(cmd));
 	path = ft_split(t_env_find_value("PATH"), ':');

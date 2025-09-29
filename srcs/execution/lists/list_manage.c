@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:10:31 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 13:06:30 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/25 17:15:25 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int	update_env(char *name, char *value)
 	char	*temp;
 
 	if (!value)
+		return (1);
+	if (!t_env_has_name(name))
 		return (1);
 	size = ft_strlen(name);
 	node = pc()->ms_env;
