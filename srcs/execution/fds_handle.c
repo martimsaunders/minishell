@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:04:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 11:33:59 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/29 12:34:09 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ int	open_outfile(t_redirect *outfiles)
 	file = outfiles;
 	while (file)
 	{
+		ft_close(&pc()->fd.current[1]);
 		if (file->type == 1)
 			fd = open(file->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		else if (file->type == 2)

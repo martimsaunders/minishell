@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:15:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 11:37:00 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/29 12:00:32 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,11 @@ int	is_built_in(t_command *cmd)
 int	ft_echo(t_command *cmd)
 {
 	int	new_line;
-	int	size;
 	int	i;
 
 	new_line = 1;
 	i = 1;
-	size = ft_strlen(cmd->args[i]);
-	if (ft_strncmp(cmd->args[i], "-n", size) == 0 && size > 0)
+	while (ft_strncmp(cmd->args[i], "-n", 3) == 0)
 	{
 		new_line = 0;
 		i++;
