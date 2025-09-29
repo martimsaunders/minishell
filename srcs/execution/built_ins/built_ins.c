@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:15:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 18:00:16 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/29 11:37:00 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,9 @@ int	ft_pwd(void)
 	{
 		ms_putstr_fd("🤯 cd: error retrieving current directory: \
 getcwd: cannot access parent directories: No such file or directory\n",
- NULL, NULL, 2);
+			NULL,
+			NULL,
+			2);
 		return (1);
 	}
 	return (0);
@@ -109,14 +111,16 @@ void	ft_exit(char **args)
 	{
 		if (args[2] != NULL)
 		{
-			pc()->exit_status = 2;
+			pc()->exit_status = 1;
 			ms_putstr_fd("😒 exit: ", "too many arguments\n", NULL, 2);
+			return ;
 		}
 		else
 		{
 			if (exit_argtoll(args[1]) == false)
 			{
-				ms_putstr_fd("😒 exit: ", args[1], ": numeric argument required\n", 2);
+				ms_putstr_fd("😒 exit: ", args[1],
+					": numeric argument required\n", 2);
 				pc()->exit_status = 2;
 			}
 		}

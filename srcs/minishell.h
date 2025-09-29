@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:45 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 16:44:39 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/29 11:39:34 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <dirent.h>
 # include <errno.h>
 # include <fcntl.h>
+# include <limits.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
@@ -31,7 +32,6 @@
 # include <term.h>
 # include <termios.h>
 # include <unistd.h>
-# include <limits.h>
 
 # define WORD_TOKEN 0
 # define PIPE_TOKEN 1
@@ -42,9 +42,10 @@
 
 # define ERRQUO "😵 minishell: syntax error: unexpected end of file\n"
 # define PARERR "😵 minishell: syntax error near unexpected token"
-# define ERR_HD \
-	"😒 warning: here-document delimited \
+# define ERR_HD "😒 warning: here-document delimited \
 by end-of-file (wanted `%s')\n"
+# define ERR_CD "🤯 cd: error retrieving current directory: \
+getcwd: cannot access parent directories: No such file or directory"
 
 typedef struct s_parse_state
 {
@@ -217,7 +218,7 @@ int						clear_forks(void);
 void					redirect_pipe_handle(t_command *cmd);
 
 // exec utils
-void exec_fail(char	**exec_env, t_command *cmd);
+void					exec_fail(char **exec_env, t_command *cmd);
 void					ms_putstr_fd(char *s1, char *s2, char *s3, int fd);
 char					*path_validate(char *path, char *cmd);
 char					*cmd_path(char *cmd);
@@ -240,10 +241,11 @@ void					single_cmd_child(t_command *cmd);
 int						is_built_in(t_command *cmd);
 
 // built ins utils
-bool exit_check_overflow(long long value, int sig, int digit);
-bool exit_argtoll(const char *arg);
-void	print_export_list(void);
-bool export_check_var(char *arg);
+bool					exit_check_overflow(long long value, int sig,
+							int digit);
+bool					exit_argtoll(const char *arg);
+void					print_export_list(void);
+bool					export_check_var(char *arg);
 
 // built ins
 int						ft_echo(t_command *cmd);

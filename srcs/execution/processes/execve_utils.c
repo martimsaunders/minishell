@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:07:23 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 15:31:24 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/29 11:34:07 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	ms_putstr_fd(char *s1, char *s2, char *s3, int fd)
 {
-	char *new_line;
-	char *temp;
-	size_t i;
+	char	*new_line;
+	char	*temp;
+	size_t	i;
 
 	if (!s1 && !s2 && !s3)
 		return ;

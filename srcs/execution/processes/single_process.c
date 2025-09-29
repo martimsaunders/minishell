@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:09:21 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 18:33:18 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/29 11:34:13 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,19 @@ bool	single_command_fds_handle(t_command *cmd)
 	return (true);
 }
 
-void exec_fail(char	**exec_env, t_command *cmd)
+void	exec_fail(char **exec_env, t_command *cmd)
 {
 	free_array(exec_env);
 	if (ft_strchr(cmd->cmd, '/'))
 	{
 		if (access(cmd->cmd, F_OK) != 0)
 		{
-			ms_putstr_fd("🤨 ", cmd->cmd, "No such file or directory\n", 2);
+			ms_putstr_fd("🤨 ", cmd->cmd, ": No such file or directory\n", 2);
 			pc()->exit_status = 127;
 		}
 		else
 		{
-			ms_putstr_fd("🥸 ", cmd->cmd, "Is a directory\n", 2);
+			ms_putstr_fd("🥸 ", cmd->cmd, ": Is a directory\n", 2);
 			pc()->exit_status = 126;
 		}
 	}

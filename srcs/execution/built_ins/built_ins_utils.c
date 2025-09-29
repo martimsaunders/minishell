@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   built_ins_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/29 11:35:07 by mateferr          #+#    #+#             */
+/*   Updated: 2025/09/29 11:35:08 by mateferr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../minishell.h"
 
-bool exit_check_overflow(long long value, int sig, int digit)
+bool	exit_check_overflow(long long value, int sig, int digit)
 {
 	if (sig == 1)
 	{
@@ -15,11 +27,11 @@ bool exit_check_overflow(long long value, int sig, int digit)
 	return (true);
 }
 
-bool exit_argtoll(const char *arg)
+bool	exit_argtoll(const char *arg)
 {
-	long long value;
-	unsigned char status;
-	int sig;
+	long long		value;
+	unsigned char	status;
+	int				sig;
 
 	value = 0;
 	sig = 1;
@@ -47,9 +59,9 @@ bool exit_argtoll(const char *arg)
 void	print_export_list(void)
 {
 	t_env	*node;
-	char *line;
-	char *temp;
-	int i;
+	char	*line;
+	char	*temp;
+	int		i;
 
 	node = pc()->ms_env;
 	while (node)
@@ -73,26 +85,26 @@ void	print_export_list(void)
 	}
 }
 
-bool export_check_var(char *arg)
+bool	export_check_var(char *arg)
 {
-	bool ret;
-	int i;
+	bool	ret;
+	int		i;
 
 	i = 0;
 	ret = true;
 	if (ft_isalpha(arg[i]) == 0 && arg[i] != '_')
 		ret = false;
 	i++;
-	while (arg[i] && ret == true)
+	while (arg[i] && arg[i] != '=' && ret == true)
 	{
-		if (ft_isalpha(arg[i]) == 0 && arg[i] != '_' && ft_isdigit(arg[i]) == 0 && arg[i] != '=')
+		if (ft_isalpha(arg[i]) == 0 && arg[i] != '_' && ft_isdigit(arg[i]) == 0)
 			ret = false;
 		i++;
 	}
 	if (ret == false)
 	{
 		pc()->exit_status = 1;
-		ms_putstr_fd("🤧 ", arg, " not a valid identifier\n", 2);
+		ms_putstr_fd("🤧 export: `", arg, "': not a valid identifier\n", 2);
 	}
 	else
 	{

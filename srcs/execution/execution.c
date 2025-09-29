@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:06:17 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 18:28:04 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/29 11:33:09 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,3 @@ int	execution_process(t_command *cmd)
 	reset_pc();
 	return (pc()->exit_status);
 }
-/*
-exit verificar error exit status number
-export verificar exit code error
-comando absoluto exit codes verificar
-testar mais built ins
-refazer folha avl
-*/

@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:17:36 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/25 18:09:09 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/29 11:40:07 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ int	ft_cd(t_command *cmd)
 	if (pc()->list_size > 2)
 		return (ft_putendl_fd("😤 cd: too many arguments", 2), 1);
 	if (!getcwd(pwd, sizeof(pwd)))
-		return (ft_putendl_fd("🤯 cd: error retrieving current directory: \
-getcwd: cannot access parent directories: No such file or directory", 2), 1);
+		return (ft_putendl_fd(ERR_CD, 2), 1);
 	if (cmd->args[1] == NULL)
 	{
 		if (!t_env_has_name("HOME"))
@@ -34,8 +33,7 @@ getcwd: cannot access parent directories: No such file or directory", 2), 1);
 		return (ft_putstr_fd("😬 cd: ", 2), perror(cmd->args[1]), 1);
 	update_env("OLDPWD", pwd);
 	if (!getcwd(pwd, sizeof(pwd)))
-		return (ft_putendl_fd("🤯 cd: error retrieving current directory: \
-getcwd: cannot access parent directories: No such file or directory", 2), 1);
+		return (ft_putendl_fd(ERR_CD, 2), 1);
 	update_env("PWD", pwd);
 	return (0);
 }
@@ -66,6 +64,7 @@ void	ft_export(char **args)
 	i = 1;
 	if (!args[i])
 		print_export_list();
+	pc()->exit_status = 0;
 	while (args[i])
 	{
 		if (export_check_var(args[i]) == true)
@@ -79,7 +78,6 @@ void	ft_export(char **args)
 		}
 		i++;
 	}
-	pc()->exit_status = 0;
 }
 
 int	ft_unset(char **args)
