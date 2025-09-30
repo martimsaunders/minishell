@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 12:10:30 by praders           #+#    #+#             */
-/*   Updated: 2025/09/24 14:02:25 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/29 15:05:43 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ int	ttc_redirects_in(t_command *current_cmd, t_token **current_token, int type)
 		return (ft_putstr_fd(PARERR " `>'\n", 2), 0);
 	else if ((*current_token)->type == APPEND_TOKEN)
 		return (ft_putstr_fd(PARERR " `>>'\n", 2), 0);
-	current_cmd->has_hd = true;
+	if (type == 2)
+		current_cmd->has_hd = true;
 	if (!add_redirect(&current_cmd->infiles, (*current_token)->value,
 			(*current_token)->is_quoted, type))
 		return (0);

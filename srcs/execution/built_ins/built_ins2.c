@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:17:36 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 11:40:07 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/29 15:48:56 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_cd(t_command *cmd)
 	int		cd;
 	char	pwd[1024];
 
-	if (pc()->list_size > 2)
+	if (cmd->args[1] != NULL && cmd->args[2] != NULL)
 		return (ft_putendl_fd("😤 cd: too many arguments", 2), 1);
 	if (!getcwd(pwd, sizeof(pwd)))
 		return (ft_putendl_fd(ERR_CD, 2), 1);
