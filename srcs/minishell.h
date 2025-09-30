@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:45 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:29 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/30 15:10:32 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@
 # define ERR_HD \
 	"😒 warning: here-document delimited \
 by end-of-file (wanted `%s')\n"
-# define ERR_CD "🤯 cd: error retrieving current directory: \
+# define ERR_CD \
+	"🤯 cd: error retrieving current directory: \
 getcwd: cannot access parent directories: No such file or directory"
 
 typedef struct s_parse_state
@@ -141,6 +142,7 @@ int						dq(int set_value);
 int						hd(int set_value);
 int						is_quote(char c);
 int						is_op(char c);
+int						check_numandplica(char *raw_token, int *i);
 int						handle_dollar_count3(char *raw_token, int *i,
 							int var_start);
 int						handle_dollar_alloc3(char *raw_token, int *i,

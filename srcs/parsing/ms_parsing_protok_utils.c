@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 15:02:17 by praders           #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:21 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/30 15:04:41 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ int	handle_dollar_count(char *raw_token, int *i, int *size)
 		free(exit_str);
 		(*i) += 2;
 	}
+	else if (!check_numandplica(raw_token, i))
+		return (1);
 	else if (!handle_dollar_count2(raw_token, i, size))
 		return (0);
 	return (1);
@@ -105,6 +107,8 @@ int	handle_dollar_alloc(char *token, char *raw_token, int *i, int *size)
 	}
 	else
 	{
+		if (!check_numandplica(raw_token, i))
+			return (1);
 		if (!handle_dollar_alloc2(token, raw_token, i, size))
 			return (0);
 	}

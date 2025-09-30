@@ -6,13 +6,13 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:59 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:28 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/30 15:19:39 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
+/* 
 static void	print_commands(t_command *commands)
 {
 	t_command	*current_cmd;
@@ -85,7 +85,7 @@ static void	print_commands(t_command *commands)
 		cmd_count++;
 	}
 }
-*/
+ */
 
 static int	handle_input(t_parse_state *state)
 {

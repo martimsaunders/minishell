@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 16:05:56 by praders           #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:27 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/30 15:09:15 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,25 @@ void	remove_empty_tokens(t_token **token_list)
 			current = current->next;
 		}
 	}
+}
+
+int	check_numandplica(char *raw_token, int *i)
+{
+	int	var_start;
+
+	var_start = (*i) + 1;
+	if (dq(2) != 1)
+	{
+		if (raw_token[var_start] && (raw_token[var_start] == '\''
+				|| (!ft_isalpha(raw_token[var_start])
+					&& raw_token[var_start] != '_')))
+		{
+			if (raw_token[var_start] == '\'')
+				(*i) += 1;
+			else
+				(*i) += 2;
+			return (0);
+		}
+	}
+	return (1);
 }

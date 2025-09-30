@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:10:31 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:13 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/09/30 14:45:50 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,11 @@ char	*t_env_find_value(char *name)
 	t_env	*node;
 	size_t	size;
 
+	if (!*name)
+		return (NULL);
 	size = ft_strlen(name);
 	node = pc()->ms_env;
-	while (node && ft_strncmp(name, node->name, size) != 0)
+	while (node && ft_strncmp(name, node->name, size + 1) != 0)
 		node = node->next;
 	if (node)
 		return (node->value);
