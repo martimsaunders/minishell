@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/25 11:15:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:06 by mprazere         ###   ########.fr       */
+/*   Created: 2025/09/30 16:36:16 by mateferr          #+#    #+#             */
+/*   Updated: 2025/09/30 16:36:18 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,51 +14,53 @@
 
 int	is_built_in(t_command *cmd)
 {
-	size_t	size;
-
 	if (!cmd->cmd || !*cmd->cmd)
 		return (0);
-	size = ft_strlen(cmd->cmd);
-	if (ft_strncmp(cmd->cmd, "echo", size) == 0)
-		pc()->exit_status = ft_echo(cmd);
-	else if (ft_strncmp(cmd->cmd, "cd", size) == 0)
+	if (ft_strncmp(cmd->cmd, "echo", 5) == 0)
+		pc()->exit_status = ft_echo(cmd->args);
+	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
 		pc()->exit_status = ft_cd(cmd);
-	else if (ft_strncmp(cmd->cmd, "pwd", size) == 0)
+	else if (ft_strncmp(cmd->cmd, "pwd", 4) == 0)
 		pc()->exit_status = ft_pwd();
-	else if (ft_strncmp(cmd->cmd, "export", size) == 0)
+	else if (ft_strncmp(cmd->cmd, "export", 7) == 0)
 		ft_export(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "unset", size) == 0)
+	else if (ft_strncmp(cmd->cmd, "unset", 6) == 0)
 		pc()->exit_status = ft_unset(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "env", size) == 0)
+	else if (ft_strncmp(cmd->cmd, "env", 4) == 0)
 		pc()->exit_status = ft_env(cmd);
-	else if (ft_strncmp(cmd->cmd, "exit", size) == 0)
+	else if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
 		ft_exit(cmd->args);
 	else
 		return (0);
 	return (1);
 }
 
-int	ft_echo(t_command *cmd)
+int	ft_echo(char **args)
 {
 	int	new_line;
 	int	i;
+	int	j;
 
 	new_line = 1;
 	i = 1;
-	while (ft_strncmp(cmd->args[i], "-n", 3) == 0)
+	while (args[i])
 	{
-		new_line = 0;
+		if (args[i][0] == '-')
+		{
+			j = 1;
+			if (args[i][j] == '\0')
+				break ;
+			while (args[i][j] && args[i][j] == 'n')
+				j++;
+			if (args[i][j] != '\0')
+				break ;
+			new_line = 0;
+		}
+		else
+			break ;
 		i++;
 	}
-	while (cmd->args[i] != NULL)
-	{
-		ms_putstr_fd(cmd->args[i], NULL, NULL, 1);
-		i++;
-		if (cmd->args[i] != NULL)
-			ms_putstr_fd(" ", NULL, NULL, 1);
-	}
-	if (new_line)
-		ms_putstr_fd("\n", NULL, NULL, 1);
+	echo_print(args, i, new_line);
 	return (0);
 }
 
@@ -107,20 +109,18 @@ void	ft_exit(char **args)
 	}
 	if (args[1] != NULL)
 	{
+		if (exit_argtoll(args[1]) == false)
+		{
+			ms_putstr_fd("😒 exit: ", args[1], ": numeric argument required\n",
+				2);
+			pc()->exit_status = 2;
+			process_exit();
+		}
 		if (args[2] != NULL)
 		{
 			pc()->exit_status = 1;
 			ms_putstr_fd("😒 exit: ", "too many arguments\n", NULL, 2);
 			return ;
-		}
-		else
-		{
-			if (exit_argtoll(args[1]) == false)
-			{
-				ms_putstr_fd("😒 exit: ", args[1],
-					": numeric argument required\n", 2);
-				pc()->exit_status = 2;
-			}
 		}
 	}
 	process_exit();

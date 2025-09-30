@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/29 11:35:07 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:05 by mprazere         ###   ########.fr       */
+/*   Created: 2025/09/30 16:36:29 by mateferr          #+#    #+#             */
+/*   Updated: 2025/09/30 16:36:31 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,4 +112,17 @@ bool	export_check_var(char *arg)
 			ret = false;
 	}
 	return (ret);
+}
+
+void	echo_print(char **args, int i, int new_line)
+{
+	while (args[i] != NULL)
+	{
+		ms_putstr_fd(args[i], NULL, NULL, 1);
+		i++;
+		if (args[i] != NULL)
+			ms_putstr_fd(" ", NULL, NULL, 1);
+	}
+	if (new_line)
+		ms_putstr_fd("\n", NULL, NULL, 1);
 }

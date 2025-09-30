@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/25 10:57:45 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/30 15:10:32 by mprazere         ###   ########.fr       */
+/*   Created: 2025/09/30 16:36:57 by mateferr          #+#    #+#             */
+/*   Updated: 2025/09/30 16:36:59 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,9 +250,10 @@ bool					exit_check_overflow(long long value, int sig,
 bool					exit_argtoll(const char *arg);
 void					print_export_list(void);
 bool					export_check_var(char *arg);
+void					echo_print(char **args, int i, int nem_line);
 
 // built ins
-int						ft_echo(t_command *cmd);
+int						ft_echo(char **args);
 int						ft_env(t_command *cmd);
 void					ft_exit(char **args);
 int						ft_pwd(void);
