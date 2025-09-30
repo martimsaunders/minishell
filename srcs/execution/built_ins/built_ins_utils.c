@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:35:07 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 11:35:08 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/30 13:23:04 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,4 +112,17 @@ bool	export_check_var(char *arg)
 			ret = false;
 	}
 	return (ret);
+}
+
+void	echo_print(char **args, int i, int new_line)
+{
+	while (args[i] != NULL)
+	{
+		ms_putstr_fd(args[i], NULL, NULL, 1);
+		i++;
+		if (args[i] != NULL)
+			ms_putstr_fd(" ", NULL, NULL, 1);
+	}
+	if (new_line)
+		ms_putstr_fd("\n", NULL, NULL, 1);
 }

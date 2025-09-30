@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:45 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 11:42:14 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/09/30 13:23:21 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@
 # define ERR_HD \
 	"😒 warning: here-document delimited \
 by end-of-file (wanted `%s')\n"
-# define ERR_CD "🤯 cd: error retrieving current directory: \
+# define ERR_CD \
+	"🤯 cd: error retrieving current directory: \
 getcwd: cannot access parent directories: No such file or directory"
 
 typedef struct s_parse_state
@@ -248,9 +249,10 @@ bool					exit_check_overflow(long long value, int sig,
 bool					exit_argtoll(const char *arg);
 void					print_export_list(void);
 bool					export_check_var(char *arg);
+void					echo_print(char **args, int i, int nem_line);
 
 // built ins
-int						ft_echo(t_command *cmd);
+int						ft_echo(char **args);
 int						ft_env(t_command *cmd);
 void					ft_exit(char **args);
 int						ft_pwd(void);

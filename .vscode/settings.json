@@ -3,6 +3,11 @@
         "minishell.h": "c",
         "errno.h": "c",
         "type_traits": "c",
-        "utility": "c"
+        "utility": "c",
+        "array": "c",
+        "string_view": "c",
+        "format": "c",
+        "initializer_list": "c",
+        "span": "c"
     }
 }
