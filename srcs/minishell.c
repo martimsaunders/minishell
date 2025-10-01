@@ -6,13 +6,13 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:59 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/30 15:19:39 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/01 14:48:25 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/* 
+/*
 static void	print_commands(t_command *commands)
 {
 	t_command	*current_cmd;
@@ -72,6 +72,27 @@ static void	print_commands(t_command *commands)
 			{
 				printf("[%s %s expand: %d] ", current_redirect->filename,
 					current_redirect->type == 1 ? "(overwrite)" : "(append)",
+						current_redirect->expand);
+				current_redirect = current_redirect->next;
+			}
+		}
+		printf("\n");
+		// Imprimir flags de pipe
+		printf("PIPE_IN: %d, PIPE_OUT: %d\n", current_cmd->is_pipe_in,
+			current_cmd->is_pipe_out);
+		printf("\n");
+		printf("FALSE REDIRECTS: ");
+		current_redirect = current_cmd->false_exports;
+		if (!current_redirect)
+		{
+			printf("(null)");
+		}
+		else
+		{
+			while (current_redirect)
+			{
+				printf("[%s %s expand: %d] ", current_redirect->filename,
+					current_redirect->type == 1 ? "(substitute)" : "(add)",
 						current_redirect->expand);
 				current_redirect = current_redirect->next;
 			}

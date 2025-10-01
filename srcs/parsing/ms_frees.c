@@ -6,7 +6,7 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 16:02:51 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:20 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/01 14:22:27 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ void	free_command(t_command *command)
 		free_redirects(command->infiles);
 	if (command->outfiles)
 		free_redirects(command->outfiles);
+	if (command->false_exports)
+		free_redirects(command->false_exports);
 	free(command);
 }
 

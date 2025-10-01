@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 16:36:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/30 16:36:59 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 14:18:58 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ typedef struct s_command
 	bool				has_hd;
 	char				*cmd;
 	char				**args;
+	t_redirect			*false_exports;
 	t_redirect			*infiles;
 	t_redirect			*outfiles;
 	struct s_command	*next;
@@ -137,11 +138,12 @@ typedef struct s_process
 	t_mode				sigmode;
 }						t_process;
 
+int						is_op(char c);
 int						mv(int set_value);
 int						dq(int set_value);
 int						hd(int set_value);
 int						is_quote(char c);
-int						is_op(char c);
+int						check_cmd_export(char *cmd);
 int						check_numandplica(char *raw_token, int *i);
 int						handle_dollar_count3(char *raw_token, int *i,
 							int var_start);

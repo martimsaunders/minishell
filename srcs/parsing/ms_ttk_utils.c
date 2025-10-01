@@ -6,16 +6,58 @@
 /*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 12:10:30 by praders           #+#    #+#             */
-/*   Updated: 2025/09/29 15:05:43 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/01 14:48:11 by mprazere         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+int	check_cmd_export(char *cmd)
+{
+	int	i;
+
+	i = -1;
+	if (!cmd)
+		return (0);
+	if (!ft_isalpha(cmd[0]) && cmd[0] != '_')
+		return (0);
+	while (cmd[++i])
+	{
+		if (!ft_isalnum(cmd[i]) && cmd[i] != '_')
+		{
+			if (cmd[i] == '+')
+			{
+				if (cmd[i + 1] != '=')
+					return (0);
+				else
+					return (2);
+			}
+			else if (cmd[i] == '=')
+				return (1);
+			else
+				return (0);
+		}
+	}
+	return (0);
+}
+
 t_command	*handle_world_token(t_command *current_cmd, t_token *current_token)
 {
+	int	i;
+
 	if (current_cmd->cmd == NULL)
 	{
+		if (current_token->is_quoted != 1)
+		{
+			i = check_cmd_export(current_token->value);
+			if (i != 0)
+			{
+				if (!add_redirect(&current_cmd->false_exports,
+						current_token->value, current_token->is_quoted, i))
+					return (NULL);
+				return (current_cmd);
+			}
+		}
 		current_cmd->cmd = ft_strdup(current_token->value);
 		if (!current_cmd->cmd)
 			return (mv(1), NULL);
