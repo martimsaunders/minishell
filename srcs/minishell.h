@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 16:36:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/30 16:36:59 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 13:51:09 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct s_redirect
 
 typedef struct s_command
 {
+	t_redirect			*false_exps;
 	int					is_pipe_in;
 	int					is_pipe_out;
 	int					hd_fd;
@@ -108,6 +109,7 @@ extern int				g_sig_detect;
 
 typedef struct s_env
 {
+	bool				exported;
 	char				*name;
 	char				*value;
 	struct s_env		*next;
@@ -196,7 +198,7 @@ void					value_fill(t_env *node, char *str);
 void					name_fill(t_env *node, char *str);
 void					delete_t_env_list(t_env **list);
 t_env					*create_env_node(char *str);
-int						update_env(char *name, char *value);
+int						update_env(char *name, char *value, int op);
 void					remove_env(char *name);
 char					*t_env_find_value(char *name);
 char					*t_env_has_name(char *str);

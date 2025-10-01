@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 16:35:12 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/30 16:35:14 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 16:17:21 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,30 +40,28 @@ void	delete_t_env_list(t_env **list)
 	*list = NULL;
 }
 
-int	update_env(char *name, char *value)
+int	update_env(char *name, char *value, int op)
 {
 	t_env	*node;
 	size_t	size;
 	char	*temp;
 
-	if (!value)
-		return (1);
-	if (!t_env_has_name(name))
+	if (!value || !t_env_has_name(name))
 		return (1);
 	size = ft_strlen(name);
 	node = pc()->ms_env;
-	while (node && ft_strncmp(node->name, name, size) != 0)
+	while (node && ft_strncmp(node->name, name, size + 1) != 0)
 		node = node->next;
-	if (node)
-	{
-		temp = node->value;
+	node->exported = true;
+	temp = node->value;
+	if (op == 1)
 		node->value = ft_strdup(value);
-		free(temp);
-		if (!node->value)
-			total_exit("malloc_error!!");
-		return (0);
-	}
-	return (1);
+	else if (op == 2)
+		node->value = ft_strjoin(node->value, value);
+	free(temp);
+	if (!node->value)
+		total_exit("malloc_error!!");
+	return (0);
 }
 
 void	remove_env(char *name)

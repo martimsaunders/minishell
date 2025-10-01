@@ -6,7 +6,7 @@
 #    By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/21 16:34:39 by mprazere          #+#    #+#              #
-#    Updated: 2025/09/30 16:30:21 by mateferr         ###   ########.fr        #
+#    Updated: 2025/10/01 16:16:42 by mateferr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ srcs/execution/here_doc/here_doc.c srcs/execution/processes/pipe_process.c \
 srcs/execution/processes/single_process.c srcs/execution/lists/list_manage.c \
 srcs/execution/lists/create_list.c srcs/execution/here_doc/here_doc_utils.c \
 srcs/execution/signals.c srcs/execution/built_ins/built_ins_utils.c \
-srcs/execution/here_doc/here_doc_exp.c
+srcs/execution/here_doc/here_doc_exp.c srcs/execution/built_ins/ft_export.c
 
 OBJS = $(SRCS:.c=.o)
 

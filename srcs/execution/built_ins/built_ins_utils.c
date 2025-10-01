@@ -6,123 +6,38 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 16:36:29 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/30 16:36:31 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 16:18:28 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-bool	exit_check_overflow(long long value, int sig, int digit)
+void	ft_false_exp(t_redirect *vars)
 {
-	if (sig == 1)
-	{
-		if (value > (LLONG_MAX - digit) / 10)
-			return (false);
-	}
-	else if (sig == -1)
-	{
-		if (value > (-(LLONG_MIN + digit) / 10))
-			return (false);
-	}
-	return (true);
+	(void)vars;
 }
 
-bool	exit_argtoll(const char *arg)
+int	is_built_in(t_command *cmd)
 {
-	long long		value;
-	unsigned char	status;
-	int				sig;
-
-	value = 0;
-	sig = 1;
-	while (*arg && ((*arg >= 9 && *arg <= 13) || *arg == 32))
-		arg++;
-	if (*arg == '+' || *arg == '-')
-		if (*arg++ == '-')
-			sig = -1;
-	while (*arg && *arg >= '0' && *arg <= '9')
-	{
-		if (exit_check_overflow(value, sig, *arg - '0') == false)
-			return (false);
-		value = value * 10 + (*arg++ - '0');
-	}
-	while (*arg && ((*arg >= 9 && *arg <= 13) || *arg == 32))
-		arg++;
-	if (*arg)
-		return (false);
-	value = value * sig;
-	status = (unsigned char)value;
-	pc()->exit_status = (int)status;
-	return (true);
-}
-
-void	print_export_list(void)
-{
-	t_env	*node;
-	char	*line;
-	char	*temp;
-	int		i;
-
-	node = pc()->ms_env;
-	while (node)
-	{
-		line = ft_strjoin("declare -x ", node->name);
-		temp = line;
-		line = ft_strjoin(temp, "=\"");
-		free(temp);
-		temp = line;
-		line = ft_strjoin(temp, node->value);
-		free(temp);
-		temp = line;
-		line = ft_strjoin(temp, "\"\n");
-		free(temp);
-		if (!line)
-			total_exit("malloc error");
-		i = ft_strlen(line);
-		write(1, line, i);
-		free(line);
-		node = node->next;
-	}
-}
-
-bool	export_check_var(char *arg)
-{
-	bool	ret;
-	int		i;
-
-	i = 0;
-	ret = true;
-	if (ft_isalpha(arg[i]) == 0 && arg[i] != '_')
-		ret = false;
-	i++;
-	while (arg[i] && arg[i] != '=' && ret == true)
-	{
-		if (ft_isalpha(arg[i]) == 0 && arg[i] != '_' && ft_isdigit(arg[i]) == 0)
-			ret = false;
-		i++;
-	}
-	if (ret == false)
-	{
-		pc()->exit_status = 1;
-		ms_putstr_fd("🤧 export: `", arg, "': not a valid identifier\n", 2);
-	}
+	if (!cmd->cmd || (!cmd->false_exps && !*cmd->cmd))
+		return (0);
+	if (cmd->false_exps && !*cmd->cmd)
+		ft_false_exp(cmd->false_exps);
+	else if (ft_strncmp(cmd->cmd, "echo", 5) == 0)
+		pc()->exit_status = ft_echo(cmd->args);
+	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
+		pc()->exit_status = ft_cd(cmd);
+	else if (ft_strncmp(cmd->cmd, "pwd", 4) == 0)
+		pc()->exit_status = ft_pwd();
+	else if (ft_strncmp(cmd->cmd, "export", 7) == 0)
+		ft_export(cmd->args);
+	else if (ft_strncmp(cmd->cmd, "unset", 6) == 0)
+		pc()->exit_status = ft_unset(cmd->args);
+	else if (ft_strncmp(cmd->cmd, "env", 4) == 0)
+		pc()->exit_status = ft_env(cmd);
+	else if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
+		ft_exit(cmd->args);
 	else
-	{
-		if (ft_strchr(arg, '=') == NULL)
-			ret = false;
-	}
-	return (ret);
-}
-
-void	echo_print(char **args, int i, int new_line)
-{
-	while (args[i] != NULL)
-	{
-		ms_putstr_fd(args[i], NULL, NULL, 1);
-		i++;
-		if (args[i] != NULL)
-			ms_putstr_fd(" ", NULL, NULL, 1);
-	}
-	if (new_line)
-		ms_putstr_fd("\n", NULL, NULL, 1);
+		return (0);
+	return (1);
 }
