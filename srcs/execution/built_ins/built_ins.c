@@ -6,61 +6,53 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 16:36:16 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/30 16:36:18 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 16:18:56 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	is_built_in(t_command *cmd)
+int	ft_unset(char **args)
 {
-	if (!cmd->cmd || !*cmd->cmd)
-		return (0);
-	if (ft_strncmp(cmd->cmd, "echo", 5) == 0)
-		pc()->exit_status = ft_echo(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
-		pc()->exit_status = ft_cd(cmd);
-	else if (ft_strncmp(cmd->cmd, "pwd", 4) == 0)
-		pc()->exit_status = ft_pwd();
-	else if (ft_strncmp(cmd->cmd, "export", 7) == 0)
-		ft_export(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "unset", 6) == 0)
-		pc()->exit_status = ft_unset(cmd->args);
-	else if (ft_strncmp(cmd->cmd, "env", 4) == 0)
-		pc()->exit_status = ft_env(cmd);
-	else if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
-		ft_exit(cmd->args);
-	else
-		return (0);
-	return (1);
-}
+	int		i;
+	char	*name;
 
-int	ft_echo(char **args)
-{
-	int	new_line;
-	int	i;
-	int	j;
-
-	new_line = 1;
 	i = 1;
+	if (!args[i])
+		return (0);
 	while (args[i])
 	{
-		if (args[i][0] == '-')
-		{
-			j = 1;
-			if (args[i][j] == '\0')
-				break ;
-			while (args[i][j] && args[i][j] == 'n')
-				j++;
-			if (args[i][j] != '\0')
-				break ;
-			new_line = 0;
-		}
-		else
-			break ;
+		name = t_env_has_name(args[i]);
+		if (name)
+			remove_env(name);
 		i++;
 	}
-	echo_print(args, i, new_line);
+	return (0);
+}
+
+int	ft_cd(t_command *cmd)
+{
+	int		cd;
+	char	pwd[1024];
+
+	if (cmd->args[1] != NULL && cmd->args[2] != NULL)
+		return (ft_putendl_fd("😤 cd: too many arguments", 2), 1);
+	if (!getcwd(pwd, sizeof(pwd)))
+		return (ft_putendl_fd(ERR_CD, 2), 1);
+	if (cmd->args[1] == NULL)
+	{
+		if (!t_env_has_name("HOME"))
+			return (ft_putendl_fd("🙄 cd: HOME not set", 2), 1);
+		cd = chdir(t_env_find_value("HOME"));
+	}
+	else
+		cd = chdir(cmd->args[1]);
+	if (cd == -1)
+		return (ft_putstr_fd("😬 cd: ", 2), perror(cmd->args[1]), 1);
+	update_env("OLDPWD", pwd, 1);
+	if (!getcwd(pwd, sizeof(pwd)))
+		return (ft_putendl_fd(ERR_CD, 2), 1);
+	update_env("PWD", pwd, 1);
 	return (0);
 }
 
@@ -76,7 +68,8 @@ int	ft_env(t_command *cmd)
 	list = pc()->ms_env;
 	while (list)
 	{
-		printf("%s=%s\n", list->name, list->value);
+		if (list->exported)
+			printf("%s=%s\n", list->name, list->value);
 		list = list->next;
 	}
 	return (0);
@@ -98,30 +91,4 @@ getcwd: cannot access parent directories: No such file or directory\n",
 		return (1);
 	}
 	return (0);
-}
-
-void	ft_exit(char **args)
-{
-	if (pc()->processes == 0)
-	{
-		dup2(pc()->fd.stdout_cpy, STDOUT_FILENO);
-		ms_putstr_fd("😉 exit\n", NULL, NULL, 1);
-	}
-	if (args[1] != NULL)
-	{
-		if (exit_argtoll(args[1]) == false)
-		{
-			ms_putstr_fd("😒 exit: ", args[1], ": numeric argument required\n",
-				2);
-			pc()->exit_status = 2;
-			process_exit();
-		}
-		if (args[2] != NULL)
-		{
-			pc()->exit_status = 1;
-			ms_putstr_fd("😒 exit: ", "too many arguments\n", NULL, 2);
-			return ;
-		}
-	}
-	process_exit();
 }

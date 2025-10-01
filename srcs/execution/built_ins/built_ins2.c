@@ -3,97 +3,123 @@
 /*                                                        :::      ::::::::   */
 /*   built_ins2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/25 11:17:36 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 15:48:56 by mprazere         ###   ########.fr       */
+/*   Created: 2025/10/01 16:12:13 by mateferr          #+#    #+#             */
+/*   Updated: 2025/10/01 16:17:36 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int	ft_cd(t_command *cmd)
+void	echo_print(char **args, int i, int new_line)
 {
-	int		cd;
-	char	pwd[1024];
-
-	if (cmd->args[1] != NULL && cmd->args[2] != NULL)
-		return (ft_putendl_fd("😤 cd: too many arguments", 2), 1);
-	if (!getcwd(pwd, sizeof(pwd)))
-		return (ft_putendl_fd(ERR_CD, 2), 1);
-	if (cmd->args[1] == NULL)
+	while (args[i] != NULL)
 	{
-		if (!t_env_has_name("HOME"))
-			return (ft_putendl_fd("🙄 cd: HOME not set", 2), 1);
-		cd = chdir(t_env_find_value("HOME"));
+		ms_putstr_fd(args[i], NULL, NULL, 1);
+		i++;
+		if (args[i] != NULL)
+			ms_putstr_fd(" ", NULL, NULL, 1);
 	}
-	else
-		cd = chdir(cmd->args[1]);
-	if (cd == -1)
-		return (ft_putstr_fd("😬 cd: ", 2), perror(cmd->args[1]), 1);
-	update_env("OLDPWD", pwd);
-	if (!getcwd(pwd, sizeof(pwd)))
-		return (ft_putendl_fd(ERR_CD, 2), 1);
-	update_env("PWD", pwd);
-	return (0);
+	if (new_line)
+		ms_putstr_fd("\n", NULL, NULL, 1);
 }
 
-char	*t_env_has_name(char *str)
+int	ft_echo(char **args)
 {
-	t_env	*node;
-	size_t	size;
+	int	new_line;
+	int	i;
+	int	j;
 
-	node = pc()->ms_env;
-	while (node)
-	{
-		size = ft_strlen(node->name);
-		if (ft_strncmp(node->name, str, size) == 0 && (str[size] == '='
-				|| str[size] == '\0'))
-			return (node->name);
-		node = node->next;
-	}
-	return (NULL);
-}
-
-void	ft_export(char **args)
-{
-	int		i;
-	char	*name;
-	char	*value;
-
+	new_line = 1;
 	i = 1;
-	if (!args[i])
-		print_export_list();
-	pc()->exit_status = 0;
 	while (args[i])
 	{
-		if (export_check_var(args[i]) == true)
+		if (args[i][0] == '-')
 		{
-			value = ft_strchr(args[i], '=');
-			name = t_env_has_name(args[i]);
-			if (name)
-				update_env(name, ++value);
-			else
-				t_env_add_back(&pc()->ms_env, create_env_node(args[i]));
+			j = 1;
+			if (args[i][j] == '\0')
+				break ;
+			while (args[i][j] && args[i][j] == 'n')
+				j++;
+			if (args[i][j] != '\0')
+				break ;
+			new_line = 0;
 		}
+		else
+			break ;
 		i++;
 	}
+	echo_print(args, i, new_line);
+	return (0);
 }
 
-int	ft_unset(char **args)
+bool	exit_check_overflow(long long value, int sig, int digit)
 {
-	int		i;
-	char	*name;
-
-	i = 1;
-	if (!args[i])
-		return (0);
-	while (args[i])
+	if (sig == 1)
 	{
-		name = t_env_has_name(args[i]);
-		if (name)
-			remove_env(name);
-		i++;
+		if (value > (LLONG_MAX - digit) / 10)
+			return (false);
 	}
-	return (0);
+	else if (sig == -1)
+	{
+		if (value > (-(LLONG_MIN + digit) / 10))
+			return (false);
+	}
+	return (true);
+}
+
+bool	exit_argtoll(const char *arg)
+{
+	long long		value;
+	unsigned char	status;
+	int				sig;
+
+	value = 0;
+	sig = 1;
+	while (*arg && ((*arg >= 9 && *arg <= 13) || *arg == 32))
+		arg++;
+	if (*arg == '+' || *arg == '-')
+		if (*arg++ == '-')
+			sig = -1;
+	while (*arg && *arg >= '0' && *arg <= '9')
+	{
+		if (exit_check_overflow(value, sig, *arg - '0') == false)
+			return (false);
+		value = value * 10 + (*arg++ - '0');
+	}
+	while (*arg && ((*arg >= 9 && *arg <= 13) || *arg == 32))
+		arg++;
+	if (*arg)
+		return (false);
+	value = value * sig;
+	status = (unsigned char)value;
+	pc()->exit_status = (int)status;
+	return (true);
+}
+
+void	ft_exit(char **args)
+{
+	if (pc()->processes == 0)
+	{
+		dup2(pc()->fd.stdout_cpy, STDOUT_FILENO);
+		ms_putstr_fd("😉 exit\n", NULL, NULL, 1);
+	}
+	if (args[1] != NULL)
+	{
+		if (exit_argtoll(args[1]) == false)
+		{
+			ms_putstr_fd("😒 exit: ", args[1], ": numeric argument required\n",
+				2);
+			pc()->exit_status = 2;
+			process_exit();
+		}
+		if (args[2] != NULL)
+		{
+			pc()->exit_status = 1;
+			ms_putstr_fd("😒 exit: ", "too many arguments\n", NULL, 2);
+			return ;
+		}
+	}
+	process_exit();
 }

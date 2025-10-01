@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   create_list.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:10:18 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:13 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/01 15:48:29 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@ void	name_fill(t_env *node, char *str)
 	int	i;
 
 	i = 0;
-	while (str[i] && str[i] != '=')
+	while (str[i] && str[i] != '=' && !(str[i] == '+' && str[i + 1] == '='))
 		i++;
 	node->name = ft_calloc(i + 1, sizeof(char));
 	if (!node->name)
 		total_exit("malloc() error!!");
 	i = 0;
-	while (str[i] && str[i] != '=')
+	while (str[i] && str[i] != '=' && !(str[i] == '+' && str[i + 1] == '='))
 	{
 		node->name[i] = str[i];
 		i++;
@@ -62,6 +62,7 @@ t_env	*create_env_node(char *str)
 		total_exit("malloc() error!!");
 	name_fill(node, str);
 	value_fill(node, str);
+	node->exported = true;
 	node->next = NULL;
 	return (node);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/30 16:36:57 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/01 14:18:58 by mprazere         ###   ########.fr       */
+/*   Created: 2025/10/01 16:21:55 by mateferr          #+#    #+#             */
+/*   Updated: 2025/10/01 16:22:46 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ extern int				g_sig_detect;
 
 typedef struct s_env
 {
+	bool				exported;
 	char				*name;
 	char				*value;
 	struct s_env		*next;
@@ -198,7 +199,7 @@ void					value_fill(t_env *node, char *str);
 void					name_fill(t_env *node, char *str);
 void					delete_t_env_list(t_env **list);
 t_env					*create_env_node(char *str);
-int						update_env(char *name, char *value);
+int						update_env(char *name, char *value, int op);
 void					remove_env(char *name);
 char					*t_env_find_value(char *name);
 char					*t_env_has_name(char *str);
