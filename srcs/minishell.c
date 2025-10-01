@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:59 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/01 14:48:25 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/01 17:48:45 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ static void	print_commands(t_command *commands)
 		cmd_count++;
 	}
 }
- */
+*/
 
 static int	handle_input(t_parse_state *state)
 {

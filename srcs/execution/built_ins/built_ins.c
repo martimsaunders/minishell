@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 16:36:16 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/01 16:18:56 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 17:02:29 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ int	ft_cd(t_command *cmd)
 		cd = chdir(cmd->args[1]);
 	if (cd == -1)
 		return (ft_putstr_fd("😬 cd: ", 2), perror(cmd->args[1]), 1);
-	update_env("OLDPWD", pwd, 1);
+	update_env("OLDPWD", pwd, 1, false);
 	if (!getcwd(pwd, sizeof(pwd)))
 		return (ft_putendl_fd(ERR_CD, 2), 1);
-	update_env("PWD", pwd, 1);
+	update_env("PWD", pwd, 1, false);
 	return (0);
 }
 

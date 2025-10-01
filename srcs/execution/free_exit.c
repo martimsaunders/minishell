@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_exit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:04:38 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:18 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:05:56 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	total_exit(char *msg)
 	if (pc()->ms_env)
 		delete_t_env_list(&pc()->ms_env);
 	if (pc()->cmd)
-		free_command_list(&pc()->cmd);
+		free_commands(pc()->cmd);
 	clear_history();
 	exit(1);
 }
@@ -36,7 +36,7 @@ void	process_exit(void)
 	pc()->path = NULL;
 	if (pc()->ms_env)
 		delete_t_env_list(&pc()->ms_env);
-	free_command_list(&pc()->cmd);
+	free_commands(pc()->cmd);
 	clear_history();
 	exit(pc()->exit_status);
 }
@@ -54,32 +54,6 @@ void	free_redirect_list(t_redirect **list)
 		node = rdt;
 		free(rdt->filename);
 		rdt = rdt->next;
-		free(node);
-	}
-	*list = NULL;
-}
-
-void	free_command_list(t_command **list)
-{
-	t_command	*cmd;
-	t_command	*node;
-
-	if (!list)
-		return ;
-	cmd = *list;
-	while (cmd)
-	{
-		node = cmd;
-		ft_close(&cmd->hd_fd);
-		if (cmd->cmd)
-			free(cmd->cmd);
-		if (cmd->args)
-			free_array(cmd->args);
-		if (cmd->infiles)
-			free_redirect_list(&cmd->infiles);
-		if (cmd->outfiles)
-			free_redirect_list(&cmd->outfiles);
-		cmd = cmd->next;
 		free(node);
 	}
 	*list = NULL;

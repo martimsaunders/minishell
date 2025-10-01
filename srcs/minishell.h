@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 16:21:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/01 16:22:46 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 17:04:49 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,8 +198,9 @@ void					t_env_add_back(t_env **list, t_env *node);
 void					value_fill(t_env *node, char *str);
 void					name_fill(t_env *node, char *str);
 void					delete_t_env_list(t_env **list);
-t_env					*create_env_node(char *str);
-int						update_env(char *name, char *value, int op);
+t_env					*create_env_node(char *str, bool false_exp);
+int						update_env(char *name, char *value, int op,
+							bool false_exp);
 void					remove_env(char *name);
 char					*t_env_find_value(char *name);
 char					*t_env_has_name(char *str);
@@ -252,8 +253,9 @@ bool					exit_check_overflow(long long value, int sig,
 							int digit);
 bool					exit_argtoll(const char *arg);
 void					print_export_list(void);
-bool					export_check_var(char *arg);
+bool					export_check_var(char *arg, bool false_exp);
 void					echo_print(char **args, int i, int nem_line);
+void					env_var_update(char *value, char *name, bool false_exp);
 
 // built ins
 int						ft_echo(char **args);

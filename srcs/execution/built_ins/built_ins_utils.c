@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 16:36:29 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/01 16:23:14 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 17:37:56 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,28 @@
 
 void	ft_false_exp(t_redirect *vars)
 {
-	(void)vars;
+	t_redirect *node;
+	char *value;
+	char *name;
+	
+	node = vars;
+	while(node)
+	{
+		value = ft_strchr(node->filename, '=');
+		name = t_env_has_name(node->filename);
+		if (name)
+			env_var_update(value, name, true);
+		else
+			t_env_add_back(&pc()->ms_env, create_env_node(node->filename, true));
+		node = node->next;
+	}
 }
 
 int	is_built_in(t_command *cmd)
 {
-	if (!cmd->cmd || (!cmd->false_exports && !*cmd->cmd))
+	if (!cmd->false_exports && !cmd->cmd)
 		return (0);
-	if (cmd->false_exports && !*cmd->cmd)
+	if (cmd->false_exports && !cmd->cmd)
 		ft_false_exp(cmd->false_exports);
 	else if (ft_strncmp(cmd->cmd, "echo", 5) == 0)
 		pc()->exit_status = ft_echo(cmd->args);

@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:10:18 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/01 15:48:29 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 16:47:26 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	value_fill(t_env *node, char *str)
 	node->value[i] = '\0';
 }
 
-t_env	*create_env_node(char *str)
+t_env	*create_env_node(char *str, bool false_exp)
 {
 	t_env	*node;
 
@@ -62,7 +62,10 @@ t_env	*create_env_node(char *str)
 		total_exit("malloc() error!!");
 	name_fill(node, str);
 	value_fill(node, str);
-	node->exported = true;
+	if (false_exp == true)
+		node->exported = false;
+	else
+		node->exported = true;
 	node->next = NULL;
 	return (node);
 }
@@ -92,7 +95,7 @@ t_env	*create_env(char **env)
 	i = 0;
 	while (env[i])
 	{
-		node = create_env_node(env[i]);
+		node = create_env_node(env[i], false);
 		t_env_add_back(&ms_env, node);
 		i++;
 	}

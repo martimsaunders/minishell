@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:06:17 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/30 16:34:48 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:06:48 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	execution_process(t_command *cmd)
 			pc()->exit_status = single_command_process(cmd);
 	}
 	close_fds();
-	free_command_list(&cmd);
+	free_commands(cmd);
 	reset_pc();
 	return (pc()->exit_status);
 }

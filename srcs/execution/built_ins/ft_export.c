@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   built_ins2.c                                       :+:      :+:    :+:   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:17:36 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/01 16:11:12 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 17:58:02 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	print_export_list(void)
 	}
 }
 
-bool	export_check_var(char *arg)
+bool	export_check_var(char *arg, bool false_exp)
 {
 	bool	ret;
 	int		i;
@@ -58,13 +58,11 @@ bool	export_check_var(char *arg)
 			ret = false;
 		i++;
 	}
-	if (ret == false)
+	if (ret == false && false_exp == false)
 	{
 		pc()->exit_status = 1;
 		ms_putstr_fd("🤧 export: `", arg, "': not a valid identifier\n", 2);
 	}
-	else if (ft_strchr(arg, '=') == NULL)
-		ret = false;
 	return (ret);
 }
 
@@ -85,15 +83,17 @@ char	*t_env_has_name(char *str)
 	return (NULL);
 }
 
-void	env_var_update(char *value, char *name)
+void	env_var_update(char *value, char *name, bool false_exp)
 {
 	char	*op;
 
 	op = value;
-	if (*--op == '+')
-		update_env(name, ++value, 2);
+	if (value && *--op == '+')
+		update_env(name, ++value, 2, false_exp);
+	else if (value)
+		update_env(name, ++value, 1, false_exp);
 	else
-		update_env(name, ++value, 1);
+		update_env(name, NULL, 1, false_exp);
 }
 
 void	ft_export(char **args)
@@ -108,14 +108,14 @@ void	ft_export(char **args)
 	pc()->exit_status = 0;
 	while (args[i])
 	{
-		if (export_check_var(args[i]) == true)
+		if (export_check_var(args[i], false) == true)
 		{
 			value = ft_strchr(args[i], '=');
 			name = t_env_has_name(args[i]);
 			if (name)
-				env_var_update(value, name);
-			else
-				t_env_add_back(&pc()->ms_env, create_env_node(args[i]));
+				env_var_update(value, name, false);
+			else if (value)
+				t_env_add_back(&pc()->ms_env, create_env_node(args[i], false));
 		}
 		i++;
 	}
