@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:17:36 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/01 17:58:02 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/02 12:34:11 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,11 @@ char	*t_env_has_name(char *str)
 		size = ft_strlen(node->name);
 		if (ft_strncmp(node->name, str, size) == 0 && (str[size] == '='
 				|| str[size] == '\0' || str[size] == '+'))
-			return (node->name);
+			break ;
 		node = node->next;
 	}
+	if (node != NULL)
+		return (node->name);
 	return (NULL);
 }
 

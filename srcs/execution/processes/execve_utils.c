@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execve_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:07:23 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:15 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/02 12:34:41 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,24 +79,31 @@ char	*cmd_path(char *cmd)
 	return (pathname);
 }
 
-int	exec_env_array_fill(char **exec_env, int i)
+int	exec_env_array_fill(char **exec_env)
 {
 	t_env	*node;
-	int		j;
+	int		i;
 	char	*temp;
 
 	node = pc()->ms_env;
-	j = 0;
-	while (node && j++ < i)
+	i = 0;
+	while (node)
+	{
+		if (node->exported == true)
+		{
+			exec_env[i] = ft_strjoin(node->name, "=");
+			if (!exec_env[i])
+				return (1);
+			temp = exec_env[i];
+			exec_env[i] = ft_strjoin(temp, node->value);
+			free(temp);
+			if (!exec_env[i])
+				return (1);
+			i++;
+		}
 		node = node->next;
-	exec_env[i] = ft_strjoin(node->name, "=");
-	if (!exec_env[i])
-		return (1);
-	temp = exec_env[i];
-	exec_env[i] = ft_strjoin(temp, node->value);
-	free(temp);
-	if (!exec_env[i])
-		return (1);
+	}
+	exec_env[i] = NULL;
 	return (0);
 }
 
@@ -104,27 +111,23 @@ char	**create_exec_env(void)
 {
 	t_env	*lst;
 	int		size;
-	int		i;
 	char	**exec_env;
 
 	size = 0;
 	lst = pc()->ms_env;
 	while (lst)
 	{
-		size++;
+		if (lst->exported == true)
+			size++;
 		lst = lst->next;
 	}
 	exec_env = ft_calloc(size + 1, sizeof(char *));
 	if (!exec_env)
 		total_exit("malloc error!!");
-	i = 0;
-	while (i < size)
+	if (exec_env_array_fill(exec_env) != 0)
 	{
-		if (exec_env_array_fill(exec_env, i++) != 0)
-		{
-			free_array(exec_env);
-			total_exit("malloc error!!");
-		}
+		free_array(exec_env);
+		total_exit("malloc error!!");
 	}
 	return (exec_env);
 }

@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 16:21:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/02 11:23:24 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/02 12:33:33 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,6 @@ char					*t_env_has_name(char *str);
 // free exit
 void					total_exit(char *msg);
 void					free_array(char **array);
-void					free_command_list(t_command **list);
 void					free_redirect_list(t_redirect **list);
 
 // fds

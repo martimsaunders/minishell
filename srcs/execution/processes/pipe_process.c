@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_process.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:08:59 by mateferr          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:15 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/02 12:12:47 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,10 @@ void	child_process(t_command *cmd)
 		process_exit();
 	if (is_built_in(cmd))
 		process_exit();
+	exec_env = create_exec_env();
 	pc()->path = cmd_path(cmd->cmd);
 	if (!pc()->path)
 		total_exit("malloc() error!!");
-	exec_env = create_exec_env();
 	execve(pc()->path, cmd->args, exec_env);
 	exec_fail(exec_env, cmd);
 }
