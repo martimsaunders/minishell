@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 16:36:29 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/01 17:37:56 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/02 11:17:41 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,20 @@
 
 void	ft_false_exp(t_redirect *vars)
 {
-	t_redirect *node;
-	char *value;
-	char *name;
-	
+	t_redirect	*node;
+	char		*value;
+	char		*name;
+
 	node = vars;
-	while(node)
+	while (node)
 	{
 		value = ft_strchr(node->filename, '=');
 		name = t_env_has_name(node->filename);
 		if (name)
 			env_var_update(value, name, true);
 		else
-			t_env_add_back(&pc()->ms_env, create_env_node(node->filename, true));
+			t_env_add_back(&pc()->ms_env, create_env_node(node->filename,
+					true));
 		node = node->next;
 	}
 }

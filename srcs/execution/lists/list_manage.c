@@ -6,7 +6,7 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 16:35:12 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/01 18:00:23 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/01 18:15:31 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	update_env(char *name, char *value, int op, bool false_exp)
 	if (false_exp == false)
 		node->exported = true;
 	if (value)
-	{	
+	{
 		temp = node->value;
 		if (op == 1)
 			node->value = ft_strdup(value);
