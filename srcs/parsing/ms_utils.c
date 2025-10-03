@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martimprazeresaunders <martimprazeresau    +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 16:05:56 by praders           #+#    #+#             */
-/*   Updated: 2025/10/03 14:37:38 by martimpraze      ###   ########.fr       */
+/*   Updated: 2025/10/03 14:41:49 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	check_numandplica(char *raw_token, int *i)
 	{
 		if (raw_token[var_start] && (raw_token[var_start] == '\''
 				|| (!ft_isalpha(raw_token[var_start])
-				&& raw_token[var_start] != '_')))
+					&& raw_token[var_start] != '_')))
 		{
 			if (raw_token[var_start] == '\'')
 				(*i) += 1;

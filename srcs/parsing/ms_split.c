@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martimprazeresaunders <martimprazeresau    +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 13:15:32 by praders           #+#    #+#             */
-/*   Updated: 2025/10/03 14:36:21 by martimpraze      ###   ########.fr       */
+/*   Updated: 2025/10/03 14:42:19 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

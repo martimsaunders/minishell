@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martimprazeresaunders <martimprazeresau    +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 16:21:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/03 14:37:13 by martimpraze      ###   ########.fr       */
+/*   Updated: 2025/10/03 14:42:14 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

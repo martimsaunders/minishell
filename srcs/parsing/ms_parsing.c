@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martimprazeresaunders <martimprazeresau    +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 10:47:53 by mprazere          #+#    #+#             */
-/*   Updated: 2025/10/03 14:36:31 by martimpraze      ###   ########.fr       */
+/*   Updated: 2025/10/03 14:42:20 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	process_operator(t_parse_state *state, t_token **token_list)
 				state->current))
 			return (0);
 	if ((state->input[state->current] == '<' && state->input[state->current
-			+ 1] == '<') || (state->input[state->current] == '>'
+				+ 1] == '<') || (state->input[state->current] == '>'
 			&& state->input[state->current + 1] == '>'))
 	{
 		if (!process_operator2(state, 2, &new_token))
