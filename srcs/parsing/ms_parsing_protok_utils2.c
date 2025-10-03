@@ -6,7 +6,7 @@
 /*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 15:15:55 by praders           #+#    #+#             */
-/*   Updated: 2025/10/03 15:48:17 by praders          ###   ########.fr       */
+/*   Updated: 2025/10/03 22:19:02 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ int	check_numandplica(char *raw_token, int *i)
 	var_start = (*i) + 1;
 	if (dq(2) != 1)
 	{
-		if (raw_token[var_start] && (raw_token[var_start] == '\''
+		if (raw_token[var_start] && (is_quote(raw_token[var_start])
 				|| (!ft_isalpha(raw_token[var_start])
 					&& raw_token[var_start] != '_')))
 		{
-			if (raw_token[var_start] == '\'')
+			if (is_quote(raw_token[var_start]))
 				(*i) += 1;
 			else
 				(*i) += 2;
