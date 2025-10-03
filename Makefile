@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+         #
+#    By: praders <praders@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/21 16:34:39 by mprazere          #+#    #+#              #
-#    Updated: 2025/10/01 16:16:42 by mateferr         ###   ########.fr        #
+#    Updated: 2025/10/03 14:07:43 by praders          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,9 @@ srcs/parsing/ms_parsing.c srcs/parsing/ms_parsing_token_utils.c \
 srcs/parsing/ms_parsing_utils.c srcs/parsing/ms_ttk_create_command.c \
 srcs/parsing/ms_frees.c srcs/parsing/ms_ttk_tokens.c \
 srcs/parsing/ms_ttk_utils.c srcs/parsing/ms_parsing_protok_utils.c \
-srcs/parsing/ms_exit_malloc.c srcs/parsing/ms_utils.c \
-srcs/parsing/ms_parsing_protok_utils2.c \
+srcs/parsing/ms_exit_malloc_frees2.c srcs/parsing/ms_utils.c \
+srcs/parsing/ms_parsing_protok_utils2.c srcs/parsing/ms_split.c\
+srcs/parsing/ms_parsing_process_ws_tokens.c \
 \
 srcs/execution/built_ins/built_ins.c srcs/execution/built_ins/built_ins2.c \
 srcs/execution/processes/execve_utils.c srcs/execution/execution.c \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 16:21:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/02 12:33:33 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/03 14:06:42 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,10 +163,14 @@ int						ttc_redirects_out(t_command *current_cmd,
 							t_token **current_token, int type);
 int						handle_dollar_alloc(char *token, char *raw_token,
 							int *i, int *size);
+int						process_and_add_token(t_parse_state *state,
+							t_token **token_list, int start, int finish);
 bool					is_ws(char *str, int i);
 char					**build_args_array(t_token *start);
+char					**split_token_ws(char *value, int *error, int is_quoted);
 char					*extract_token(t_parse_state *state, int start,
 							int finish, int *is_quoted);
+void					ms_free_split(char **split, int i);
 void					free_args(char **args, int i);
 void					free_token_list(t_token *head, int i);
 void					free_command(t_command *command);

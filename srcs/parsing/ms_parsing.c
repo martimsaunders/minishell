@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 10:47:53 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/29 14:46:41 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/03 13:55:24 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,44 +29,23 @@ static void	process_quote(t_parse_state *state)
 
 static int	process_space(t_parse_state *state, t_token **token_list)
 {
-	t_token	*new_token;
-	char	*token;
-	int		is_quoted;
-
-	is_quoted = 0;
 	if (state->current > state->token_start)
-	{
-		token = extract_token(state, state->token_start, state->current,
-				&is_quoted);
-		if (!token)
+		if (!process_and_add_token(state, token_list, state->token_start, state->current))
 			return (0);
-		new_token = create_token(token, 0, is_quoted);
-		if (!new_token)
-			return (0);
-		add_token_list(token_list, new_token);
-	}
 	while (is_ws(state->input, state->current))
 		state->current++;
 	state->token_start = state->current;
 	return (1);
 }
 
-static int	process_operator(t_parse_state *state, t_token **token_list,
-		int i_q)
+static int	process_operator(t_parse_state *state, t_token **token_list)
 {
 	t_token	*new_token;
-	char	*token;
 
+	new_token = NULL;
 	if (state->current > state->token_start)
-	{
-		token = extract_token(state, state->token_start, state->current, &i_q);
-		if (!token)
+		if (!process_and_add_token(state, token_list, state->token_start, state->current))
 			return (0);
-		new_token = create_token(token, 0, i_q);
-		if (!new_token)
-			return (0);
-		add_token_list(token_list, new_token);
-	}
 	if ((state->input[state->current] == '<' && state->input[state->current
 				+ 1] == '<') || (state->input[state->current] == '>'
 			&& state->input[state->current + 1] == '>'))
@@ -83,22 +62,9 @@ static int	process_operator(t_parse_state *state, t_token **token_list,
 
 static int	process_last_word(t_parse_state *state, t_token **token_list)
 {
-	char	*token;
-	t_token	*new_token;
-	int		is_quoted;
-
-	is_quoted = 0;
 	if (state->current > state->token_start)
-	{
-		token = extract_token(state, state->token_start, state->current,
-				&is_quoted);
-		if (!token)
+		if (!process_and_add_token(state, token_list, state->token_start, state->current))
 			return (0);
-		new_token = create_token(token, 0, is_quoted);
-		if (!new_token)
-			return (0);
-		add_token_list(token_list, new_token);
-	}
 	return (1);
 }
 
@@ -118,7 +84,7 @@ t_token	*ms_parsing(t_parse_state *state)
 		}
 		else if (is_op(state->input[state->current]) && state->in_quotes == 0)
 		{
-			if (!process_operator(state, &token_list, 0))
+			if (!process_operator(state, &token_list))
 				malloc_exit(token_list, state);
 		}
 		else

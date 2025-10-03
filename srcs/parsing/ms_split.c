@@ -1,37 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split.c                                         :+:      :+:    :+:   */
+/*   ms_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/15 10:36:48 by mprazere          #+#    #+#             */
-/*   Updated: 2025/10/03 13:15:09 by praders          ###   ########.fr       */
+/*   Created: 2025/10/03 13:15:32 by praders           #+#    #+#             */
+/*   Updated: 2025/10/03 13:43:08 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../minishell.h"
 
-static int	count_words(char const *s1, char const c)
+static int	count_words(char *s1)
 {
 	size_t	count;
+    int i;
 
+    i = 0;
 	count = 0;
-	while (*s1)
+	while (s1[i])
 	{
-		while (*s1 == c)
-			s1++;
-		if (*s1)
+		while (is_ws(s1, i))
+			i++;
+		if (s1)
 		{
 			count++;
-			while (*s1 != c && *s1)
-				s1++;
+			while (s1[i] && !is_ws(s1, i))
+				i++;
 		}
 	}
 	return (count);
 }
 
-static char	*allocate_string(char const *s1, char const c, size_t *i)
+static char	*allocate_string(char *s1, size_t *i)
 {
 	size_t	space;
 	char	*newstr;
@@ -39,9 +41,9 @@ static char	*allocate_string(char const *s1, char const c, size_t *i)
 
 	a = 0;
 	space = 0;
-	while (s1[*i] == c)
+	while (is_ws(s1, *i))
 		(*i)++;
-	while (s1[*i + space] && s1[*i + space] != c)
+	while (s1[*i + space] && !is_ws(s1, *i + space))
 		space++;
 	newstr = malloc(sizeof(char) * (space + 1));
 	if (!newstr)
@@ -59,7 +61,7 @@ static void	free_split(char **newstr, size_t j)
 	free(newstr);
 }
 
-char	**ft_split(char const *s, char c)
+static char	**ft_split_ws(char *s)
 {
 	size_t	words;
 	size_t	i;
@@ -70,13 +72,13 @@ char	**ft_split(char const *s, char c)
 	j = 0;
 	if (!s)
 		return (NULL);
-	words = count_words(s, c);
+	words = count_words(s);
 	newstr = malloc(sizeof(char *) * (words + 1));
 	if (!newstr)
 		return (NULL);
 	while (j < words)
 	{
-		newstr[j] = allocate_string(s, c, &i);
+		newstr[j] = allocate_string(s, &i);
 		if (!newstr[j])
 		{
 			free_split(newstr, j);
@@ -88,22 +90,30 @@ char	**ft_split(char const *s, char c)
 	return (newstr);
 }
 
-/*int	main(void)
+char **split_token_ws(char *value, int *error, int is_quoted)
 {
-	char *c = "";
-	char set = ' ';
-	char **s = ft_split(c, set);
-	int a = 0;
+	int has_ws;
+	int i;
+	char **split;
 
-	if (!s)
+	i = -1;
+	has_ws = 0;
+	if (is_quoted)
+		return (NULL);
+	while (value[++i])
 	{
-		printf("Erro");
-		return (1);
+		if (is_ws(value, i))
+		{
+			has_ws = 1;
+			break;
+		}
 	}
-	while (a <= 1)
+	if (has_ws)
 	{
-		printf("Resultado: %s\n", s[a]);
-		a++;
+		split = ft_split_ws(value);
+		if (!split)
+			return (*error = 1, NULL);
+		return (split);
 	}
-	return (0);
-}*/
+	return (NULL);
+}
