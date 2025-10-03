@@ -11,105 +11,155 @@
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+/*
+needs expansion
+line total size
+fill new line
+*/
 
-static char	*fill_new_line(char *begin, char *to_expand, char *end)
+bool needs_expansion(char *str)
 {
-	char	*line;
-	char	*temp;
-
-	if (to_expand)
+	str = ft_strchr(str, '$');
+	while (str)
 	{
-		line = ft_strjoin(begin, t_env_find_value(to_expand));
-		temp = line;
-		line = ft_strjoin(temp, end);
-		free(temp);
-	}
-	else
-		line = ft_strjoin(begin, end);
-	if (begin)
-		free(begin);
-	if (end)
-		free(end);
-	return (line);
-}
-
-static char	*modify_line(char *line, char *to_expand, int token_size,
-		bool extit_status)
-{
-	char	*begin;
-	char	*end;
-	int		size;
-
-	if (extit_status)
-		return (free(line), ft_itoa(pc()->exit_status));
-	size = 0;
-	while (line[size] && line[size] != '$')
-		size++;
-	begin = ft_substr(line, 0, size);
-	if (!begin)
-		return (free(line), total_exit("malloc error!!"), NULL);
-	end = ft_substr(line, token_size + size, ft_strlen(line));
-	free(line);
-	if (!end)
-		return (free(begin), total_exit("malloc error!!"), NULL);
-	line = fill_new_line(begin, to_expand, end);
-	if (!line)
-		total_exit("malloc error!!");
-	return (line);
-}
-
-static bool	line_first_number(char *exp, char **line)
-{
-	char	*temp;
-
-	if (ft_isdigit(*exp))
-	{
-		exp++;
-		temp = *line;
-		*line = ft_strdup(exp);
-		free(temp);
-		if (!line)
-			total_exit("malloc() error");
-		return (true);
+		str++;
+		if (ft_isalnum(*str) || *str == '_' || *str == '?')
+			return (true);
+		str = ft_strchr(str, '$');
 	}
 	return (false);
 }
 
-char	*token_expansion(char *line, char *exp, int size)
+int exit_status_exp(char *str)
 {
-	char	*token;
-	char	*new_line;
+	int e_status;
+	int count;
 
-	token = ft_substr(exp, 0, size);
-	if (!token)
-		return (free(line), total_exit("malloc error!!"), NULL);
-	if (size == 1 && ft_strncmp(token, "?", size) == 0)
-		new_line = modify_line(line, NULL, 1, true);
-	else
-		new_line = modify_line(line, t_env_has_name(token), size + 1, false);
-	free(token);
-	if (!new_line)
-		total_exit("malloc() error");
-	return (new_line);
+	count = 0;
+	e_status = pc()->exit_status;
+	while (e_status >= 10)
+	{
+		count++;
+		e_status = e_status / 10;
+	}
+	if (str != NULL)
+	{
+		e_status = pc()->exit_status;
+		str += count;
+		while (e_status >= 10)
+		{
+			*str-- = (e_status % 10) + 48;
+			e_status = e_status / 10;
+		}
+	}
+	return (count);
+}
+
+char *find_expansion(char *str, int size)
+{
+	t_env	*node;
+
+	if (!*str)
+		return (NULL);
+	node = pc()->ms_env;
+	while (node)
+	{
+		if (!ft_strncmp(str, node->name, size) && node->name[size] == '\0')
+			return (node->value);
+		node = node->next;
+	}
+	return (NULL);
+}
+
+int env_exp(char *str, char *dest)
+{
+	int i;
+	char *exp;
+
+	i = 0;
+	while (ft_isalnum(str[i]) || str[i] == '_')
+		i++;
+	exp = find_expansion(str, i);
+	i = 0;
+	while (exp && exp[i])
+		i++;
+	if (dest)
+	{
+		while (exp && *exp)
+			*dest++ = *exp++;
+	}
+	return (i);
+}
+
+int new_line_size(char *str)
+{
+	int size;
+
+	size = 0;
+	while (*str)
+	{
+		if (*str++ == '$' && (ft_isalnum(*str) || *str == '_' || *str == '?'))
+		{
+			if (ft_isdigit(*str) || *str == '?')
+			{
+				if (*str++ == '?')
+					size += exit_status_exp(NULL);
+			}
+			else
+			{
+				size += env_exp(str, NULL);
+				while (ft_isalnum(*str) || *str == '_')
+					str++;
+			}
+		}
+		else
+			size++;
+	}
+	return (size);
+}
+
+void fill_new_line(char *dest, char *str)
+{
+	while (*str)
+	{
+		if (*str == '$')
+		{
+			str++;
+			if (ft_isalnum(*str) || *str == '_' || *str == '?')
+			{
+				if (ft_isdigit(*str) || *str == '?')
+				{
+					if (*str == '?')
+						dest += exit_status_exp(dest);
+					str += 2;
+				}
+				else
+				{
+					dest += env_exp(str, dest);
+					while (ft_isalnum(*str) || *str == '_')
+						str++;
+				}
+			}
+		}
+		else
+			*dest++ = *str++;
+	}
+	*dest = '\0';
 }
 
 char	*expand_str(char *line)
 {
-	int		size;
-	char	*exp;
+	int new_size;
+	char *new_line;
 
-	exp = ft_strchr(line, '$');
-	if (!exp)
+	if (!needs_expansion(line))
 		return (line);
-	size = 0;
-	exp++;
-	if (line_first_number(exp, &line))
-		return (line);
-	while (exp[size] && (ft_isalnum(exp[size]) || exp[size] == '?'
-			|| exp[size] == '_'))
-		size++;
-	if (size == 0)
-		return (line);
-	line = token_expansion(line, exp, size);
-	return (line);
+	new_size = new_line_size(line);
+	new_line = ft_calloc(new_size + 1, sizeof(char));
+	if (!new_line)
+		return (free(line), total_exit("malloc() error"), NULL);
+	fill_new_line(new_line, line);
+	free(line);
+	return (new_line);
 }
+//refazer funçao mas bem mais passo a passo
