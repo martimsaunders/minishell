@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing_protok_utils.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 15:02:17 by praders           #+#    #+#             */
-/*   Updated: 2025/09/30 15:04:41 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/03 15:32:51 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ int	handle_dollar_alloc(char *token, char *raw_token, int *i, int *size)
 {
 	char	*exit_str;
 
+	ie(1);
 	if (raw_token[(*i) + 1] == '?')
 	{
 		exit_str = ft_itoa(pc()->exit_status);

@@ -6,7 +6,7 @@
 /*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 16:21:55 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/03 14:42:14 by praders          ###   ########.fr       */
+/*   Updated: 2025/10/03 15:31:23 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ typedef struct s_token
 	int					type;
 	int					index;
 	int					is_quoted;
+	int					is_expanded;
 	char				*value;
 	struct s_token		*next;
 }						t_token;
@@ -140,6 +141,7 @@ typedef struct s_process
 }						t_process;
 
 int						is_op(char c);
+int						ie(int set_value);
 int						mv(int set_value);
 int						dq(int set_value);
 int						hd(int set_value);

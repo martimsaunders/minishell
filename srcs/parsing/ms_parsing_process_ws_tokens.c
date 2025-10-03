@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing_process_ws_tokens.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martimprazeresaunders <martimprazeresau    +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 13:55:00 by praders           #+#    #+#             */
-/*   Updated: 2025/10/03 14:35:55 by martimpraze      ###   ########.fr       */
+/*   Updated: 2025/10/03 17:04:09 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,12 @@ static int	add_split_tokens(t_token **token_list, char **split, int is_quoted)
 	{
 		new_token = create_token(split[j], 0, is_quoted);
 		if (!new_token)
-			return (ms_free_split(split, j), 0);
+			return (ms_free_split(split, j + 1), 0);
+		if (ie(2))
+		{
+			new_token->is_expanded = 1;
+			ie(0);
+		}
 		add_token_list(token_list, new_token);
 		j++;
 	}
@@ -36,6 +41,11 @@ static int	add_single_token(t_token **token_list, char *token, int is_quoted)
 	new_token = create_token(token, 0, is_quoted);
 	if (!new_token)
 		return (0);
+	if (ie(2) != 0)
+	{
+		new_token->is_expanded = 1;
+		ie(0);
+	}
 	add_token_list(token_list, new_token);
 	return (1);
 }
@@ -55,9 +65,13 @@ int	process_and_add_token(t_parse_state *state, t_token **token_list, int start,
 	error = 0;
 	split = split_token_ws(token, &error, is_quoted);
 	if (error)
-		return (free(token), 0);
-	if (split && is_quoted == 0)
+		return (free(split), free(token), 0);
+	if (split && is_quoted == 0 && !strchr(token, '='))
 		return (free(token), add_split_tokens(token_list, split, is_quoted));
 	else
+	{
+		if (split)
+			ms_free_split(split, 0);
 		return (add_single_token(token_list, token, is_quoted));
+	}
 }

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martimprazeresaunders <martimprazeresau    +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:57:59 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/03 14:37:03 by martimpraze      ###   ########.fr       */
+/*   Updated: 2025/10/03 15:49:24 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
+/* 
 static void	print_commands(t_command *commands)
 {
 	t_command	*current_cmd;

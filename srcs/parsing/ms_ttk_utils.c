@@ -6,7 +6,7 @@
 /*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 12:10:30 by praders           #+#    #+#             */
-/*   Updated: 2025/10/03 14:28:36 by praders          ###   ########.fr       */
+/*   Updated: 2025/10/03 17:13:57 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ t_command	*handle_world_token(t_command *current_cmd, t_token *current_token)
 
 	if (current_cmd->cmd == NULL)
 	{
-		if (current_token->is_quoted != 1)
+		if ((current_token->is_quoted != 1 && current_token->is_expanded != 1))
 		{
 			i = check_cmd_export(current_token->value);
 			if (i != 0)

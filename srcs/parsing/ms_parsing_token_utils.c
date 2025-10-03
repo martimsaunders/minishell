@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing_token_utils.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mprazere <mprazere@student.42.fr>          +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/04 10:34:29 by mprazere          #+#    #+#             */
-/*   Updated: 2025/09/29 14:23:23 by mprazere         ###   ########.fr       */
+/*   Updated: 2025/10/03 15:58:51 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,13 +97,13 @@ t_token	*create_token(char *value, int type, int is_quoted)
 			type = APPEND_TOKEN;
 	}
 	new_token = malloc(sizeof(t_token));
+	ft_memset(new_token, 0, sizeof(t_token));
 	if (!new_token)
 		return (free(value), NULL);
 	new_token->value = ft_strdup(value);
 	if (!new_token->value)
 		return (free(value), free(new_token), NULL);
 	new_token->type = type;
-	new_token->next = NULL;
 	new_token->is_quoted = is_quoted;
 	return (free(value), new_token);
 }
