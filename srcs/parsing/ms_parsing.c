@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_parsing.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martimprazeresaunders <martimprazeresau    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 10:47:53 by mprazere          #+#    #+#             */
-/*   Updated: 2025/10/03 13:55:24 by praders          ###   ########.fr       */
+/*   Updated: 2025/10/03 14:36:31 by martimpraze      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static void	process_quote(t_parse_state *state)
 static int	process_space(t_parse_state *state, t_token **token_list)
 {
 	if (state->current > state->token_start)
-		if (!process_and_add_token(state, token_list, state->token_start, state->current))
+		if (!process_and_add_token(state, token_list, state->token_start,
+				state->current))
 			return (0);
 	while (is_ws(state->input, state->current))
 		state->current++;
@@ -44,10 +45,11 @@ static int	process_operator(t_parse_state *state, t_token **token_list)
 
 	new_token = NULL;
 	if (state->current > state->token_start)
-		if (!process_and_add_token(state, token_list, state->token_start, state->current))
+		if (!process_and_add_token(state, token_list, state->token_start,
+				state->current))
 			return (0);
 	if ((state->input[state->current] == '<' && state->input[state->current
-				+ 1] == '<') || (state->input[state->current] == '>'
+			+ 1] == '<') || (state->input[state->current] == '>'
 			&& state->input[state->current + 1] == '>'))
 	{
 		if (!process_operator2(state, 2, &new_token))
@@ -63,7 +65,8 @@ static int	process_operator(t_parse_state *state, t_token **token_list)
 static int	process_last_word(t_parse_state *state, t_token **token_list)
 {
 	if (state->current > state->token_start)
-		if (!process_and_add_token(state, token_list, state->token_start, state->current))
+		if (!process_and_add_token(state, token_list, state->token_start,
+				state->current))
 			return (0);
 	return (1);
 }

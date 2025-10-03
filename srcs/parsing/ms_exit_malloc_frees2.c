@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exit_malloc_frees2.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martimprazeresaunders <martimprazeresau    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 14:25:29 by praders           #+#    #+#             */
-/*   Updated: 2025/10/03 13:26:03 by praders          ###   ########.fr       */
+/*   Updated: 2025/10/03 14:36:48 by martimpraze      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,5 @@ void	ms_free_split(char **split, int i)
 {
 	while (split[i])
 		free(split[i++]);
-	free (split);
+	free(split);
 }

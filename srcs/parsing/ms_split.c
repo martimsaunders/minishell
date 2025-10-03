@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
+/*   By: martimprazeresaunders <martimprazeresau    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 13:15:32 by praders           #+#    #+#             */
-/*   Updated: 2025/10/03 13:43:08 by praders          ###   ########.fr       */
+/*   Updated: 2025/10/03 14:36:21 by martimpraze      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 static int	count_words(char *s1)
 {
 	size_t	count;
-    int i;
+	int		i;
 
-    i = 0;
+	i = 0;
 	count = 0;
 	while (s1[i])
 	{
@@ -90,11 +90,11 @@ static char	**ft_split_ws(char *s)
 	return (newstr);
 }
 
-char **split_token_ws(char *value, int *error, int is_quoted)
+char	**split_token_ws(char *value, int *error, int is_quoted)
 {
-	int has_ws;
-	int i;
-	char **split;
+	int		has_ws;
+	int		i;
+	char	**split;
 
 	i = -1;
 	has_ws = 0;
@@ -105,7 +105,7 @@ char **split_token_ws(char *value, int *error, int is_quoted)
 		if (is_ws(value, i))
 		{
 			has_ws = 1;
-			break;
+			break ;
 		}
 	}
 	if (has_ws)
