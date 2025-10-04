@@ -36,20 +36,21 @@ make
 ---
 
 ## Usage Examples
-
+```bash
 $ ./minishell
 minishell> echo "Hello, World!"
 Hello, World!
 minishell> ls | grep minishell
 minishell.c
 minishell.h
+```
 
 ## Tech Stack
 - C
 - UNIX API (`fork`, `execve`, `pipe`, `dup2`)
 - GNU readline
 
-## ⚡ Challenges / Lessons Learned
+## Challenges / Lessons Learned
 - Parsing complex commands with quotes and spaces
 - Properly handling child processes and signals
 - Managing file descriptors and pipelines
