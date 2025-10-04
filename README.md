@@ -60,6 +60,8 @@ minishell.h
 - Managing file descriptors and pipelines
 - Writing modular and maintainable C code
 
+---
+
 ## Author
 - Mateus Ferreira && Martim Saunders
 
