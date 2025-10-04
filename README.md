@@ -45,10 +45,14 @@ minishell.c
 minishell.h
 ```
 
+---
+
 ## Tech Stack
 - C
 - UNIX API (`fork`, `execve`, `pipe`, `dup2`)
 - GNU readline
+
+---
 
 ## Challenges / Lessons Learned
 - Parsing complex commands with quotes and spaces
