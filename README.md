@@ -31,6 +31,7 @@ git clone https://github.com/martimsaunders/minishell.git
 cd minishell
 make
 ./minishell
+```
 
 ---
 
