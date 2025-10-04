@@ -12,104 +12,111 @@
 
 #include "../../minishell.h"
 
-static char	*fill_new_line(char *begin, char *to_expand, char *end)
+int expansion_size_calc(char *str, int *total_size)
 {
-	char	*line;
-	char	*temp;
+	char *start;
+	int adress_move;
 
-	if (to_expand)
+	adress_move = 0;
+	start = str;
+	while (ft_isalnum(*str) || *str == '_')
 	{
-		line = ft_strjoin(begin, t_env_find_value(to_expand));
-		temp = line;
-		line = ft_strjoin(temp, end);
-		free(temp);
+		adress_move++;
+		str++;
 	}
-	else
-		line = ft_strjoin(begin, end);
-	if (begin)
-		free(begin);
-	if (end)
-		free(end);
-	return (line);
+	if (total_size)
+		*total_size += ft_strlen(find_expansion(start, str - start));
+	return (adress_move);
 }
 
-static char	*modify_line(char *line, char *to_expand, int token_size,
-		bool extit_status)
+int new_line_total_size(char *str)
 {
-	char	*begin;
-	char	*end;
-	int		size;
-
-	if (extit_status)
-		return (free(line), ft_itoa(pc()->exit_status));
+	int size;
+	
 	size = 0;
-	while (line[size] && line[size] != '$')
-		size++;
-	begin = ft_substr(line, 0, size);
-	if (!begin)
-		return (free(line), total_exit("malloc error!!"), NULL);
-	end = ft_substr(line, token_size + size, ft_strlen(line));
-	free(line);
-	if (!end)
-		return (free(begin), total_exit("malloc error!!"), NULL);
-	line = fill_new_line(begin, to_expand, end);
-	if (!line)
-		total_exit("malloc error!!");
-	return (line);
-}
-
-static bool	line_first_number(char *exp, char **line)
-{
-	char	*temp;
-
-	if (ft_isdigit(*exp))
+	while(*str)
 	{
-		exp++;
-		temp = *line;
-		*line = ft_strdup(exp);
-		free(temp);
-		if (!line)
-			total_exit("malloc() error");
-		return (true);
+		if (*str++ == '$' && (isalnum(*str) || *str == '_' || *str == '?'))
+		{
+			if (ft_isdigit(*str) || *str == '?')
+			{
+				if (*str == '?')
+					size += digits_manage(NULL, pc()->exit_status);
+				str++;
+			}
+			else
+				str += expansion_size_calc(str, &size);
+		}
+		else
+			size++;
 	}
-	return (false);
+	return (size);
 }
 
-char	*token_expansion(char *line, char *exp, int size)
+int expansion_new_line_fill(char *str, char *new_line)
 {
-	char	*token;
-	char	*new_line;
+	char *start;
+	char *value;
+	int value_size;
 
-	token = ft_substr(exp, 0, size);
-	if (!token)
-		return (free(line), total_exit("malloc error!!"), NULL);
-	if (size == 1 && ft_strncmp(token, "?", size) == 0)
-		new_line = modify_line(line, NULL, 1, true);
-	else
-		new_line = modify_line(line, t_env_has_name(token), size + 1, false);
-	free(token);
-	if (!new_line)
-		total_exit("malloc() error");
-	return (new_line);
+	start = str;
+	while (ft_isalnum(*str) || *str == '_')
+		str++;
+	value = find_expansion(start, str - start);
+	if (!value)
+		return (0);
+	value_size = ft_strlen(value);
+	ft_memcpy(new_line, value, value_size);
+	return (value_size);
+}
+
+void fill_new_line(char *new_line, char *str)
+{
+	while(*str)
+	{
+		if (*str == '$' && (ft_isalnum(str[1]) || str[1] == '_' || str[1] == '?'))
+		{
+			str++;
+			if (ft_isdigit(*str) || *str == '?')
+			{
+				if (*str == '?')
+					new_line += digits_manage(new_line, pc()->exit_status);
+				str++;
+			}
+			else
+			{
+				new_line += expansion_new_line_fill(str, new_line);
+				str += expansion_size_calc(str, 0);
+			}
+		}
+		else
+			*new_line++ = *str++;
+	}
 }
 
 char	*expand_str(char *line)
 {
-	int		size;
-	char	*exp;
+	char *new_line;
+	char *str;
+	bool needs_expansion;
 
-	exp = ft_strchr(line, '$');
-	if (!exp)
+	needs_expansion = false;
+	str = ft_strchr(line, '$');
+	while (str)
+	{
+		str++;
+		if (ft_isalnum(*str) || *str == '_' || *str == '?')
+		{
+			needs_expansion = true;
+			break ;
+		}
+		str = ft_strchr(str, '$');
+	}
+	if (!needs_expansion)
 		return (line);
-	size = 0;
-	exp++;
-	if (line_first_number(exp, &line))
-		return (line);
-	while (exp[size] && (ft_isalnum(exp[size]) || exp[size] == '?'
-			|| exp[size] == '_'))
-		size++;
-	if (size == 0)
-		return (line);
-	line = token_expansion(line, exp, size);
-	return (line);
+	new_line = ft_calloc(new_line_total_size(line) + 1, sizeof(char));
+	if (!new_line)
+		return (free(line), total_exit("malloc error"), NULL);
+	fill_new_line(new_line, line);
+	return (free(line), new_line);
 }

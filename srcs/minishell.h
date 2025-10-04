@@ -247,6 +247,8 @@ int						hd_strncmp(const char *s1, const char *s2, size_t n);
 void					hd_child_process(t_redirect *file);
 bool					has_here_docs(t_command *cmd);
 void					init_signals_here_doc(void);
+int digits_manage(char *str, int n);
+char *find_expansion(char *str, int size);
 
 // single process
 int						single_command_process(t_command *cmd);

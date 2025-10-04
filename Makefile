@@ -32,7 +32,8 @@ srcs/execution/here_doc/here_doc.c srcs/execution/processes/pipe_process.c \
 srcs/execution/processes/single_process.c srcs/execution/lists/list_manage.c \
 srcs/execution/lists/create_list.c srcs/execution/here_doc/here_doc_utils.c \
 srcs/execution/signals.c srcs/execution/built_ins/built_ins_utils.c \
-srcs/execution/here_doc/here_doc_exp.c srcs/execution/built_ins/ft_export.c
+srcs/execution/here_doc/here_doc_exp.c srcs/execution/built_ins/ft_export.c \
+srcs/execution/here_doc/here_doc_exp_utils.c
 
 OBJS = $(SRCS:.c=.o)
 
