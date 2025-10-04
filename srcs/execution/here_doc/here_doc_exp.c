@@ -11,106 +11,41 @@
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-/*
-needs expansion
-line total size
-fill new line
-*/
 
-bool needs_expansion(char *str)
+int expansion_size_calc(char *str, int *total_size)
 {
-	str = ft_strchr(str, '$');
-	while (str)
+	char *start;
+	int adress_move;
+
+	adress_move = 0;
+	start = str;
+	while (ft_isalnum(*str) || *str == '_')
 	{
+		adress_move++;
 		str++;
-		if (ft_isalnum(*str) || *str == '_' || *str == '?')
-			return (true);
-		str = ft_strchr(str, '$');
 	}
-	return (false);
+	if (total_size)
+		*total_size += ft_strlen(find_expansion(start, str - start));
+	return (adress_move);
 }
 
-int exit_status_exp(char *str)
-{
-	int e_status;
-	int count;
-
-	count = 0;
-	e_status = pc()->exit_status;
-	while (e_status >= 10)
-	{
-		count++;
-		e_status = e_status / 10;
-	}
-	if (str != NULL)
-	{
-		e_status = pc()->exit_status;
-		str += count;
-		while (e_status >= 10)
-		{
-			*str-- = (e_status % 10) + 48;
-			e_status = e_status / 10;
-		}
-	}
-	return (count);
-}
-
-char *find_expansion(char *str, int size)
-{
-	t_env	*node;
-
-	if (!*str)
-		return (NULL);
-	node = pc()->ms_env;
-	while (node)
-	{
-		if (!ft_strncmp(str, node->name, size) && node->name[size] == '\0')
-			return (node->value);
-		node = node->next;
-	}
-	return (NULL);
-}
-
-int env_exp(char *str, char *dest)
-{
-	int i;
-	char *exp;
-
-	i = 0;
-	while (ft_isalnum(str[i]) || str[i] == '_')
-		i++;
-	exp = find_expansion(str, i);
-	i = 0;
-	while (exp && exp[i])
-		i++;
-	if (dest)
-	{
-		while (exp && *exp)
-			*dest++ = *exp++;
-	}
-	return (i);
-}
-
-int new_line_size(char *str)
+int new_line_total_size(char *str)
 {
 	int size;
-
+	
 	size = 0;
-	while (*str)
+	while(*str)
 	{
-		if (*str++ == '$' && (ft_isalnum(*str) || *str == '_' || *str == '?'))
+		if (*str++ == '$' && (isalnum(*str) || *str == '_' || *str == '?'))
 		{
 			if (ft_isdigit(*str) || *str == '?')
 			{
-				if (*str++ == '?')
-					size += exit_status_exp(NULL);
+				if (*str == '?')
+					size += digits_manage(NULL, pc()->exit_status);
+				str++;
 			}
 			else
-			{
-				size += env_exp(str, NULL);
-				while (ft_isalnum(*str) || *str == '_')
-					str++;
-			}
+				str += expansion_size_calc(str, &size);
 		}
 		else
 			size++;
@@ -118,48 +53,70 @@ int new_line_size(char *str)
 	return (size);
 }
 
-void fill_new_line(char *dest, char *str)
+int expansion_new_line_fill(char *str, char *new_line)
 {
-	while (*str)
+	char *start;
+	char *value;
+	int value_size;
+
+	start = str;
+	while (ft_isalnum(*str) || *str == '_')
+		str++;
+	value = find_expansion(start, str - start);
+	if (!value)
+		return (0);
+	value_size = ft_strlen(value);
+	ft_memcpy(new_line, value, value_size);
+	return (value_size);
+}
+
+void fill_new_line(char *new_line, char *str)
+{
+	while(*str)
 	{
-		if (*str == '$')
+		if (*str == '$' && (ft_isalnum(str[1]) || str[1] == '_' || str[1] == '?'))
 		{
 			str++;
-			if (ft_isalnum(*str) || *str == '_' || *str == '?')
+			if (ft_isdigit(*str) || *str == '?')
 			{
-				if (ft_isdigit(*str) || *str == '?')
-				{
-					if (*str == '?')
-						dest += exit_status_exp(dest);
-					str += 2;
-				}
-				else
-				{
-					dest += env_exp(str, dest);
-					while (ft_isalnum(*str) || *str == '_')
-						str++;
-				}
+				if (*str == '?')
+					new_line += digits_manage(new_line, pc()->exit_status);
+				str++;
+			}
+			else
+			{
+				new_line += expansion_new_line_fill(str, new_line);
+				str += expansion_size_calc(str, 0);
 			}
 		}
 		else
-			*dest++ = *str++;
+			*new_line++ = *str++;
 	}
-	*dest = '\0';
 }
 
 char	*expand_str(char *line)
 {
-	int new_size;
 	char *new_line;
+	char *str;
+	bool needs_expansion;
 
-	if (!needs_expansion(line))
+	needs_expansion = false;
+	str = ft_strchr(line, '$');
+	while (str)
+	{
+		str++;
+		if (ft_isalnum(*str) || *str == '_' || *str == '?')
+		{
+			needs_expansion = true;
+			break ;
+		}
+		str = ft_strchr(str, '$');
+	}
+	if (!needs_expansion)
 		return (line);
-	new_size = new_line_size(line);
-	new_line = ft_calloc(new_size + 1, sizeof(char));
+	new_line = ft_calloc(new_line_total_size(line) + 1, sizeof(char));
 	if (!new_line)
-		return (free(line), total_exit("malloc() error"), NULL);
+		return (free(line), total_exit("malloc error"), NULL);
 	fill_new_line(new_line, line);
-	free(line);
-	return (new_line);
+	return (free(line), new_line);
 }
-//refazer funçao mas bem mais passo a passo
