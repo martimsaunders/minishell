@@ -1,3 +1,5 @@
+# valgrind --track-fds=yes --trace-children=yes --leak-check=full --show-leak-kinds=all --suppressions=/home/mateus/minishell/readline.supp ./minishell
+
 {
     leak readline
     Memcheck:Leak 
@@ -9,4 +11,10 @@
     Memcheck:Leak
     ...
     fun:add_history
+}
+{
+   external_usrbin leak
+   Memcheck:Leak
+   ...
+   obj:/usr/bin/*
 }

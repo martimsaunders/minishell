@@ -28,8 +28,6 @@ void	total_exit(char *msg)
 
 void	process_exit(void)
 {
-	close(0);
-	close(1);
 	close_fds();
 	if (pc()->path)
 		free(pc()->path);
