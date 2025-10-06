@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exit_malloc_frees2.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: martimprazeresaunders <martimprazeresau    +#+  +:+       +#+        */
+/*   By: praders <praders@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/12 14:25:29 by praders           #+#    #+#             */
-/*   Updated: 2025/10/03 14:36:48 by martimpraze      ###   ########.fr       */
+/*   Updated: 2025/10/06 20:28:31 by praders          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
