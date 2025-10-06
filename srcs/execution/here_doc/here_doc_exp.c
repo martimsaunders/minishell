@@ -6,16 +6,16 @@
 /*   By: mateferr <mateferr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 16:28:34 by mateferr          #+#    #+#             */
-/*   Updated: 2025/10/02 12:34:19 by mateferr         ###   ########.fr       */
+/*   Updated: 2025/10/06 10:54:46 by mateferr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-int expansion_size_calc(char *str, int *total_size)
+int	expansion_size_calc(char *str, int *total_size)
 {
-	char *start;
-	int adress_move;
+	char	*start;
+	int		adress_move;
 
 	adress_move = 0;
 	start = str;
@@ -29,12 +29,12 @@ int expansion_size_calc(char *str, int *total_size)
 	return (adress_move);
 }
 
-int new_line_total_size(char *str)
+int	new_line_total_size(char *str)
 {
-	int size;
-	
+	int	size;
+
 	size = 0;
-	while(*str)
+	while (*str)
 	{
 		if (*str++ == '$' && (isalnum(*str) || *str == '_' || *str == '?'))
 		{
@@ -53,11 +53,11 @@ int new_line_total_size(char *str)
 	return (size);
 }
 
-int expansion_new_line_fill(char *str, char *new_line)
+int	expansion_new_line_fill(char *str, char *new_line)
 {
-	char *start;
-	char *value;
-	int value_size;
+	char	*start;
+	char	*value;
+	int		value_size;
 
 	start = str;
 	while (ft_isalnum(*str) || *str == '_')
@@ -70,11 +70,12 @@ int expansion_new_line_fill(char *str, char *new_line)
 	return (value_size);
 }
 
-void fill_new_line(char *new_line, char *str)
+void	fill_new_line(char *new_line, char *str)
 {
-	while(*str)
+	while (*str)
 	{
-		if (*str == '$' && (ft_isalnum(str[1]) || str[1] == '_' || str[1] == '?'))
+		if (*str == '$' && (ft_isalnum(str[1]) || str[1] == '_'
+				|| str[1] == '?'))
 		{
 			str++;
 			if (ft_isdigit(*str) || *str == '?')
@@ -96,9 +97,9 @@ void fill_new_line(char *new_line, char *str)
 
 char	*expand_str(char *line)
 {
-	char *new_line;
-	char *str;
-	bool needs_expansion;
+	char	*new_line;
+	char	*str;
+	bool	needs_expansion;
 
 	needs_expansion = false;
 	str = ft_strchr(line, '$');
